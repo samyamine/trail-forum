@@ -1,16 +1,27 @@
 "use client";
 
+import {TfiClose} from "react-icons/tfi";
 import {FcGoogle} from "react-icons/fc";
-import {useState} from "react";
+import React, {useState} from "react";
+import {usePopup} from "@/app/context";
 
-export default function AuthPage() {
-    const [isRegister, setIsRegister] = useState(false);
-    const title: string = isRegister ? "Register" : "Sign in";
+export default function SignInPopup() {
+    const { hidePopup } = usePopup();
+    const [isRegister, setRegister] = useState(false);
 
     return (
-        <div className={`mt-24 flex flex-col items-center`}>
+        <div className={`w-full h-full bg-white fixed top-0 z-50 flex flex-col items-center`}>
+            <div className={`w-full px-5 py-3 mb-24 flex justify-end text-xl`}>
+                <div className={`p-2 rounded-full cursor-pointer`} onClick={() => {
+                    setRegister(false);
+                    hidePopup();
+                }}>
+                    <TfiClose />
+                </div>
+            </div>
+
             <h2 className={`mb-10 text-2xl font-bold`}>
-                {title}
+                {isRegister ? "Register" : "Sign in"}
             </h2>
 
             <div className={`w-1/2 md:w-[400px] px-5 py-2 rounded-lg border-[1px] border-black flex 
@@ -52,7 +63,7 @@ export default function AuthPage() {
                         <p>
                             Already have an account ?
                         </p>
-                        <div className={`text-orange-500 underline cursor-pointer`} onClick={() => setIsRegister(false)}>
+                        <div className={`text-orange-500 underline cursor-pointer`} onClick={() => setRegister(false)}>
                             Login
                         </div>
                     </div>
@@ -75,7 +86,7 @@ export default function AuthPage() {
                         <p>
                             Don't have an account ?
                         </p>
-                        <div className={`text-orange-500 underline cursor-pointer`} onClick={() => setIsRegister(true)}>
+                        <div className={`text-orange-500 underline cursor-pointer`} onClick={() => setRegister(true)}>
                             Register
                         </div>
                     </div>

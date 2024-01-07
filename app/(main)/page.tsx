@@ -9,29 +9,29 @@ import {usePopup} from "@/app/context";
 import SignInPopup from "@/components/SignInPopup";
 import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
     const { isPopupVisible } = usePopup();
 
-    const [categorySelect, setCategorySelect] = useState(false);
-    const [locationSelect, setLocationSelect] = useState(false);
+    const [showSortOptions, setShowSortOptions] = useState(false);
+    const [showCategoryOptions, setShowCategoryOptions] = useState(false);
 
     const toggleCategorySelector = (): void => {
-        if (!categorySelect && locationSelect) {
-            setLocationSelect(false);
-            setCategorySelect(true);
+        if (!showSortOptions && showCategoryOptions) {
+            setShowCategoryOptions(false);
+            setShowSortOptions(true);
         }
         else {
-            setCategorySelect(!categorySelect);
+            setShowSortOptions(!showSortOptions);
         }
     };
 
     const toggleLocationSelector = (): void => {
-        if (!locationSelect && categorySelect) {
-            setCategorySelect(false);
-            setLocationSelect(true);
+        if (!showCategoryOptions && showSortOptions) {
+            setShowSortOptions(false);
+            setShowCategoryOptions(true);
         }
         else {
-            setLocationSelect(!locationSelect);
+            setShowCategoryOptions(!showCategoryOptions);
         }
     };
 
@@ -54,18 +54,21 @@ export default function Home() {
                             </div>
                         </Link>
 
+                        {/*Sort Options*/}
                         <div className={`flex gap-3 text-xs`}>
                             <div className={`relative flex items-center gap-1 cursor-pointer`} onClick={toggleCategorySelector}>
-                                <div className={`flex items-center gap-1`}>
+                                <div className={`px-3 py-1 ${showSortOptions && "bg-gray-200"} rounded-full 
+                                hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>Hot</p>
-                                    {categorySelect ? (
+                                    {showSortOptions ? (
                                         <LiaAngleUpSolid />
                                     ) : (
                                         <LiaAngleDownSolid />
                                     )}
                                 </div>
 
-                                <div className={`${!categorySelect && " hidden"} min-w-max p-3 shadow-md bg-white absolute top-5 left-0 flex flex-col gap-3`}>
+                                <div className={`${!showSortOptions && " hidden"} min-w-max p-3 shadow-md bg-white 
+                                absolute top-7 left-0 flex flex-col gap-3 border-[1px] border-black`}>
                                     <p>Hot</p>
                                     <p>Latest</p>
                                     <p>News</p>
@@ -73,22 +76,26 @@ export default function Home() {
                                 </div>
                             </div>
 
+                            {/*Categories*/}
                             <div className={`cursor-pointer relative`} onClick={toggleLocationSelector}>
-                                <div className={`flex items-center gap-1`}>
-                                    <p>Everywhere</p>
-                                    {locationSelect ? (
+                                <div className={`px-3 py-1 ${showCategoryOptions && "bg-gray-200"} rounded-full 
+                                hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
+                                    <p>News</p>
+                                    {showCategoryOptions ? (
                                         <LiaAngleUpSolid />
                                     ) : (
                                         <LiaAngleDownSolid />
                                     )}
                                 </div>
 
-                                <div className={`${!locationSelect && " hidden"} max-h-48 min-w-max p-3 shadow-md bg-white 
-                                absolute top-5 right-0 flex flex-col gap-3 overflow-y-auto`}>
-                                    <p>France</p>
-                                    <p>United-Kingdom</p>
-                                    <p>Spain</p>
-                                    <p>Germany</p>
+                                <div className={`${!showCategoryOptions && " hidden"} min-w-max p-3 shadow-md bg-white 
+                                absolute top-7 left-0 flex flex-col gap-3 border-[1px] border-black`}>
+                                    <p>News</p>
+                                    <p>Discussion</p>
+                                    <p>Training</p>
+                                    <p>Races</p>
+                                    <p>Gear</p>
+                                    <p>Live</p>
                                 </div>
                             </div>
                         </div>
@@ -103,7 +110,7 @@ export default function Home() {
                     </div>
 
                     {/*Main topics feed*/}
-                    <div className={`w-full  md:w-3/4 lg:mx-10 flex flex-col items-center overflow-y-auto`}>
+                    <div className={`w-full  md:w-3/4 lg:mx-10 flex flex-col items-center`}>
                         <TopicTile />
                         <Divider />
                         <TopicTile />

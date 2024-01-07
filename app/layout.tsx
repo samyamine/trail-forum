@@ -14,11 +14,11 @@ export default function RootLayout({children}: { children: React.ReactNode} )  {
         <PopupProvider>
             <html lang={`en`}>
             <body className={`flex flex-col min-h-screen`}>
-            {/*className={`bg-[#0B1416]`}*/}
+            className={`bg-[#0B1416]`}
 
             <Header />
 
-            <main className={`mt-16 flex-grow`}>
+            <main className={`mt-10 flex-grow`}>
                 {children}
             </main>
 
@@ -32,6 +32,12 @@ export default function RootLayout({children}: { children: React.ReactNode} )  {
                 </h3>
                 <p>
                     2024 - LOGO &copy;
+                </p>
+
+                <p>
+                    Qui sommes nous
+                    Aide
+                    Instagram
                 </p>
             </footer>
             </body>

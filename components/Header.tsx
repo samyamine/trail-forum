@@ -3,6 +3,7 @@
 import {FaBars, FaMagnifyingGlass} from "react-icons/fa6";
 import React, {useState} from "react";
 import {usePopup} from "@/app/context";
+import Link from "next/link";
 
 export default function Header() {
     const { isPopupVisible, showPopup, hidePopup } = usePopup();
@@ -14,7 +15,11 @@ export default function Header() {
                     <FaBars />
                 </div>
 
-                <h1 className={`mr-10 text-2xl`}>Logo</h1>
+                <Link href={`/`}>
+                    <h1 className={`mr-10 text-2xl cursor-pointer`}>
+                        Logo
+                    </h1>
+                </Link>
             </div>
 
             <div className={`max-md:hidden w-1/2 h-full px-5 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}>

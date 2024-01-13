@@ -43,7 +43,7 @@ export default function CommentTile() {
             </h1>
 
             <div className={`pl-5 pr-3 flex gap-5`}>
-                <Votes />
+                <Votes count={0} />
                 <div className={`px-2 rounded-full cursor-pointer flex gap-1 items-center border-[1px] border-black hover:bg-gray-300 text-xs`}>
                     <div>
                         <TbMessageCircle />

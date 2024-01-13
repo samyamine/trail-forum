@@ -1,31 +1,39 @@
 "use client";
 
-import {TfiClose} from "react-icons/tfi";
 import {FcGoogle} from "react-icons/fc";
 import React, {useState} from "react";
-import {usePopup} from "@/app/context";
+import {useAuth} from "@/app/authContext";
+import toast from "react-hot-toast";
+import {usePopup} from "@/app/popupContext";
 
-export default function SignInPopup() {
-    const { hidePopup } = usePopup();
-    const [isRegister, setRegister] = useState(false);
+export default function SignInPopup({ onClickCallback }: {onClickCallback:  React.MouseEventHandler<HTMLDivElement>}) {
+    const {signInWithEmail} = useAuth();
+    const {hidePopup} = usePopup();
+
+    // FIXME: useRef
+    const [charging, setCharging] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const signIn = async () => {
+        try {
+            setCharging(true);
+            await signInWithEmail(email, password);
+            setCharging(false);
+            hidePopup();
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
 
     return (
-        <div className={`w-full h-full bg-white fixed top-0 z-50 flex flex-col items-center`}>
-            <div className={`w-full px-5 py-3 mb-24 flex justify-end text-xl`}>
-                <div className={`p-2 rounded-full cursor-pointer`} onClick={() => {
-                    setRegister(false);
-                    hidePopup();
-                }}>
-                    <TfiClose />
-                </div>
-            </div>
-
+        <>
             <h2 className={`mb-10 text-2xl font-bold`}>
-                {isRegister ? "Register" : "Sign in"}
+                Sign in
             </h2>
 
             <div className={`w-1/2 md:w-[400px] px-5 py-2 rounded-lg border-[1px] border-black flex 
-            justify-center items-center gap-5 cursor-pointer text-xl`}>
+                    justify-center items-center gap-5 cursor-pointer text-xl`}>
                 <FcGoogle />
 
                 <p className={`text-base`}>
@@ -39,59 +47,29 @@ export default function SignInPopup() {
                 <div className={`w-1/2 h-[1px] ml-3 bg-black`}></div>
             </div>
 
-            {isRegister ? (
-                <>
-                    <div className={`w-1/2 md:w-[400px] mb-10 flex flex-col items-center gap-5`}>
-                        <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Username`}/>
+            <div className={`w-1/2 md:w-[400px] mb-10 flex flex-col items-center gap-5`}>
+                <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
+                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Email`}
+                onChange={(event) => setEmail(event.target.value)} value={email}/>
 
-                        <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Email`}/>
+                <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
+                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Password`}
+                onChange={(event) => setPassword(event.target.value)} value={password}/>
+            </div>
 
-                        <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Password`}/>
+            <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer`}
+            onClick={signIn}>
+                {charging ? "Loading..." : "Sign In"}
+            </div>
 
-                        <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Repeat password`}/>
-                    </div>
-
-                    <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer`}>
-                        Register
-                    </div>
-
-                    <div className={`flex gap-1 text-sm`}>
-                        <p>
-                            Already have an account ?
-                        </p>
-                        <div className={`text-orange-500 underline cursor-pointer`} onClick={() => setRegister(false)}>
-                            Login
-                        </div>
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className={`w-1/2 md:w-[400px] mb-10 flex flex-col items-center gap-5`}>
-                        <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Username or email`}/>
-
-                        <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Password`}/>
-                    </div>
-
-                    <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer`}>
-                        Sign In
-                    </div>
-
-                    <div className={`flex gap-1 text-sm`}>
-                        <p>
-                            Don't have an account ?
-                        </p>
-                        <div className={`text-orange-500 underline cursor-pointer`} onClick={() => setRegister(true)}>
-                            Register
-                        </div>
-                    </div>
-                </>
-            )}
-        </div>
+            <div className={`flex gap-1 text-sm`}>
+                <p>
+                    Don't have an account ?
+                </p>
+                <div className={`text-orange-500 underline cursor-pointer`} onClick={onClickCallback}>
+                    Register
+                </div>
+            </div>
+        </>
     );
 }

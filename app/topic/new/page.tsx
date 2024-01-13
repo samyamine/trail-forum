@@ -1,42 +1,163 @@
-import React from "react";
+"use client";
+
+import React, {useState} from "react";
+import AuthPopup from "@/components/AuthPopup";
+import {usePopup} from "@/app/popupContext";
+import {useAuth} from "@/app/authContext";
+import toast from "react-hot-toast";
+import {addDoc, collection} from "@firebase/firestore";
+import {db} from "@/lib/firebase/config";
+import {useRouter} from "next/navigation";
+import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
+import {ETopicType} from "@/lib/enums";
 
 export default function NewTopicPage() {
+    const {isPopupVisible, showPopup} = usePopup();
+    const {user} = useAuth();
+    const router = useRouter();
+
+    const SUBJECT_MAX_LENGTH = 200;
+    const BODY_MAX_LENGTH = 1500;
+
+    const [charging, setCharging] = useState(false);
+    const [showCategoryOptions, setShowCategoryOptions] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<string>(ETopicType.Discussion);
+    const [subject, setSubject] = useState("");
+    const [subjectTooLong, setSubjectTooLong] = useState(false);
+    const [body, setBody] = useState("");
+    const [bodyTooLong, setBodyTooLong] = useState(false);
+
+    const setNewSubject = (text: string) => {
+        if (text.length <= SUBJECT_MAX_LENGTH) {
+            setSubject(text);
+
+            if (subjectTooLong) {
+                setSubjectTooLong(false);
+            }
+        }
+        else {
+            setSubjectTooLong(true);
+        }
+    };
+
+    const setNewBody = (text: string) => {
+        if (text.length <= BODY_MAX_LENGTH) {
+            setBody(text);
+
+            if (bodyTooLong) {
+                setBodyTooLong(false);
+            }
+        }
+        else {
+            setBodyTooLong(true);
+        }
+    };
+
+    const createTopic = async () => {
+        if (user === null) {
+            showPopup();
+        }
+        else {
+            // FIXME: publish topic
+            try {
+                setCharging(true);
+                const topicRef = await addDoc(collection(db, "topics"), {
+                    author: user.uid,
+                    body,
+                    category: selectedCategory,
+                    comments: 0,
+                    creationDate: Date.now(),
+                    title: subject,
+                    votes: 0,
+                });
+
+                setCharging(false);
+                router.push(`/topic/${topicRef.id}`);
+            } catch (error: any) {
+                toast.error(error.message);
+                setCharging(false);
+            }
+        }
+    };
 
     return (
-        <div className={`w-full px-5 py-5 flex flex-col gap-5`}>
-            <h1 className={`text-2xl font-bold`}>
-                Start a new topic
-            </h1>
+        <>
+            {/*Signin popup*/}
+            {isPopupVisible && (
+                <AuthPopup />
+            )}
+            
+            <div className={`relative px-5 py-5 flex flex-col gap-5`}>
+                <h1 className={`text-2xl font-bold`}>
+                    Start a new topic
+                </h1>
 
-            <div>
-                <div className={`w-full mb-2 flex justify-between items-center`}>
-                    <h3 className={`text-md`}>Subject</h3>
-                    <p className={`text-xs`}>200</p>
+                <div>
+                    <div className={`w-full mb-2 flex justify-between items-center`}>
+                        <h3 className={`text-md`}>
+                            Subject
+                        </h3>
+                        <p className={`text-xs`}>{SUBJECT_MAX_LENGTH - subject.length}</p>
+                    </div>
+                    <input id={`subject`} type={`text`} className={`w-full px-4 py-2 ${subjectTooLong ? "bg-red-200" : "bg-gray-100"} 
+                    rounded-lg border-[1px] ${subjectTooLong ? "border-red-400" : "border-gray-400"} text-sm placeholder-gray-400`}
+                    placeholder={`Any advice to improve my performances ?`} value={subject}
+                    onChange={(event) => setNewSubject(event.target.value)}/>
                 </div>
-                <input id={`subject`} type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                    border-[1px] border-gray-400 text-sm placeholder-gray-400`}
-                       placeholder={`Any advice to improve my performances ?`}/>
+
+                <div className={`flex gap-3 items-center`}>
+                    <h3 className={`text-md`}>
+                        Category
+                    </h3>
+
+                    <div className={`relative flex items-center gap-1 cursor-pointer text-sm`} onClick={() => setShowCategoryOptions(!showCategoryOptions)}>
+                        <div className={`px-3 py-1 bg-gray-200 rounded-full 
+                                hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
+                            <p>
+                                {selectedCategory}
+                            </p>
+                            {showCategoryOptions ? (
+                                <LiaAngleUpSolid />
+                            ) : (
+                                <LiaAngleDownSolid />
+                            )}
+                        </div>
+
+                        {showCategoryOptions && (
+                            <div className={`min-w-max shadow-md bg-white 
+                                absolute top-7 left-0 border-[1px] border-black`}>
+                                {Object.keys(ETopicType).map((type) => (
+                                    <p className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-200`} onClick={() => setSelectedCategory(type)}>
+                                        {type}
+                                    </p>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className={`flex flex-col items-end gap-2`}>
+                    <p className={`text-xs`}>{BODY_MAX_LENGTH - body.length}</p>
+                    <textarea className={`w-full p-2 resize-none overflow-y-auto bg-gray-100 rounded-lg
+                        border-[1px] border-gray-400 text-sm placeholder-gray-400 ${subjectTooLong ? "bg-red-200" : "bg-gray-100"}
+                        ${subjectTooLong ? "border-red-400" : "border-gray-400"}`}
+                              rows={10} cols={50} placeholder={`Write your questions here...`} value={body}
+                            onChange={(event) => setNewBody(event.target.value)}>
+                    </textarea>
+                </div>
+
+
+                <p className={`text-sm text-justify`}>
+                    By posting, you acknowledge that you have read and abide by
+                    our <span className={`underline text-orange-500 cursor-pointer`}> Terms and Conditions.</span>
+                </p>
+
+                {/*Category*/}
+                <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white text-center cursor-pointer`}
+                onClick={() => createTopic()}>
+                    {charging ? "Loading..." : "Create topic"}
+                </div>
             </div>
-
-            <div className={`flex flex-col items-end gap-2`}>
-                <p className={`text-xs`}>1500</p>
-                <textarea className={`w-full p-2 resize-none overflow-y-auto bg-gray-100 rounded-lg
-                        border-[1px] border-gray-400 text-sm placeholder-gray-400`}
-                          rows={10} cols={50} placeholder={`Write your questions here...`}>
-                </textarea>
-            </div>
-
-
-            <p className={`text-sm text-justify`}>
-                By posting, you acknowledge that you have read and abide by
-                our <span className={`underline text-orange-500 cursor-pointer`}> Terms and Conditions.</span>
-            </p>
-
-            {/*Category*/}
-
-            <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white text-center cursor-pointer`}>
-                Create topic
-            </div>
-        </div>
+        </>
     );
 }

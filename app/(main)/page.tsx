@@ -5,12 +5,12 @@ import Divider from "@/components/Divider";
 import { FaPlus } from "react-icons/fa6";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import React, {useState} from "react";
-import {usePopup} from "@/app/context";
-import SignInPopup from "@/components/SignInPopup";
+import {usePopup} from "@/app/popupContext";
 import Link from "next/link";
+import AuthPopup from "@/components/AuthPopup";
 
 export default function HomePage() {
-    const { isPopupVisible } = usePopup();
+    const { isPopupVisible, hidePopup } = usePopup();
 
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
@@ -39,7 +39,7 @@ export default function HomePage() {
         <>
             {/*Signin popup*/}
             {isPopupVisible && (
-                <SignInPopup />
+                <AuthPopup />
             )}
 
             <div className={`w-full overflow-y-auto`}>
@@ -72,6 +72,7 @@ export default function HomePage() {
                                     <p>Hot</p>
                                     <p>Latest</p>
                                     <p>News</p>
+                                    <p>Following</p>
                                     <p>Others</p>
                                 </div>
                             </div>

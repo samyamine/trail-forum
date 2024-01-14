@@ -5,15 +5,15 @@ import {useAuth} from "@/app/authContext";
 import {useState} from "react";
 import {isUndefined} from "@/lib/utils";
 
-export default function Votes({ count, id }: { count: number, id: string, onUpVote: () => void, onDownVote: () => void }) {
+export default function Votes({ count, id }: { count: number, id: string }) {
     const {userData} = useAuth();
 
     const onUpVote = async () => {
-
+        // FIXME
     };
 
     const onDownVote = async () => {
-
+        // FIXME
     };
 
     const [upVoteActive, setUpVote] = useState(!isUndefined(userData) && (userData?.upVotedComments.includes(id) || userData?.upVotedTopics.includes(id)));

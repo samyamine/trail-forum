@@ -8,6 +8,8 @@ import React, {useState} from "react";
 import {usePopup} from "@/app/popupContext";
 import Link from "next/link";
 import AuthPopup from "@/components/AuthPopup";
+import ProfilePicture from "@/components/ProfilePicture";
+import IconTextButton from "@/components/IconTextButton";
 
 export default function HomePage() {
     const { isPopupVisible, hidePopup } = usePopup();
@@ -47,11 +49,7 @@ export default function HomePage() {
                     {/*New topic bar*/}
                     <div className={`w-full flex justify-between md:justify-start md:gap-5 items-center`}>
                         <Link href={`/topic/new`}>
-                            <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-orange-500 rounded-sm shadow-md 
-                            active:shadow-sm text-white text-sm cursor-pointer`}>
-                                <FaPlus />
-                                <p>New Topic</p>
-                            </div>
+                            <IconTextButton text={"New Topic"} />
                         </Link>
 
                         {/*Sort Options*/}
@@ -111,7 +109,7 @@ export default function HomePage() {
                     </div>
 
                     {/*Main topics feed*/}
-                    <div className={`w-full  md:w-3/4 lg:mx-10 flex flex-col items-center`}>
+                    <div className={`w-full md:w-3/4 lg:mx-10 flex flex-col items-center`}>
                         <TopicTile />
                         <Divider />
                         <TopicTile />

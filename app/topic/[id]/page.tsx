@@ -12,7 +12,7 @@ import TopicCategory from "@/components/TopicCategory";
 import {usePopup} from "@/app/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {db} from "@/lib/firebase/config";
-import {collection, doc, DocumentData, getDoc, getDocs} from "@firebase/firestore";
+import {collection, doc, DocumentData, DocumentReference, getDoc, getDocs, Timestamp} from "@firebase/firestore";
 import toast from "react-hot-toast";
 import {useAuth} from "@/app/authContext";
 import {topicTypeColor} from "@/lib/consts";
@@ -26,23 +26,7 @@ interface IAnswer {
     votes: number,
 }
 
-interface IComment {
-    answers: IComment[],
-    author: string,
-    body: string,
-    creationDate: Date,
-    isSecondLevel: boolean,
-    votes: number,
-}
-
 interface ITopicData {
-    id: string,
-    content: DocumentData | undefined,
-    user: DocumentData | undefined,
-    answers: IAnswer[] | undefined,
-}
-
-interface ITopicData2 {
     id: string,
     content: DocumentData | undefined,
     user: DocumentData | undefined,
@@ -169,7 +153,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             )}
 
             {typeof topic.content !== "undefined" && typeof topic.user !== "undefined" && typeof topic.answers !== "undefined" ? (
-                <div className={`px-5 py-5`}>
+                <div className={`p-5`}>
                     {/*topic*/}
                     <div className={`mb-4 flex flex-col gap-2`}>
                         <div className={`flex justify-between items-center`}>
@@ -187,7 +171,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 <FaEllipsis />
 
                                 <div className={`${!showReportOption && "hidden"} px-5 py-3 absolute top-10 right-0 bg-white shadow-md
-                        flex items-center gap-2 border-[1px] border-black hover:bg-gray-200 active:bg-gray-200`}>
+                                flex items-center gap-2 border-[1px] border-black hover:bg-gray-200 active:bg-gray-200`}>
                                     <TbFlag />
                                     <p className={`text-sm`}>
                                         Report
@@ -200,7 +184,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                             {topic.content.title}
                         </h2>
 
-                        <TopicCategory text={topic.content.category} color={String(topicTypeColor[topic.content.category])} />
+                        <TopicCategory text={topic.content.category} />
 
                         <p className={`text-sm`}>
                             {topic.content.body}
@@ -210,9 +194,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                     {/*Social engagement*/}
                     <div className={`mb-4 flex gap-5`}>
                         <Votes count={topic.content.votes}
-                               id={topic.id}
-                               onUpVote={sentUpVote}
-                               onDownVote={sendDownVote} />
+                               id={topic.id} />
                         <div className={`flex items-center gap-2 text-xs font-bold text-gray-400`}>
                             <TbMessageCircle2Filled />
                             <p>{topic.content.comments} Comments</p>

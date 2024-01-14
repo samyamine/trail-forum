@@ -80,7 +80,8 @@ export default function Header() {
                         {showProfileActions && (
                             <div className={`min-w-max absolute top-12 right-0 shadow-md bg-white
                             border-[1px] border-black text-xs`}>
-                                <Link href={`/`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
+                                {/*FIXME*/}
+                                <Link href={`/profile/bgVKtsOrYzNhMTUiJtfuY0Myqkk2`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
                                     <FaRegUser />
                                     <p>
                                         Profile

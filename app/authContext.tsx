@@ -10,12 +10,14 @@ import {
 } from "@firebase/auth";
 import {auth, db} from "@/lib/firebase/config";
 import {doc, DocumentData, getDoc, onSnapshot, setDoc, Unsubscribe} from "@firebase/firestore";
-import {unsubscribe} from "diagnostics_channel";
-import {log} from "util";
+import {IUser} from "@/lib/interfaces";
+import {isUndefined} from "@/lib/utils";
+
+
 
 interface IAuthContextProps {
     user: User | null;
-    userData: DocumentData | undefined;
+    userData: IUser | undefined;
     signInWithEmail: (email: string, password: string) => Promise<void>;
     signUpWithEmail: (email: string, password: string, username: string) => Promise<void>;
     logOut: () => Promise<void>;
@@ -29,7 +31,7 @@ const AuthContext = createContext<IAuthContextProps | undefined>(undefined);
 
 export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [userData, setUserData] = useState<DocumentData | undefined>(undefined);
+    const [userData, setUserData] = useState<IUser | undefined>(undefined);
 
     useEffect(() => {
         let unsubscribeUserData: Unsubscribe | null = null;
@@ -38,7 +40,23 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
             unsubscribeUserData = onSnapshot(doc(db, "users", user.uid), (doc) => {
                 console.log(`CURRENT DATA:`);
                 console.log(doc.data());
-                setUserData(doc.data());
+
+                if (!isUndefined(doc.data())) {
+                    const data = doc.data() as DocumentData;
+
+                    const newUserData = {
+                        uid: doc.id,
+                        comments: data.comments,
+                        downVotedComments: data.downVotedComments,
+                        downVotedTopics: data.downVotedTopics,
+                        topics: data.topics,
+                        upVotedComments: data.upVotedComments,
+                        upVotedTopics: data.upVotedTopics,
+                        username: data.username,
+                    };
+
+                    setUserData(newUserData);
+                }
             });
         }
 
@@ -65,7 +83,25 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         console.log("USER DATA:");
         console.log(docSnapshot.data());
 
-        setUserData(docSnapshot.data());
+        if (!isUndefined(docSnapshot.data())) {
+            const data = docSnapshot.data() as DocumentData;
+
+            const newUserData = {
+                uid: docSnapshot.id,
+                comments: data.comments,
+                downVotedComments: data.downVotedComments,
+                downVotedTopics: data.downVotedTopics,
+                topics: data.topics,
+                upVotedComments: data.upVotedComments,
+                upVotedTopics: data.upVotedTopics,
+                username: data.username,
+            };
+
+            setUserData(newUserData);
+        }
+        else {
+            setUserData(undefined);
+        }
     };
 
     const signInWithEmail = async (email: string, password: string) => {

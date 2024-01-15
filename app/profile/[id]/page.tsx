@@ -19,12 +19,13 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
     const tabs = {
         [ETabs.Comments]: (
             <div className={`p-5`}>
-                <CommentTile />
-                <Divider />
-                <CommentTile />
-                <Divider />
-                <CommentTile />
-                <Divider />
+                {/*<CommentTile />*/}
+                {/*<Divider />*/}
+                {/*<CommentTile />*/}
+                {/*<Divider />*/}
+                {/*<CommentTile />*/}
+                {/*<Divider />*/}
+                COMMENTS
             </div>
         ),
         [ETabs.Saved]: (
@@ -34,11 +35,12 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
         ),
         [ETabs.Topics]: (
             <div>
-                <TopicTile />
-                <Divider />
-                <TopicTile />
-                <Divider />
-                <TopicTile />
+                {/*<TopicTile />*/}
+                {/*<Divider />*/}
+                {/*<TopicTile />*/}
+                {/*<Divider />*/}
+                {/*<TopicTile />*/}
+                TOPICS
             </div>
         ),
     };

@@ -14,7 +14,7 @@ import {auth} from "@/lib/firebase/config";
 
 export default function Header() {
     const { showPopup } = usePopup();
-    const { user, logOut } = useAuth();
+    const { user, userData, logOut } = useAuth();
 
     const [showDrawer, setShowDrawer] = useState(false);
     const [showSearch, setShowSearch] = useState(false);

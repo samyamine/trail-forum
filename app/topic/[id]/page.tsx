@@ -12,42 +12,40 @@ import TopicCategory from "@/components/TopicCategory";
 import {usePopup} from "@/app/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {db} from "@/lib/firebase/config";
-import {collection, doc, DocumentData, DocumentReference, getDoc, getDocs, Timestamp} from "@firebase/firestore";
+import {
+    addDoc, arrayUnion, collection,
+    doc,
+    DocumentData, DocumentReference,
+    getDoc, setDoc, Timestamp, updateDoc,
+} from "@firebase/firestore";
 import toast from "react-hot-toast";
 import {useAuth} from "@/app/authContext";
-import {topicTypeColor} from "@/lib/consts";
-
-interface IAnswer {
-    answers: IAnswer[],
-    author: string,
-    body: string,
-    creationDate: Date,
-    isSecondLevel: boolean,
-    votes: number,
-}
-
-interface ITopicData {
-    id: string,
-    content: DocumentData | undefined,
-    user: DocumentData | undefined,
-    answers: IAnswer[] | undefined,
-}
+import {IComment, ITopic, IUser} from "@/lib/interfaces";
+import {getAuthor, getCommentAnswers, getTopic, getTopicComments} from "@/lib/topic/utils";
+import {isUndefined} from "@/lib/utils";
 
 const COMMENT_MAX_LENGTH = 500;
+
+interface IData {
+    topic: ITopic,
+    author: IUser,
+    comments: IComment[],
+    commentsNumber: number,
+}
 
 export default function TopicPage({ params }: { params: { id: string }}) {
     const {isPopupVisible, showPopup} = usePopup();
     const {userData} = useAuth();
 
-    const [comment, setComment] = useState("");
+    const [commentText, setCommentText] = useState("");
     const [commentTooLong, setCommentTooLong] = useState(false);
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [showReportOption, setShowReportOption] = useState(false);
-    const [topic, setTopic] = useState<ITopicData>({ answers: undefined, content: undefined, id: "", user: undefined });
+    const [data, setData] = useState<IData | null>(null);
 
     const setNewComment = (text: string) => {
         if (text.length <= COMMENT_MAX_LENGTH) {
-            setComment(text);
+            setCommentText(text);
 
             if (commentTooLong) {
                 setCommentTooLong(false);
@@ -58,61 +56,40 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         }
     };
 
-    const getAuthor = async (uid: string): Promise<DocumentData | undefined> => {
-        // FIXME: implement get topic author
-
-        const userRef = doc(db, "users", uid);
-        const userSnapshot = await getDoc(userRef);
-
-        return userSnapshot.data();
-    };
-
-    const getTopicAnswers = async (topicId: string): Promise<IAnswer[]> => {
-        // FIXME: implement
-        // FIXME: get users for each comment and sub comment
-        const answers: IAnswer[] = [];
-        const queryAnswerSnapshot = await getDocs(collection(db, "topics", topicId, "answers"));
-
-        for (const doc of queryAnswerSnapshot.docs) {
-            const nestedAnswers = await getNestedAnswers(topicId, doc.id);
-            const data = doc.data();
-
-            const answer: IAnswer = {
-                answers: nestedAnswers,
-                author: data.author,
-                body: data.body,
-                creationDate: data.creationDate,
-                isSecondLevel: data.isSecondLevel,
-                votes: data.votes,
-            };
-
-            answers.push(answer);
+    const postComment = async () => {
+        // FIXME
+        if (isUndefined(userData)) {
+            showPopup();
         }
+        else if (commentText.length === 0) {
+            throw new Error("Comment is too long");
+        }
+        else {
+            const myUserData = userData as IUser;
+            const topicRef = doc(db, "topics", params.id);
 
-        return answers;
-    };
-
-    const getNestedAnswers = async (topicId: string, answerId: string): Promise<IAnswer[]> => {
-        // FIXME: implement
-        const answers: IAnswer[] = [];
-        const queryNextAnswerSnapshot = await getDocs(collection(db, "topics", topicId, "answers", answerId, "answers"));
-
-        for (const doc of queryNextAnswerSnapshot.docs) {
-            const data = doc.data();
-
-            const nestedAnswer: IAnswer = {
+            const commentRef = await addDoc(collection(db, "comments"), {
                 answers: [],
-                author: data.author,
-                body: data.body,
-                creationDate: data.creationDate,
-                isSecondLevel: data.isSecondLevel,
-                votes: data.votes,
-            };
+                author: doc(db, "users", myUserData.uid),
+                body: commentText,
+                creationDate: Date.now(),
+                topicRef,
+                upVoted: [],
+                downVoted: [],
+            });
 
-            answers.push(nestedAnswer);
+            // FIXME: Add to topic comments
+            await updateDoc(topicRef, {
+                comments: arrayUnion(commentRef),
+            });
+
+            // FIXME: Add to user comments
+
+            // FIXME: Reload page
+            console.log("YO");
+            window.location.reload();
+            console.log("YA")
         }
-
-        return answers;
     };
 
     const sentUpVote = async () => {
@@ -128,21 +105,22 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         // FIXME
     };
 
-
     useEffect(() => {
-        const fetchAllTopicData = async () => {
-            const topicRef = doc(db, "topics", params.id);
-            const topicSnapshot = await getDoc(topicRef);
+        const fetchData = async () => {
+            const topicData = await getTopic(params.id);
+            const authorData = await getAuthor(topicData.author);
+            const commentsData = await getTopicComments(topicData.comments);
 
-            if (topicSnapshot.exists()) {
-                const user = await getAuthor(topicSnapshot.data().author);
-                const answers = await getTopicAnswers(topicSnapshot.id)
+            let commentsNumber = 0;
 
-                setTopic({ answers, content: topicSnapshot.data(), id: topicSnapshot.id, user });
+            for (const comment of commentsData) {
+                commentsNumber += comment.answers.length + 1;
             }
+
+            setData({ topic: topicData, author: authorData, comments: commentsData, commentsNumber});
         };
 
-        fetchAllTopicData().catch((error) => toast.error(error.message));
+        fetchData().catch((error) => toast.error(error.message));
     }, []);
 
     return (
@@ -152,7 +130,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                 <AuthPopup />
             )}
 
-            {typeof topic.content !== "undefined" && typeof topic.user !== "undefined" && typeof topic.answers !== "undefined" ? (
+            {data !== null ? (
                 <div className={`p-5`}>
                     {/*topic*/}
                     <div className={`mb-4 flex flex-col gap-2`}>
@@ -162,7 +140,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                     {/*IMAGE*/}
                                 </div>
                                 <p className={`text-sm font-bold`}>
-                                    {topic.user.username} - <span className={`font-normal text-gray-500`}>1h ago</span>
+                                    {data.author.username} - <span className={`font-normal text-gray-500`}>1h ago</span>
                                 </p>
                             </div>
 
@@ -171,8 +149,10 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 <FaEllipsis />
 
                                 <div className={`${!showReportOption && "hidden"} px-5 py-3 absolute top-10 right-0 bg-white shadow-md
-                                flex items-center gap-2 border-[1px] border-black hover:bg-gray-200 active:bg-gray-200`}>
+                                flex items-center gap-2 border-[1px] border-black hover:bg-gray-200 active:bg-gray-200`}
+                                onClick={() => toast.success("We have received your report notification")}>
                                     <TbFlag />
+                                    {/*FIXME*/}
                                     <p className={`text-sm`}>
                                         Report
                                     </p>
@@ -181,33 +161,33 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                         </div>
 
                         <h2 className={`text-lg font-bold`}>
-                            {topic.content.title}
+                            {data.topic.title}
                         </h2>
 
-                        <TopicCategory text={topic.content.category} />
+                        <TopicCategory text={data.topic.category} />
 
                         <p className={`text-sm`}>
-                            {topic.content.body}
+                            {data.topic.body}
                         </p>
                     </div>
 
                     {/*Social engagement*/}
                     <div className={`mb-4 flex gap-5`}>
-                        <Votes count={topic.content.votes}
-                               id={topic.id} />
+                        <Votes initCount={data.topic.upVoted.length - data.topic.downVoted.length}
+                               id={data.topic.uid} collection={"topics"} />
                         <div className={`flex items-center gap-2 text-xs font-bold text-gray-400`}>
                             <TbMessageCircle2Filled />
-                            <p>{topic.content.comments} Comments</p>
+                            <p>{data.commentsNumber} Comments</p>
                         </div>
                         <Share />
                     </div>
 
                     {/*Add Comment*/}
                     <div className={`my-4 flex flex-col items-end gap-2`}>
-                        <p className={`text-xs`}>{COMMENT_MAX_LENGTH - comment.length}</p>
+                        <p className={`text-xs`}>{COMMENT_MAX_LENGTH - commentText.length}</p>
                         <textarea className={`w-full p-2 resize-none overflow-y-auto ${commentTooLong ? "bg-red-200" : "bg-gray-100"}
                         rounded-lg border-[1px] border-gray-400 text-sm placeholder-gray-400`}
-                                  rows={5} cols={50} placeholder={`What is your opinion ?`} value={comment}
+                                  rows={5} cols={50} placeholder={`What is your opinion ?`} value={commentText}
                         onChange={(event) => setNewComment(event.target.value)}>
                         </textarea>
 
@@ -217,7 +197,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 <p className={`text-sm`}>Sort by: </p>
                                 <div className={`relative text-sm cursor-pointer`} onClick={() => setShowSortOptions(!showSortOptions)}>
                                     <div className={`px-3 py-1 ${showSortOptions && "bg-gray-200"} rounded-full hover:bg-gray-100 active:bg-gray-200 
-                            flex items-center gap-1`}>
+                                        flex items-center gap-1`}>
                                         <p>Top</p>
                                         {showSortOptions ? (
                                             <LiaAngleUpSolid />
@@ -235,7 +215,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                             </div>
 
                             <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-orange-500 rounded-sm shadow-md 
-                            active:shadow-sm text-white text-sm cursor-pointer`}>
+                            active:shadow-sm text-white text-sm cursor-pointer`} onClick={() => postComment().catch((error) => console.log(error.message))}>
                                 <p>Post comment</p>
                             </div>
                         </div>
@@ -243,17 +223,17 @@ export default function TopicPage({ params }: { params: { id: string }}) {
 
                     {/*Comments*/}
                     <Divider />
-                    {topic.answers.map((answer, index) => (
+                    {data.comments.map((comment, index) => (
                         <div key={index} className={`flex flex-col`}>
-                            <CommentTile />
+                            <CommentTile comment={comment} />
 
-                            {answer.answers.map((nestedAnswer, index) => (
-                                <div key={`n${index}`} className={`flex justify-between`}>
+                            {comment.answers.map((nestedAnswer, nestedIndex) => (
+                                <div key={`n${nestedIndex}`} className={`flex justify-start`}>
                                     <div className={`w-10 flex justify-center`}>
                                         <div className={`w-0.5 h-full bg-gray-300`}></div>
                                     </div>
-                                    <div className={`w-fit flex flex-col`}>
-                                        <CommentTile />
+                                    <div className={`flex-grow`}>
+                                        <CommentTile comment={nestedAnswer} />
                                     </div>
                                 </div>
                             ))}

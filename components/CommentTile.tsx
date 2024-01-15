@@ -1,17 +1,50 @@
 "use client";
 
 import Votes from "@/components/Votes";
-import Comments from "@/components/Comments";
 import Share from "@/components/Share";
-import {FaComment} from "react-icons/fa6";
 import {TbFlag, TbMessageCircle} from "react-icons/tb";
 import {SlOptions} from "react-icons/sl";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {IComment} from "@/lib/interfaces";
+import {DocumentReference, getDoc, Timestamp} from "@firebase/firestore";
+import toast from "react-hot-toast";
 
-export default function CommentTile() {
+const REPLY_MAX_LENGTH = 500;
+
+export default function CommentTile({ comment }: { comment: IComment | DocumentReference }) {
     const [showReportOption, setReportOption] = useState(false);
+    const [commentData, setCommentData] = useState<IComment | null>(null);
 
-    return (
+    useEffect(() => {
+        const getData = async () => {
+            if (comment instanceof DocumentReference) {
+                const commentSnapshot = await getDoc(comment);
+
+                if (!commentSnapshot.exists() || typeof commentSnapshot.data() === "undefined") {
+                    throw new Error("Comment does not exist");
+                }
+
+                setCommentData({
+                    uid: commentSnapshot.id,
+                    answers: commentSnapshot.data().answers,
+                    author: commentSnapshot.data().author,
+                    body: commentSnapshot.data().body,
+                    creationDate: commentSnapshot.data().creationDate,
+                    parentComment: commentSnapshot.data().parentComment,
+                    topicRef: commentSnapshot.data().topicRef,
+                    upVoted: commentSnapshot.data().upVoted,
+                    downVoted: commentSnapshot.data().downVoted,
+                });
+            }
+            else {
+                setCommentData(comment);
+            }
+        };
+
+        getData().catch((error) => toast.error(error.message));
+    }, []);
+
+    return commentData !== null && (
         <div className={`w-full py-3 text-gray-900`}>
             <div className={`flex justify-between items-center`}>
                 <div className={`mb-2 flex items-center gap-2`}>
@@ -35,16 +68,13 @@ export default function CommentTile() {
                 </div>
             </div>
             <h1 className={`mb-4 pl-5 pr-3 text-sm`}>
-                Because most users do not agree with the assessment that Ubuntu is
-                flawed. Don't mistake how loudly an opinion is disseminated with how
-                widely it is held. There's a lot of institutional and commercial
-                users that don't care about systemd or snap or whatever, they just
-                want a dependable system with guaranteed support.
+                {commentData.body}
             </h1>
 
             <div className={`pl-5 pr-3 flex gap-5`}>
-                <Votes count={0} />
-                <div className={`px-2 rounded-full cursor-pointer flex gap-1 items-center border-[1px] border-black hover:bg-gray-300 text-xs`}>
+                <Votes id={commentData.uid} collection={`comments`} initCount={commentData.upVoted.length - commentData.downVoted.length} />
+                <div className={`px-2 rounded-full cursor-pointer flex gap-1 items-center border-[1px] border-black hover:bg-gray-300 text-xs`}
+                onClick={() => alert("REPLY")}>
                     <div>
                         <TbMessageCircle />
                     </div>

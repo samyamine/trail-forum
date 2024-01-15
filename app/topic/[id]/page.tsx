@@ -67,10 +67,11 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         else {
             const myUserData = userData as IUser;
             const topicRef = doc(db, "topics", params.id);
+            const authorRef = doc(db, "users", myUserData.uid);
 
             const commentRef = await addDoc(collection(db, "comments"), {
                 answers: [],
-                author: doc(db, "users", myUserData.uid),
+                author: authorRef,
                 body: commentText,
                 creationDate: Date.now(),
                 topicRef,
@@ -84,6 +85,9 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             });
 
             // FIXME: Add to user comments
+            await updateDoc(authorRef, {
+                comments: arrayUnion(commentRef),
+            });
 
             // FIXME: Reload page
             console.log("YO");

@@ -10,17 +10,12 @@ import {SlOptions} from "react-icons/sl";
 import {TbFlag} from "react-icons/tb";
 import {ITopic, IUser} from "@/lib/interfaces";
 import {DocumentSnapshot, getDoc} from "@firebase/firestore";
-import {getAuthor} from "@/lib/topic/utils";
+import {formatTime, getAuthor} from "@/lib/topic/utils";
 import toast from "react-hot-toast";
 
 export default function TopicTile({ topic }: { topic: ITopic }) {
     const [author, setAuthor] = useState<IUser | null>(null);
     const [commentCount, setCommentCount] = useState(0);
-
-    const getCurrentDate = () => {
-        const now = new Date();
-        return Math.floor(now.getTime() / 1000) - topic.creationDate.seconds;
-    };
 
     useEffect(() => {
 
@@ -59,7 +54,7 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
                             <ProfilePicture />
                         </div>
                         <p className={`text-sm`}>
-                            {author.username} - <span className={`text-gray-500`}>{getCurrentDate()} ago</span>
+                            {author.username} - <span className={`text-gray-500`}>{formatTime(topic.creationDate)}</span>
                         </p>
                     </Link>
                 </object>

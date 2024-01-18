@@ -15,7 +15,7 @@ import {db} from "@/lib/firebase/config";
 import {
     addDoc, arrayRemove, arrayUnion, collection, deleteDoc,
     doc, DocumentData,
-    DocumentReference, DocumentSnapshot, getDoc,
+    DocumentReference, DocumentSnapshot, getDoc, serverTimestamp,
     updateDoc,
 } from "@firebase/firestore";
 import toast, {Toaster} from "react-hot-toast";
@@ -157,7 +157,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                 answers: [],
                 author: authorRef,
                 body: commentText,
-                creationDate: Date.now(),
+                creationDate: serverTimestamp(),
                 topicRef,
                 upVoted: [],
                 downVoted: [],
@@ -218,7 +218,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 </div>
                                 <p className={`text-sm font-bold`}>
                                     {topicData.author.username} - <span className={`font-normal text-gray-500`}>
-                                    {formatTime(topicData.topic.creationDate.seconds)}
+                                    {formatTime(topicData.topic.creationDate)}
                                 </span>
                                 </p>
                             </div>

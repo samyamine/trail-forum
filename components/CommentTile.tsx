@@ -12,7 +12,7 @@ import {
     collection,
     doc, DocumentData,
     DocumentReference, DocumentSnapshot,
-    getDoc,
+    getDoc, serverTimestamp,
     Timestamp,
     updateDoc
 } from "@firebase/firestore";
@@ -41,6 +41,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
             showPopup();
         }
         else if (isSaved()) {
+            // FIXME: CORRIGER !!! c'est moi, pas l'auteur
             const authorRef = commentData?.author as DocumentReference;
             const author = await getDoc(authorRef) as DocumentSnapshot;
             const authorData = author.data() as DocumentData;
@@ -92,19 +93,21 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
         else {
             const myUserData = userData as IUser;
             const authorRef = doc(db, "users", myUserData.uid);
+            const parentCommentRef = commentData?.parentComment ?? doc(db, "comments", String(commentData?.uid));
+
             const commentRef = await addDoc(collection(db, "comments"), {
                 answers: [],
                 author: authorRef,
                 body: reply,
-                creationDate: Date.now(),
-                parentComment: doc(db, "comments", String(commentData?.uid)),
+                creationDate: serverTimestamp(),
+                parentComment: parentCommentRef,
                 topicRef: commentData?.topicRef,
                 upVoted: [],
                 downVoted: [],
             });
 
             // DOCS: Add to parent comment
-            await updateDoc(doc(db, "comments", String(commentData?.uid)), {
+            await updateDoc(parentCommentRef, {
                 answers: arrayUnion(commentRef),
             });
 
@@ -169,7 +172,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                     <div className={`mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6 bg-red-400 rounded-full`}></div>
                         <p className={`font-bold text-sm`}>
-                            user - <span className={`font-normal text-gray-500`}>{formatTime(commentData.creationDate.seconds)}</span>
+                            user - <span className={`font-normal text-gray-500`}>{formatTime(commentData.creationDate)}</span>
                         </p>
                     </div>
 

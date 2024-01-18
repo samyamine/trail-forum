@@ -6,10 +6,8 @@ import IconTextButton from "@/components/IconTextButton";
 import TopicTile from "@/components/TopicTile";
 import Divider from "@/components/Divider";
 import CommentTile from "@/components/CommentTile";
-import {IComment, ITopic, IUser} from "@/lib/interfaces";
-import {DocumentReference} from "@firebase/firestore";
-import {getComments, getTopic} from "@/lib/topic/utils";
-import toast, {Toaster} from "react-hot-toast";
+import {IComment, ITopic} from "@/lib/interfaces";
+import {Toaster} from "react-hot-toast";
 import {isUndefined} from "@/lib/utils";
 import {isTopic} from "@/lib/types";
 

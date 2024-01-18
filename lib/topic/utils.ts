@@ -111,27 +111,27 @@ async function getCommentAnswers(answerReferences: DocumentReference[]): Promise
     return answers;
 }
 
-function formatTime(seconds: number): string {
+function formatTime(timestamp: Timestamp): string {
+    const now = Timestamp.now();
+    const elapsedSeconds = now.seconds - timestamp.seconds;
+
     const minute = 60;
     const hour = 60 * minute;
     const day = 24 * hour;
 
-    if (seconds < minute) {
-        return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
-    } else if (seconds < hour) {
-        const minutes = Math.floor(seconds / minute);
+    if (elapsedSeconds < minute) {
+        return `${elapsedSeconds} second${elapsedSeconds !== 1 ? 's' : ''} ago`;
+    } else if (elapsedSeconds < hour) {
+        const minutes = Math.floor(elapsedSeconds / minute);
         return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-    } else if (seconds < day) {
-        const hours = Math.floor(seconds / hour);
+    } else if (elapsedSeconds < day) {
+        const hours = Math.floor(elapsedSeconds / hour);
         return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
     } else {
-        const days = Math.floor(seconds / day);
+        const days = Math.floor(elapsedSeconds / day);
         return `${days} day${days !== 1 ? 's' : ''} ago`;
     }
 }
-
-
-
 
 export {
     formatTime,

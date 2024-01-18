@@ -4,6 +4,7 @@ import React from "react";
 import {PopupProvider, usePopup} from "@/app/popupContext";
 import Header from "@/components/Header";
 import {AuthProvider} from "@/app/authContext";
+import {Toaster} from "react-hot-toast";
 
 export const metadata: Metadata = {
     title: 'Trail Forum',
@@ -16,11 +17,11 @@ export default function RootLayout({children}: { children: React.ReactNode} )  {
             <PopupProvider>
                 <html lang={`en`}>
                 <body className={`flex flex-col min-h-screen`}>
-                className={`bg-[#0B1416]`}
-
+                {/*className={`bg-[#0B1416]`}*/}
+                <Toaster />
                 <Header />
 
-                <main className={`mt-10 flex-grow`}>
+                <main className={`mt-16 flex-grow`}>
                     {children}
                 </main>
 

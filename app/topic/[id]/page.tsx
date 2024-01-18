@@ -7,21 +7,21 @@ import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import React, {useEffect, useState} from "react";
 import Divider from "@/components/Divider";
 import CommentTile from "@/components/CommentTile";
-import {TbFlag, TbMessageCircle2Filled} from "react-icons/tb";
+import {TbBookmark, TbBookmarkFilled, TbFlag, TbMessageCircle2Filled, TbTrash} from "react-icons/tb";
 import TopicCategory from "@/components/TopicCategory";
 import {usePopup} from "@/app/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {db} from "@/lib/firebase/config";
 import {
-    addDoc, arrayUnion, collection,
-    doc,
-    DocumentData, DocumentReference,
-    getDoc, setDoc, Timestamp, updateDoc,
+    addDoc, arrayRemove, arrayUnion, collection, deleteDoc,
+    doc, DocumentData,
+    DocumentReference, DocumentSnapshot, getDoc,
+    updateDoc,
 } from "@firebase/firestore";
-import toast from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 import {useAuth} from "@/app/authContext";
 import {IComment, ITopic, IUser} from "@/lib/interfaces";
-import {getAuthor, getCommentAnswers, getTopic, getTopicComments} from "@/lib/topic/utils";
+import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
 
 const COMMENT_MAX_LENGTH = 500;
@@ -41,7 +41,36 @@ export default function TopicPage({ params }: { params: { id: string }}) {
     const [commentTooLong, setCommentTooLong] = useState(false);
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [showReportOption, setShowReportOption] = useState(false);
-    const [data, setData] = useState<IData | null>(null);
+    const [topicData, setTopicData] = useState<IData | null>(null);
+
+    const deleteTopic = async () => {
+        // FIXME
+        // delete the topic
+        // delete saved
+        // delete topic reference in user
+        // delete all comments and sub-comments related to this topic
+        // delete all references to comments and sub-comments
+        // delete all up/down votes
+
+        for (const comment of topicData?.comments as IComment[]) {
+            for (const answer of comment.answers) {
+                await deleteComment(answer);
+            }
+
+            await deleteDoc(doc(db,"comments", comment.uid));
+        }
+
+
+    };
+
+    const deleteComment = async (comment: DocumentReference) => {
+        // FIXME
+
+    };
+
+    const deleteVote = async () => {
+        // FIXME
+    };
 
     const setNewComment = (text: string) => {
         if (text.length <= COMMENT_MAX_LENGTH) {
@@ -56,13 +85,68 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         }
     };
 
+    const toggleSave = async () => {
+        if (isUndefined(userData)) {
+            showPopup();
+        }
+        else if (isSaved()) {
+            const authorRef = doc(db, "users", String(userData?.uid));
+
+            for (const ref of userData?.saved as DocumentReference[]) {
+                if (ref.id === params.id) {
+                    await updateDoc(authorRef, {
+                        saved: arrayRemove(ref),
+                    });
+
+                    return;
+                }
+            }
+        }
+        else {
+            const authorRef = doc(db, "users", String(userData?.uid));
+
+            await updateDoc(authorRef, {
+                saved: arrayUnion(doc(db, "topics", String(params.id))),
+            });
+
+            toast.success("Comment saved on your profile");
+        }
+    };
+
+    const isMyTopic = (): boolean => {
+        if (isUndefined(userData)) {
+            return false;
+        }
+
+        for (const topic of userData?.topics as ITopic[]) {
+            if (topic.uid === params.id) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    const isSaved = (): boolean => {
+        if (!isUndefined(userData)) {
+            const saved = userData?.saved as (IComment | ITopic)[];
+
+            for (const element of saved) {
+                if (element.uid === params.id) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
     const postComment = async () => {
-        // FIXME
         if (isUndefined(userData)) {
             showPopup();
         }
         else if (commentText.length === 0) {
-            throw new Error("Comment is too long");
+            toast.error("Comment is too short");
         }
         else {
             const myUserData = userData as IUser;
@@ -96,24 +180,11 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         }
     };
 
-    const sentUpVote = async () => {
-        // FIXME
-        if (typeof userData === "undefined") {
-            showPopup();
-        }
-
-        // Check if
-    };
-
-    const sendDownVote = async () => {
-        // FIXME
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             const topicData = await getTopic(params.id);
             const authorData = await getAuthor(topicData.author);
-            const commentsData = await getTopicComments(topicData.comments);
+            const commentsData = await getComments(topicData.comments);
 
             let commentsNumber = 0;
 
@@ -121,7 +192,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                 commentsNumber += comment.answers.length + 1;
             }
 
-            setData({ topic: topicData, author: authorData, comments: commentsData, commentsNumber});
+            setTopicData({ topic: topicData, author: authorData, comments: commentsData, commentsNumber});
         };
 
         fetchData().catch((error) => toast.error(error.message));
@@ -129,12 +200,14 @@ export default function TopicPage({ params }: { params: { id: string }}) {
 
     return (
         <>
+            <Toaster />
+
             {/*Signin popup*/}
             {isPopupVisible && (
                 <AuthPopup />
             )}
 
-            {data !== null ? (
+            {topicData !== null ? (
                 <div className={`p-5`}>
                     {/*topic*/}
                     <div className={`mb-4 flex flex-col gap-2`}>
@@ -144,7 +217,9 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                     {/*IMAGE*/}
                                 </div>
                                 <p className={`text-sm font-bold`}>
-                                    {data.author.username} - <span className={`font-normal text-gray-500`}>1h ago</span>
+                                    {topicData.author.username} - <span className={`font-normal text-gray-500`}>
+                                    {formatTime(topicData.topic.creationDate.seconds)}
+                                </span>
                                 </p>
                             </div>
 
@@ -152,36 +227,69 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                  onClick={() => setShowReportOption(!showReportOption)}>
                                 <FaEllipsis />
 
-                                <div className={`${!showReportOption && "hidden"} px-5 py-3 absolute top-10 right-0 bg-white shadow-md
-                                flex items-center gap-2 border-[1px] border-black hover:bg-gray-200 active:bg-gray-200`}
-                                onClick={() => toast.success("We have received your report notification")}>
-                                    <TbFlag />
-                                    {/*FIXME*/}
-                                    <p className={`text-sm`}>
-                                        Report
-                                    </p>
-                                </div>
+                                {showReportOption && (
+                                    <div className={`absolute top-10 right-0 bg-white shadow-md border-[1px] border-black`}>
+                                        <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
+                                        onClick={() => toggleSave().catch((error) => console.log(error.message))}>
+                                            {isSaved() ? (
+                                                <>
+                                                    <TbBookmarkFilled />
+                                                    <p className={`text-sm`}>
+                                                        Remove
+                                                    </p>
+                                                </>
+                                            ): (
+                                                <>
+                                                    <TbBookmark />
+                                                    <p className={`text-sm`}>
+                                                        Save
+                                                    </p>
+                                                </>
+                                            )}
+                                        </div>
+
+                                        {isMyTopic() && (
+                                            // FIXME
+                                            <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
+                                                 onClick={() => alert("DELETE")}>
+                                                <TbTrash />
+                                                <p className={`text-sm`}>
+                                                    Delete
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className={`px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
+                                             onClick={() => toast.success("We have received your report notification")}>
+                                            <TbFlag />
+                                            {/*FIXME*/}
+                                            <p className={`text-sm`}>
+                                                Report
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         <h2 className={`text-lg font-bold`}>
-                            {data.topic.title}
+                            {topicData.topic.title}
                         </h2>
 
-                        <TopicCategory text={data.topic.category} />
+                        <TopicCategory text={topicData.topic.category} />
 
                         <p className={`text-sm`}>
-                            {data.topic.body}
+                            {topicData.topic.body}
                         </p>
                     </div>
 
                     {/*Social engagement*/}
                     <div className={`mb-4 flex gap-5`}>
-                        <Votes initCount={data.topic.upVoted.length - data.topic.downVoted.length}
-                               id={data.topic.uid} collection={"topics"} />
+                        <Votes initCount={topicData.topic.upVoted.length - topicData.topic.downVoted.length}
+                               id={topicData.topic.uid} collection={"topics"} />
                         <div className={`flex items-center gap-2 text-xs font-bold text-gray-400`}>
                             <TbMessageCircle2Filled />
-                            <p>{data.commentsNumber} Comments</p>
+                            <p>{topicData.commentsNumber} Comments</p>
                         </div>
                         <Share />
                     </div>
@@ -197,6 +305,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
 
                         <div className={`w-full flex justify-between items-center`}>
                             {/*Sorting*/}
+                            {/*FIXME*/}
                             <div className={`flex items-center`}>
                                 <p className={`text-sm`}>Sort by: </p>
                                 <div className={`relative text-sm cursor-pointer`} onClick={() => setShowSortOptions(!showSortOptions)}>
@@ -227,7 +336,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
 
                     {/*Comments*/}
                     <Divider />
-                    {data.comments.map((comment, index) => (
+                    {topicData.comments.map((comment, index) => (
                         <div key={index} className={`flex flex-col`}>
                             <CommentTile comment={comment} />
 
@@ -245,7 +354,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                     ))}
                 </div>
             ) : (
-                <div className={`w-full h-full flex flex-grow justify-center items-center`}>
+                <div className={`w-full h-full mt-10 flex flex-grow justify-center items-center`}>
                     Loading...
                 </div>
             )}

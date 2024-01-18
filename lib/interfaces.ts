@@ -30,10 +30,11 @@ interface ITopic {
 
 interface IUser {
     uid: string,
-    comments: DocumentReference[],
+    comments: IComment[],
     downVotedComments: DocumentReference[],
     downVotedTopics: DocumentReference[],
-    topics: DocumentReference[],
+    saved: (ITopic | IComment)[],
+    topics: ITopic[],
     upVotedComments: DocumentReference[],
     upVotedTopics: DocumentReference[],
     username: string,

@@ -12,7 +12,7 @@ import ProfilePicture from "@/components/ProfilePicture";
 import IconTextButton from "@/components/IconTextButton";
 import {doc, DocumentData, getDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
-import {getAuthor, getTopic, getTopicComments} from "@/lib/topic/utils";
+import {getAuthor, getTopic, getComments} from "@/lib/topic/utils";
 import toast from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
 
@@ -167,7 +167,7 @@ export default function HomePage() {
             {/*Last News*/}
         </>
     ) : (
-        <div>
+        <div className={`mt-3`}>
             Loading...
         </div>
     );

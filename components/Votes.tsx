@@ -40,9 +40,6 @@ export default function Votes({ initCount, collection, id }: { initCount: number
         }
     }, []);
 
-    console.log("VOTES");
-    console.log(votes);
-
     const onUpVote = async () => {
         // FIXME
 

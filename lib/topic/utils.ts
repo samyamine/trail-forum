@@ -34,27 +34,52 @@ async function getTopic(uid: string): Promise<ITopic> {
     };
 }
 
-async function getTopicComments(commentReferences: DocumentReference[]): Promise<IComment[]> {
+async function getSaved(savedReferences: DocumentReference[]): Promise<(ITopic | IComment)[]> {
+    const saved: (ITopic | IComment)[] = [];
+
+    for (const ref of savedReferences) {
+        if (ref.path.includes("comment")) {
+            const comment = await getComment(ref);
+
+            saved.push(comment);
+        }
+        else {
+            const topic = await getTopic(ref.id);
+
+            saved.push(topic);
+        }
+    }
+
+    return saved;
+}
+
+async function getComment(commentReference: DocumentReference): Promise<IComment> {
+    const commentSnapshot = await getDoc(commentReference);
+
+    if (!commentSnapshot.exists() || typeof commentSnapshot.data() === "undefined") {
+        throw new Error("Comment does not exist");
+    }
+
+    return {
+        uid: commentSnapshot.id,
+        answers: commentSnapshot.data().answers,
+        author: commentSnapshot.data().author,
+        body: commentSnapshot.data().body,
+        creationDate: commentSnapshot.data().creationDate,
+        parentComment: commentSnapshot.data().parentComment,
+        topicRef: commentSnapshot.data().topicRef,
+        upVoted: commentSnapshot.data().upVoted,
+        downVoted: commentSnapshot.data().downVoted,
+    };
+}
+
+async function getComments(commentReferences: DocumentReference[]): Promise<IComment[]> {
     const comments: IComment[] = [];
 
     for (const reference of commentReferences) {
-        const commentSnapshot = await getDoc(reference);
+        const comment = await getComment(reference);
 
-        if (!commentSnapshot.exists() || typeof commentSnapshot.data() === "undefined") {
-            throw new Error("Comment does not exist");
-        }
-
-        comments.push({
-            uid: commentSnapshot.id,
-            answers: commentSnapshot.data().answers,
-            author: commentSnapshot.data().author,
-            body: commentSnapshot.data().body,
-            creationDate: commentSnapshot.data().creationDate,
-            parentComment: commentSnapshot.data().parentComment,
-            topicRef: commentSnapshot.data().topicRef,
-            upVoted: commentSnapshot.data().upVoted,
-            downVoted: commentSnapshot.data().downVoted,
-        });
+        comments.push(comment);
     }
 
     return comments;
@@ -86,9 +111,33 @@ async function getCommentAnswers(answerReferences: DocumentReference[]): Promise
     return answers;
 }
 
+function formatTime(seconds: number): string {
+    const minute = 60;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+
+    if (seconds < minute) {
+        return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+    } else if (seconds < hour) {
+        const minutes = Math.floor(seconds / minute);
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    } else if (seconds < day) {
+        const hours = Math.floor(seconds / hour);
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    } else {
+        const days = Math.floor(seconds / day);
+        return `${days} day${days !== 1 ? 's' : ''} ago`;
+    }
+}
+
+
+
+
 export {
+    formatTime,
     getAuthor,
     getTopic,
-    getTopicComments,
+    getComments,
     getCommentAnswers,
+    getSaved,
 }

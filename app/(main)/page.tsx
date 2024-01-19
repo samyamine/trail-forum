@@ -13,11 +13,12 @@ import IconTextButton from "@/components/IconTextButton";
 import {doc, DocumentData, getDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import {getAuthor, getTopic, getComments} from "@/lib/topic/utils";
-import toast from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
+import UsernamePopup from "@/components/UsernamePopup";
 
 export default function HomePage() {
-    const { isPopupVisible, hidePopup } = usePopup();
+    const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
 
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
@@ -50,36 +51,15 @@ export default function HomePage() {
             .catch((error) => toast.error(error.message));
     }, []);
 
-    // useEffect(() => {
-    //     const fetchAllTopicData = async () => {
-    //         const topicRef = doc(db, "topics", "JeikBzLEROcPWF5pIA7N");
-    //         const topicSnapshot = await getDoc(topicRef);
-    //
-    //         if (topicSnapshot.exists()) {
-    //             const author = await getAuthor(topicSnapshot.data().author);
-    //             const comments = await getTopicComments(topicSnapshot.data().comments);
-    //
-    //             setTopic({
-    //                 id: topicSnapshot.id,
-    //                 author: author.data() as DocumentData,
-    //                 body: topicSnapshot.data().body,
-    //                 category: topicSnapshot.data().category,
-    //                 comments,
-    //                 creationDate: topicSnapshot.data().creationDate,
-    //                 title: topicSnapshot.data().title,
-    //                 votes: topicSnapshot.data().votes,
-    //             });
-    //         }
-    //     };
-    //
-    //     fetchAllTopicData().catch((error) => toast.error(error.message));
-    // }, []);
-
     return topic !== null ? (
         <>
             {/*Signin popup*/}
             {isPopupVisible && (
                 <AuthPopup />
+            )}
+
+            {isUsernamePopupVisible && (
+                <UsernamePopup />
             )}
 
             <div className={`w-full overflow-y-auto`}>

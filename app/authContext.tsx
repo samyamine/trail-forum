@@ -2,9 +2,9 @@
 
 import React, {createContext, FC, ReactNode, useContext, useEffect, useState} from "react";
 import {
-    createUserWithEmailAndPassword,
+    createUserWithEmailAndPassword, GoogleAuthProvider,
     onAuthStateChanged,
-    signInWithEmailAndPassword,
+    signInWithEmailAndPassword, signInWithPopup,
     signOut,
     User
 } from "@firebase/auth";
@@ -26,11 +26,12 @@ import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
 
 
 interface IAuthContextProps {
-    user: User | null;
-    userData: IUser | undefined;
-    signInWithEmail: (email: string, password: string) => Promise<void>;
-    signUpWithEmail: (email: string, password: string, username: string) => Promise<void>;
-    logOut: () => Promise<void>;
+    user: User | null,
+    userData: IUser | undefined,
+    signInWithEmail: (email: string, password: string) => Promise<void>,
+    signUpWithEmail: (email: string, password: string, username: string) => Promise<void>,
+    googleSignIn: () => Promise<boolean>,
+    logOut: () => Promise<void>,
 }
 
 interface IAuthProviderProps {
@@ -61,11 +62,6 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                     const topic = await getTopic(ref.id);
                     topics.push(topic);
                 }
-
-                console.log("COMMENTS & TOPICS & SAVED");
-                console.log(comments);
-                console.log(topics);
-                console.log(saved);
 
                 const newUserData: IUser = {
                     uid: doc.id,
@@ -146,13 +142,60 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const signUpWithEmail = async (email: string, password: string, username: string) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
+        // FIXME
         await setDoc(doc(db, "users", userCredential.user.uid), {username});
     };
 
     const logOut = async () => signOut(auth);
 
+    const googleSignIn = async (): Promise<boolean> => {
+        console.log("googleSignIn")
+        const provider = new GoogleAuthProvider();
+        const userCredential = await signInWithPopup(auth, provider);
+        const docRef = doc(db, "users", userCredential.user.uid);
+        const docSnapshot = await getDoc(docRef);
+
+        if (!docSnapshot.exists()) {
+            console.log("AUTH HEY");
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                answers: [],
+                comments: [],
+                downVotedComments: [],
+                downVotedTopics: [],
+                saved: [],
+                topics: [],
+                upVotedComments: [],
+                upVotedTopics: [],
+                // FIXME
+                username: "funny-generated-username",
+            });
+
+            return true;
+        }
+
+        await getUserData(userCredential.user.uid);
+
+        return false;
+    };
+
+    // const addUserToDatabase = async (username: string) => {
+    //     // FIXME
+    //     await setDoc(doc(db, "users", userCredential.user.uid), {
+    //         answers: [],
+    //         comments: [],
+    //         downVotedComments: [],
+    //         downVotedTopics: [],
+    //         saved: [],
+    //         topics: [],
+    //         upVotedComments: [],
+    //         upVotedTopics: [],
+    //         // FIXME: get username
+    //         username: userCredential.user.
+    //     });
+    // };
+
     return (
-        <AuthContext.Provider value={{ user, userData, signInWithEmail, signUpWithEmail, logOut }}>
+        <AuthContext.Provider value={{ user, userData, signInWithEmail, signUpWithEmail, googleSignIn, logOut }}>
             {children}
         </AuthContext.Provider>
     );

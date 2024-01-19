@@ -22,6 +22,8 @@ import {db} from "@/lib/firebase/config";
 import {useAuth} from "@/app/authContext";
 import {usePopup} from "@/app/popupContext";
 import {formatTime} from "@/lib/topic/utils";
+import Link from "next/link";
+import ProfilePicture from "@/components/ProfilePicture";
 
 const REPLY_MAX_LENGTH = 500;
 
@@ -169,12 +171,12 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
             <Toaster />
             <div className={`w-full py-3 text-gray-900`}>
                 <div className={`flex justify-between items-center`}>
-                    <div className={`mb-2 flex items-center gap-2`}>
+                    <Link href={`/profile/${commentData.author.id}`} className={`mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6 bg-red-400 rounded-full`}></div>
                         <p className={`font-bold text-sm`}>
                             user - <span className={`font-normal text-gray-500`}>{formatTime(commentData.creationDate)}</span>
                         </p>
-                    </div>
+                    </Link>
 
                     <div className={`${showReportOption && "bg-gray-200"} w-fit h-fit p-2 rounded-full relative hover:bg-gray-200 
                 cursor-pointer`} onClick={() => setReportOption(!showReportOption)}>

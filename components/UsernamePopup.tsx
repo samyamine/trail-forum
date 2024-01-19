@@ -28,7 +28,8 @@ export default function UsernamePopup() {
 
             <div className={`w-full md:w-[400px] mb-10 flex flex-col items-center gap-1`}>
                 <input type={`text`} className={`w-1/2 px-4 py-2 bg-gray-100 rounded-lg
-                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Username`}/>
+                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Username`}
+                onChange={(event) => setUsername(event.target.value)} value={username}/>
             </div>
 
             <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer`}

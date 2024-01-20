@@ -1,5 +1,6 @@
 import React from "react";
 import {ETopicType} from "@/lib/enums";
+import {IDict} from "@/lib/interfaces";
 
 export default function TopicCategory({ text }: { text: string }) {
     const topicTypeColor: IDict = {

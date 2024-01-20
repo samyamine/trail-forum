@@ -11,8 +11,10 @@ import {useAuth} from "@/app/authContext";
 import {GoSignOut} from "react-icons/go";
 import {signOut} from "@firebase/auth";
 import {auth} from "@/lib/firebase/config";
+import {useRouter} from "next/navigation";
 
 export default function Header() {
+    const router = useRouter();
     const { showPopup } = usePopup();
     const { user, userData, logOut } = useAuth();
 
@@ -23,6 +25,12 @@ export default function Header() {
     const showSearchRef = useRef(showSearch);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const disabledSearchRef = useRef<HTMLInputElement | null>(null);
+
+    const handleLogOut = async () => {
+        await logOut();
+        router.push("/");
+        // window.location.reload();
+    };
 
     useEffect(() => {
         showSearchRef.current = showSearch;
@@ -45,7 +53,7 @@ export default function Header() {
                 </Link>
             </div>
 
-            <div className={`max-md:hidden w-1/2 h-full px-5 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
+            <div className={`max-md:hidden w-1/2 h-full px-5 ml-2 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
                 <FaMagnifyingGlass />
                 <p>Search</p>
             </div>
@@ -89,7 +97,7 @@ export default function Header() {
                                 </Link>
 
                                 <div className={`px-3 py-2 flex gap-3 items-center text-red-400 hover:bg-red-200 active:bg-red-200`}
-                                onClick={() => logOut()}>
+                                onClick={handleLogOut}>
                                     <GoSignOut />
                                     <p>
                                         Logout

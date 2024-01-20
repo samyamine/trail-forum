@@ -1,17 +1,34 @@
-import {Toaster} from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 import React, {useState} from "react";
 import {useAuth} from "@/app/authContext";
 import {usePopup} from "@/app/popupContext";
+import {isUsernameAvailable} from "@/lib/utils";
+import {doc, updateDoc} from "@firebase/firestore";
+import {db} from "@/lib/firebase/config";
 
 export default function UsernamePopup() {
     const {user, userData} = useAuth();
     const {hideUsernamePopup} = usePopup();
 
-    const [username, setUsername] = useState(userData?.username);
+    const [username, setUsername] = useState(String(userData?.username));
     const [charging, setCharging] = useState(false);
 
     const publishUsername = async () => {
-        // FIXME
+        setCharging(true);
+
+        if (!(await isUsernameAvailable(username))) {
+            toast.error("Username not available");
+            setCharging(false);
+        }
+        else {
+            await updateDoc(doc(db, "users", String(userData?.uid)), {
+                username,
+            });
+
+            setCharging(false);
+            toast.success("You are now logged in");
+            hideUsernamePopup();
+        }
     };
 
     return (
@@ -33,7 +50,7 @@ export default function UsernamePopup() {
             </div>
 
             <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer`}
-                 onClick={() => alert("FIXME")}>
+                 onClick={publishUsername}>
                 {charging ? "Loading..." : "Finish"}
             </div>
         </div>

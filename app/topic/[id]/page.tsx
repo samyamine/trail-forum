@@ -23,6 +23,7 @@ import {useAuth} from "@/app/authContext";
 import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
+import UsernamePopup from "@/components/UsernamePopup";
 
 const COMMENT_MAX_LENGTH = 500;
 
@@ -34,7 +35,7 @@ interface IData {
 }
 
 export default function TopicPage({ params }: { params: { id: string }}) {
-    const {isPopupVisible, showPopup} = usePopup();
+    const {isPopupVisible, isUsernamePopupVisible, showPopup} = usePopup();
     const {userData} = useAuth();
 
     const [commentText, setCommentText] = useState("");
@@ -205,6 +206,11 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             {/*Signin popup*/}
             {isPopupVisible && (
                 <AuthPopup />
+            )}
+
+            {/*Create username popup*/}
+            {isUsernamePopupVisible && (
+                <UsernamePopup />
             )}
 
             {topicData !== null ? (

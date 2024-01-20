@@ -36,6 +36,7 @@ export default function SignInPopup({ onClickCallback }: {onClickCallback:  Reac
             }
             else {
                 hidePopup();
+                toast.success("You are now logged in");
             }
         } catch (error: any) {
             toast.error(error.message);

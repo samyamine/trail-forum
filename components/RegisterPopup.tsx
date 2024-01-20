@@ -11,10 +11,27 @@ import {auth, db} from "@/lib/firebase/config";
 import toast, {Toaster} from "react-hot-toast";
 import {useAuth} from "@/app/authContext";
 import {usePopup} from "@/app/popupContext";
+import {isUsernameAvailable} from "@/lib/utils";
 
 export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>}) {
-    const {user, signUpWithEmail} = useAuth();
-    const {hidePopup} = usePopup();
+    const {user, signUpWithEmail, googleSignIn} = useAuth();
+    const {hidePopup, showUsernamePopup} = usePopup();
+
+    const handleSignInGoogle = async () => {
+        try {
+            const firstTimeSignIn = await googleSignIn();
+            if (firstTimeSignIn) {
+                hidePopup();
+                showUsernamePopup();
+            }
+            else {
+                hidePopup();
+                toast.success("You are now logged in");
+            }
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const usernameRegex = /^[a-zA-Z0-9_-]{4,}$/;
@@ -47,7 +64,8 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
                 </h2>
 
                 <div className={`w-1/2 md:w-[400px] px-5 py-2 rounded-lg border-[1px] border-black flex 
-                    justify-center items-center gap-5 cursor-pointer text-xl`}>
+                    justify-center items-center gap-5 cursor-pointer text-xl`}
+                onClick={handleSignInGoogle}>
                     <FcGoogle />
 
                     <p className={`text-base`}>
@@ -111,14 +129,6 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
         )
     ];
 
-    const isUsernameAvailable = async (): Promise<boolean> => {
-        const usersRef = collection(db, "users");
-        const usernameQuery = query(usersRef, where("username", "==", username));
-
-        const querySnapshot = await getDocs(usernameQuery);
-        return querySnapshot.empty;
-    };
-
     const buttonClickCallback = async () => {
         if (index === 2) {
             setCharging(true);
@@ -126,7 +136,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
             if (errorCheckers[index]()) {
                 toast.error(errorMessages[index]);
             }
-            else if (!(await isUsernameAvailable())) {
+            else if (!(await isUsernameAvailable(username))) {
                 toast.error("Username not available");
             }
             else {

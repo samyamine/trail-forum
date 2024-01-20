@@ -12,7 +12,6 @@ import {auth, db} from "@/lib/firebase/config";
 import {
     doc,
     DocumentData,
-    DocumentReference,
     DocumentSnapshot,
     getDoc,
     onSnapshot,
@@ -73,6 +72,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                     upVotedTopics: data.upVotedTopics,
                     username: data.username,
                     saved,
+                    followers: data.followers,
+                    following: data.following,
                 };
 
                 setUserData(newUserData);
@@ -123,6 +124,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 upVotedTopics: data.upVotedTopics,
                 username: data.username,
                 saved: data.saved,
+                followers: data.followers,
+                following: data.following,
             };
 
             setUserData(newUserData);
@@ -142,8 +145,19 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const signUpWithEmail = async (email: string, password: string, username: string) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // FIXME
-        await setDoc(doc(db, "users", userCredential.user.uid), {username});
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+            answers: [],
+            comments: [],
+            downVotedComments: [],
+            downVotedTopics: [],
+            saved: [],
+            topics: [],
+            upVotedComments: [],
+            upVotedTopics: [],
+            username,
+            followers: [],
+            following: [],
+        });
     };
 
     const logOut = async () => signOut(auth);
@@ -168,6 +182,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 upVotedTopics: [],
                 // FIXME
                 username: "funny-generated-username",
+                followers: [],
+                following: [],
             });
 
             return true;
@@ -177,22 +193,6 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
 
         return false;
     };
-
-    // const addUserToDatabase = async (username: string) => {
-    //     // FIXME
-    //     await setDoc(doc(db, "users", userCredential.user.uid), {
-    //         answers: [],
-    //         comments: [],
-    //         downVotedComments: [],
-    //         downVotedTopics: [],
-    //         saved: [],
-    //         topics: [],
-    //         upVotedComments: [],
-    //         upVotedTopics: [],
-    //         // FIXME: get username
-    //         username: userCredential.user.
-    //     });
-    // };
 
     return (
         <AuthContext.Provider value={{ user, userData, signInWithEmail, signUpWithEmail, googleSignIn, logOut }}>

@@ -47,7 +47,7 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
             <Link href={`/topic/${topic.uid}`} className={`w-full p-3 block`}>
                 {/*FIXME*/}
                 <object>
-                    <Link href={`/profile/6iebEH70VOd8Jw8lianG2ptIVvi1`}
+                    <Link href={`/profile/bgVKtsOrYzNhMTUiJtfuY0Myqkk2`}
                           className={`w-fit mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6`}>
                             {/*FIXME*/}

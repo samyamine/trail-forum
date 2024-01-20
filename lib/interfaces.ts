@@ -38,6 +38,8 @@ interface IUser {
     upVotedComments: DocumentReference[],
     upVotedTopics: DocumentReference[],
     username: string,
+    followers: DocumentReference[],
+    following: DocumentReference[],
 }
 
 export type {

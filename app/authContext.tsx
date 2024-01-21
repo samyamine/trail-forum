@@ -22,6 +22,7 @@ import {ITopic, IUser} from "@/lib/interfaces";
 import {isUndefined} from "@/lib/utils";
 import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
 import {allGeneratedPositionsFor} from "@jridgewell/trace-mapping";
+import toast from "react-hot-toast";
 
 interface IAuthContextProps {
     user: User | null,
@@ -40,21 +41,69 @@ const AuthContext = createContext<IAuthContextProps | undefined>(undefined);
 
 export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [userData, setUserData] = useState<IUser | undefined>(undefined);
+    const [userData, setUserData] = useState<IUser>();
+    const [loading, setLoading] = useState(true);
+
+    // useEffect(() => {
+    //     console.log("USER");
+    //     console.log(user);
+    //     // setUserData(undefined);
+    //     const initData = async (doc: DocumentSnapshot) => {
+    //         console.log(`CURRENT DATA:`);
+    //         console.log(doc.data());
+    //
+    //         console.log("CURRENT USER:")
+    //         console.log(user)
+    //
+    //         if (!isUndefined(doc.data())) {
+    //             const data = doc.data() as DocumentData;
+    //             const comments = await getComments(data.comments);
+    //             const saved = await getSaved(data.saved);
+    //             const topics: ITopic[] = [];
+    //
+    //             for (const ref of data.topics) {
+    //                 const topic = await getTopic(ref.id);
+    //                 topics.push(topic);
+    //             }
+    //
+    //             const newUserData: IUser = {
+    //                 uid: doc.id,
+    //                 comments,
+    //                 downVotedComments: data.downVotedComments,
+    //                 downVotedTopics: data.downVotedTopics,
+    //                 topics,
+    //                 upVotedComments: data.upVotedComments,
+    //                 upVotedTopics: data.upVotedTopics,
+    //                 username: data.username,
+    //                 saved,
+    //                 followers: data.followers,
+    //                 following: data.following,
+    //             };
+    //
+    //             setUserData(newUserData);
+    //         }
+    //     };
+    //
+    //     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    //         console.log("ON AUTH STATE CHANGED")
+    //         console.log(currentUser)
+    //         setUser(currentUser);
+    //     });
+    //
+    //     return () => {
+    //         unsubscribe();
+    //         if (user !== null) {
+    //             onSnapshot(doc(db, "users", user.uid), (doc) => {
+    //                 initData(doc).catch((error) => console.log(error.message));
+    //             });
+    //         }
+    //     }
+    // }, [user]);
 
     useEffect(() => {
-        /* FIXME: Here I should init ALL the data since this useEffect will also be called
-         * Each time the page is manually refreshed
-         */
-
-        console.log("USER");
-        console.log(user);
-        const initData = async (doc: DocumentSnapshot) => {
-            console.log(`CURRENT DATA:`);
-            console.log(doc.data());
-
-            if (!isUndefined(doc.data())) {
-                const data = doc.data() as DocumentData;
+        const initData = async (snapshot: DocumentSnapshot) => {
+            if (!isUndefined(snapshot.data())) {
+                const data = snapshot.data() as DocumentData;
                 const comments = await getComments(data.comments);
                 const saved = await getSaved(data.saved);
                 const topics: ITopic[] = [];
@@ -65,7 +114,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 }
 
                 const newUserData: IUser = {
-                    uid: doc.id,
+                    uid: snapshot.id,
                     comments,
                     downVotedComments: data.downVotedComments,
                     downVotedTopics: data.downVotedTopics,
@@ -79,69 +128,98 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 };
 
                 setUserData(newUserData);
+                console.log(`NEW USER DATA:`);
+                console.log(newUserData);
             }
         };
 
-        let unsubscribeUserData: Unsubscribe | null = null;
+        const handleUserProfile = async (currentUser: User) => {
+            const userRef = doc(db, "users", currentUser.uid);
+            const snapshot = await getDoc(userRef);
 
-        if (user !== null) {
-            unsubscribeUserData = onSnapshot(doc(db, "users", user.uid), (doc) => {
-                initData(doc).catch((error) => console.log(error.message));
-            });
-        }
+            return snapshot.exists() ? userRef : null;
+        };
 
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            console.log("AUTH CHANGED")
+            console.log(currentUser)
+            console.log(!isUndefined(userData))
+            console.log(userData)
+            if (currentUser) {
+                const userRef = await handleUserProfile(currentUser);
+                if (userRef === null) {
+                    // FIXME: improve flow
+                    toast.error("Specified user does not exist in database");
+                    await signOut(auth);
+                    window.location.reload();
+                }
+                else {
+                    onSnapshot(userRef, (snapshot) => {
+                        console.log("SNAPSHOT");
+                        initData(snapshot).catch((error) => console.log(error.message));
+                    });
+                }
+            }
+
+            if (currentUser === null) {
+                console.log("setUserData to undefined");
+                setUserData(undefined);
+            }
+
+            console.log("setUser");
+
             setUser(currentUser);
         });
 
-        return () => {
-            unsubscribe();
-            if (unsubscribeUserData !== null) {
-                unsubscribeUserData();
-            }
-        }
-    }, [user]);
+        console.log("RETURN");
+        return () => unsubscribe();
+    }, []);
 
-    const getUserData = async (uid: string) => {
-        const docRef = doc(db, "users", uid);
-        const docSnapshot = await getDoc(docRef);
+    console.log("Outside userData");
+    console.log(userData);
 
-        if (!docSnapshot.exists()) {
-            throw new Error("The specified user does not exit anymore");
-        }
-
-        console.log("USER DATA:");
-        console.log(docSnapshot.data());
-
-        if (!isUndefined(docSnapshot.data())) {
-            const data = docSnapshot.data() as DocumentData;
-
-            const newUserData = {
-                uid: docSnapshot.id,
-                comments: data.comments,
-                downVotedComments: data.downVotedComments,
-                downVotedTopics: data.downVotedTopics,
-                topics: data.topics,
-                upVotedComments: data.upVotedComments,
-                upVotedTopics: data.upVotedTopics,
-                username: data.username,
-                saved: data.saved,
-                followers: data.followers,
-                following: data.following,
-            };
-
-            setUserData(newUserData);
-        }
-        else {
-            setUserData(undefined);
-        }
-    };
+    // const getUserData = async (uid: string) => {
+    //     const docRef = doc(db, "users", uid);
+    //     const docSnapshot = await getDoc(docRef);
+    //
+    //     if (!docSnapshot.exists()) {
+    //         throw new Error("The specified user does not exit anymore");
+    //     }
+    //
+    //     console.log("USER DATA:");
+    //     console.log(docSnapshot.data());
+    //
+    //     if (!isUndefined(docSnapshot.data())) {
+    //         const data = docSnapshot.data() as DocumentData;
+    //
+    //         const newUserData = {
+    //             uid: docSnapshot.id,
+    //             comments: data.comments,
+    //             downVotedComments: data.downVotedComments,
+    //             downVotedTopics: data.downVotedTopics,
+    //             topics: data.topics,
+    //             upVotedComments: data.upVotedComments,
+    //             upVotedTopics: data.upVotedTopics,
+    //             username: data.username,
+    //             saved: data.saved,
+    //             followers: data.followers,
+    //             following: data.following,
+    //         };
+    //
+    //         setUserData(newUserData);
+    //     }
+    //     else {
+    //         setUserData(undefined);
+    //     }
+    // };
 
     const signInWithEmail = async (email: string, password: string) => {
-        const credentials = await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
 
-        // FIXME: Retrieve database entry for user
-        await getUserData(credentials.user.uid);
+
+
+        // // FIXME: Retrieve database entry for user
+        // await getUserData(credentials.user.uid);
     };
 
     // FIXME: TEST UNDEFINED UID AFTER Signing up
@@ -173,7 +251,6 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         const docSnapshot = await getDoc(docRef);
 
         if (!docSnapshot.exists()) {
-            console.log("AUTH HEY");
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 answers: [],
                 comments: [],
@@ -189,12 +266,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 following: [],
             });
 
-            // await getUserData(userCredential.user.uid);
-
             return true;
         }
-
-        await getUserData(userCredential.user.uid);
 
         return false;
     };

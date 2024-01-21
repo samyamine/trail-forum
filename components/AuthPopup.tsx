@@ -8,8 +8,6 @@ import RegisterPopup from "@/components/RegisterPopup";
 import SignInPopup from "@/components/SignInPopup";
 import {BsArrowLeft} from "react-icons/bs";
 
-// FIXME: register flow check if username already taken
-
 export default function AuthPopup() {
     const { hidePopup } = usePopup();
     const [isRegister, setRegister] = useState(false);

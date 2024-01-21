@@ -53,11 +53,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
 
     const isFollowing = () => {
         for (const ref of profileData.followers as DocumentReference[]) {
-            console.log("HEY")
-            console.log(ref.id)
-            console.log(userData?.uid);
             if (ref.id === userData?.uid) {
-                console.log("YES");
                 return true;
             }
         }
@@ -115,8 +111,6 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
         else {
             const profileUserRef = doc(db, "users", params.id);
             const userRef = doc(db, "users", String(userData?.uid));
-            console.log("handleFollow")
-            console.log(userRef.id);
 
             await updateDoc(profileUserRef, {
                 followers: startFollowing ? arrayUnion(userRef) : arrayRemove(userRef),
@@ -125,13 +119,13 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             await updateDoc(userRef, {
                 following: startFollowing ? arrayUnion(profileUserRef) : arrayRemove(profileUserRef),
             });
+
+            // setFollowing(startFollowing);
         }
     };
 
     useEffect(() => {
         // FIXME: Init user profile
-        console.log(`profilePage ID: ${params.id}`);
-        console.log(`profilePage MY ID: ${userData?.uid}`)
         const initData = async () => {
             const profileUserRef = doc(db, "users", params.id);
             const profileUserSnapshot = await getDoc(profileUserRef);
@@ -150,6 +144,12 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                     topics.push(topic);
                 }
 
+                for (const ref of data.followers) {
+                    if (ref.id === params.id) {
+                        setFollowing(true);
+                    }
+                }
+
                 setProfileData({
                     comments,
                     followers: data.followers,
@@ -165,9 +165,6 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
 
         initData().catch((error) => toast.error(error.message));
     }, [userData]);
-
-    console.log("ProfilePage INIT");
-    console.log(userData?.uid);
 
     return (
         <>

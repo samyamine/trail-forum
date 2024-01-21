@@ -154,7 +154,6 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
         else {
             if (errorCheckers[index]()) {
                 toast.error(errorMessages[index]);
-                console.log("error");
             }
             else {
                 setIndexCallback();

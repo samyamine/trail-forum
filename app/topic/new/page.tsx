@@ -5,7 +5,7 @@ import AuthPopup from "@/components/AuthPopup";
 import {usePopup} from "@/app/popupContext";
 import {useAuth} from "@/app/authContext";
 import toast from "react-hot-toast";
-import {addDoc, collection} from "@firebase/firestore";
+import {addDoc, collection, doc, DocumentReference, serverTimestamp, Timestamp} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
@@ -62,13 +62,14 @@ export default function NewTopicPage() {
             try {
                 setCharging(true);
                 const topicRef = await addDoc(collection(db, "topics"), {
-                    author: user.uid,
+                    author: doc(db, "users", user.uid),
                     body,
                     category: selectedCategory,
-                    comments: 0,
-                    creationDate: Date.now(),
+                    comments: [],
+                    creationDate: serverTimestamp(),
                     title: subject,
-                    votes: 0,
+                    upVoted: [],
+                    downVoted: [],
                 });
 
                 setCharging(false);

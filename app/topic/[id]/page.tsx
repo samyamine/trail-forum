@@ -46,26 +46,6 @@ export default function TopicPage({ params }: { params: { id: string }}) {
     const [showReportOption, setShowReportOption] = useState(false);
     const [topicData, setTopicData] = useState<IData | null>(null);
 
-    const deleteTopic = async () => {
-        // FIXME
-        // delete the topic
-        // delete saved
-        // delete topic reference in user
-        // delete all comments and sub-comments related to this topic
-        // delete all references to comments and sub-comments
-        // delete all up/down votes
-
-        for (const comment of topicData?.comments as IComment[]) {
-            for (const answer of comment.answers) {
-                await deleteComment(answer);
-            }
-
-            await deleteDoc(doc(db,"comments", comment.uid));
-        }
-
-
-    };
-
     const deleteComment = async (comment: DocumentReference) => {
         // FIXME
 
@@ -176,7 +156,6 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                 comments: arrayUnion(commentRef),
             });
 
-            // FIXME: Reload page
             window.location.reload();
         }
     };
@@ -186,6 +165,13 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             const topicData = await getTopic(params.id);
             const authorData = await getAuthor(topicData.author);
             const commentsData = await getComments(topicData.comments);
+
+            console.log("topicData");
+            console.log(topicData)
+            console.log("authorData");
+            console.log(authorData)
+            console.log("commentsData");
+            console.log(commentsData)
 
             let commentsNumber = 0;
 
@@ -197,7 +183,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         };
 
         fetchData().catch((error) => toast.error(error.message));
-    }, [userData]);
+    }, []);
 
     return (
         <>
@@ -223,7 +209,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                     {/*FIXME: IMAGE*/}
                                 </div>
                                 {/*FIXME*/}
-                                <Link href={`/profile/bgVKtsOrYzNhMTUiJtfuY0Myqkk2`}
+                                <Link href={`/profile/${topicData.author.uid}`}
                                 className={`w-fit mb-2 flex items-center gap-2`}>
                                     <p className={`text-sm font-bold`}>
                                         {topicData.author.username} - <span className={`font-normal text-gray-500`}>

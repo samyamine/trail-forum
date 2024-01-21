@@ -24,6 +24,7 @@ export default function SignInPopup({ onClickCallback }: {onClickCallback:  Reac
             hidePopup();
         } catch (error: any) {
             toast.error(error.message);
+            setCharging(false);
         }
     };
 

@@ -48,16 +48,10 @@ export default function HomePage() {
     };
 
     useEffect(() => {
-        console.log("My ID HomePage");
-        console.log(userData?.uid);
-
         getTopic("JeikBzLEROcPWF5pIA7N")
             .then((topicData) => setTopic(topicData))
             .catch((error) => toast.error(error.message));
     }, []);
-
-    console.log("HomePage INIT");
-    console.log(userData);
 
     return topic !== null ? (
         <>

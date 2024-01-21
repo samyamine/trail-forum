@@ -33,17 +33,11 @@ export default function Header() {
     };
 
     useEffect(() => {
-        console.log("HEADER useEffect");
-        console.log(user);
-
         showSearchRef.current = showSearch;
         if (showSearch && inputRef.current !== null) {
             inputRef.current.focus();
         }
     }, [showSearch]);
-
-    console.log("HEADER init");
-    console.log(user);
 
     return (
         <header className={`fixed top-0 z-10 w-full h-16 px-5 py-3 bg-white border-b-[1px] border-b-gray-200 flex justify-between items-center`}>
@@ -95,7 +89,7 @@ export default function Header() {
                             <div className={`min-w-max absolute top-12 right-0 shadow-md bg-white
                             border-[1px] border-black text-xs`}>
                                 {/*FIXME*/}
-                                <Link href={`/profile/bgVKtsOrYzNhMTUiJtfuY0Myqkk2`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
+                                <Link href={`/profile/${user.uid}`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
                                     <FaRegUser />
                                     <p>
                                         Profile

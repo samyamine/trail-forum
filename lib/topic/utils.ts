@@ -9,11 +9,39 @@ async function getAuthor(authorReference: DocumentReference): Promise<IUser> {
         throw new Error("Author does not exist");
     }
 
-    return authorSnapshot.data() as IUser;
+    const data = authorSnapshot.data();
+    const comments = await getComments(data.comments);
+    const downVotedComments = data.downVotedComments;
+    const downVotedTopics = data.downVotedTopics;
+    const saved = await getSaved(data.saved);
+    const upVotedComments = data.upVotedComments;
+    const upVotedTopics = data.upVotedTopics;
+    const username = data.username;
+    const followers = data.followers;
+    const following = data.following;
+    const topics: ITopic[] = [];
+
+    for (const ref of data.topics) {
+        const topic = await getTopic(ref.id);
+        topics.push(topic);
+    }
+
+    return {
+        uid: authorReference.id,
+        comments,
+        downVotedComments,
+        downVotedTopics,
+        saved,
+        topics,
+        upVotedComments,
+        upVotedTopics,
+        username,
+        followers,
+        following,
+    }
 }
 
 async function getTopic(uid: string): Promise<ITopic> {
-    console.log(`UID: ${uid}`);
     const topicRef = doc(db, "topics", uid);
     const topicSnapshot = await getDoc(topicRef);
 

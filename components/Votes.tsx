@@ -17,6 +17,7 @@ export default function Votes({ initCount, collection, id }: { initCount: number
     const [count, setCount] = useState(initCount);
 
     useEffect(() => {
+        setVotes({up: false, down: false});
         if (!isUndefined(userData)) {
             const upVotedTopics = userData?.upVotedTopics as DocumentReference[];
             const upVotedComments = userData?.upVotedComments as DocumentReference[];
@@ -38,11 +39,9 @@ export default function Votes({ initCount, collection, id }: { initCount: number
                 }
             }
         }
-    }, []);
+    }, [userData]);
 
     const onUpVote = async () => {
-        // FIXME
-
         if (isUndefined(userData)) {
             showPopup();
         }
@@ -114,7 +113,6 @@ export default function Votes({ initCount, collection, id }: { initCount: number
     };
 
     const onDownVote = async () => {
-        // FIXME
         if (isUndefined(userData)) {
             showPopup();
         }

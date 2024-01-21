@@ -46,7 +46,35 @@ export default function Votes({ initCount, collection, id }: { initCount: number
         if (isUndefined(userData)) {
             showPopup();
         }
-        else if (!votes.up) {
+        else if (votes.up) {
+            const userUID = String(userData?.uid);
+
+            const userRef = doc(db, "users", userUID);
+            const docRef = doc(db, collection, id);
+
+            await updateDoc(docRef, {
+                upVoted: arrayRemove(userRef),
+            });
+
+            switch (collection) {
+                case "comments":
+                    await updateDoc(userRef, {
+                        upVotedComments: arrayRemove(docRef),
+                    });
+                    break;
+                case "topics":
+                    await updateDoc(userRef, {
+                        upVotedTopics: arrayRemove(docRef),
+                    });
+                    break;
+                default:
+                    throw new Error(`Unknown collection ${collection}`);
+            }
+
+            setCount(count - 1);
+            setVotes({ up: false, down: false });
+        }
+        else {
             const userUID = String(userData?.uid);
 
             const userRef = doc(db, "users", userUID);
@@ -90,7 +118,35 @@ export default function Votes({ initCount, collection, id }: { initCount: number
         if (isUndefined(userData)) {
             showPopup();
         }
-        else if (!votes.down) {
+        else if (votes.down) {
+            const userUID = String(userData?.uid);
+
+            const userRef = doc(db, "users", userUID);
+            const docRef = doc(db, collection, id);
+
+            await updateDoc(docRef, {
+                downVoted: arrayRemove(userRef),
+            });
+
+            switch (collection) {
+                case "comments":
+                    await updateDoc(userRef, {
+                        downVotedComments: arrayRemove(docRef),
+                    });
+                    break;
+                case "topics":
+                    await updateDoc(userRef, {
+                        downVotedTopics: arrayRemove(docRef),
+                    });
+                    break;
+                default:
+                    throw new Error(`Unknown collection ${collection}`);
+            }
+
+            setCount(count + 1);
+            setVotes({ up: false, down: false });
+        }
+        else {
             const userUID = String(userData?.uid);
 
             const userRef = doc(db, "users", userUID);

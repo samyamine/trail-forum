@@ -24,6 +24,8 @@ import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
 import UsernamePopup from "@/components/UsernamePopup";
+import ProfilePicture from "@/components/ProfilePicture";
+import Link from "next/link";
 
 const COMMENT_MAX_LENGTH = 500;
 
@@ -93,8 +95,8 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         else if (isSaved()) {
             const authorRef = doc(db, "users", String(userData?.uid));
 
-            for (const ref of userData?.saved as DocumentReference[]) {
-                if (ref.id === params.id) {
+            for (const ref of userData?.saved as (ITopic | IComment)[]) {
+                if (ref.uid === params.id) {
                     await updateDoc(authorRef, {
                         saved: arrayRemove(ref),
                     });
@@ -175,9 +177,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             });
 
             // FIXME: Reload page
-            console.log("YO");
             window.location.reload();
-            console.log("YA")
         }
     };
 
@@ -197,7 +197,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
         };
 
         fetchData().catch((error) => toast.error(error.message));
-    }, []);
+    }, [userData]);
 
     return (
         <>
@@ -220,13 +220,17 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                         <div className={`flex justify-between items-center`}>
                             <div className={`flex gap-2 items-center`}>
                                 <div className={`w-6 h-6 bg-red-400 rounded-full`}>
-                                    {/*IMAGE*/}
+                                    {/*FIXME: IMAGE*/}
                                 </div>
-                                <p className={`text-sm font-bold`}>
-                                    {topicData.author.username} - <span className={`font-normal text-gray-500`}>
-                                    {formatTime(topicData.topic.creationDate)}
-                                </span>
-                                </p>
+                                {/*FIXME*/}
+                                <Link href={`/profile/bgVKtsOrYzNhMTUiJtfuY0Myqkk2`}
+                                className={`w-fit mb-2 flex items-center gap-2`}>
+                                    <p className={`text-sm font-bold`}>
+                                        {topicData.author.username} - <span className={`font-normal text-gray-500`}>
+                                        {formatTime(topicData.topic.creationDate)}
+                                        </span>
+                                    </p>
+                                </Link>
                             </div>
 
                             <div className={`p-2 relative rounded-full active:bg-gray-200 hover:bg-gray-100 cursor-pointer text-xl`}

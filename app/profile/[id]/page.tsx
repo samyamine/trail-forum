@@ -13,9 +13,10 @@ import {isTopic} from "@/lib/types";
 import {usePopup} from "@/app/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import UsernamePopup from "@/components/UsernamePopup";
-import {arrayUnion, doc, getDoc, updateDoc} from "@firebase/firestore";
+import {arrayRemove, arrayUnion, doc, DocumentReference, getDoc, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
-import {getComments, getTopic} from "@/lib/topic/utils";
+import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
+import {FaMinus, FaPlus} from "react-icons/fa6";
 
 enum ETabs {
     Comments = "Comments",
@@ -25,8 +26,9 @@ enum ETabs {
 
 interface IData {
     comments: IComment[],
-    followers: number,
-    following: number,
+    followers: DocumentReference[],
+    following: DocumentReference[],
+    saved: (IComment | ITopic)[],
     topics: ITopic[],
     username: string,
 }
@@ -35,22 +37,39 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
     const {userData} = useAuth();
     const {showPopup, isUsernamePopupVisible, isPopupVisible} = usePopup();
 
+    const [loading, setLoading] = useState(true);
     const [selectedTab, setSelectedTab] = useState(ETabs.Topics);
+    const [following, setFollowing] = useState(false);
     const [profileData, setProfileData] = useState<IData>({
         comments: [],
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
+        saved: [],
         topics: [],
         username: "",
     });
 
     const isMyProfile = (): boolean => !isUndefined(userData) && userData?.uid === params.id;
 
+    const isFollowing = () => {
+        for (const ref of profileData.followers as DocumentReference[]) {
+            console.log("HEY")
+            console.log(ref.id)
+            console.log(userData?.uid);
+            if (ref.id === userData?.uid) {
+                console.log("YES");
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     // FIXME: Profile user not me
     const tabs = {
         [ETabs.Comments]: (
             <div>
-                {userData?.comments.map((comment, index) => (
+                {profileData.comments.map((comment, index) => (
                     <div key={index}>
                         <div className={`px-3`}>
                             <CommentTile comment={comment} />
@@ -62,7 +81,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
         ),
         [ETabs.Saved]: (
             <div>
-                {userData?.saved.map((element, index) => (
+                {profileData.saved.map((element, index) => (
                     <div key={index}>
                         {isTopic(element) ? (
                             <TopicTile topic={element} />
@@ -78,7 +97,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
         ),
         [ETabs.Topics]: (
             <div>
-                {userData?.topics.map((topic, index) => (
+                {profileData.topics.map((topic, index) => (
                     <div key={index}>
                         <TopicTile topic={topic} />
                         <Divider />
@@ -89,20 +108,30 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
     };
 
     // FIXME
-    const handleFollow = async () => {
+    const handleFollow = async (startFollowing: boolean) => {
         if (isUndefined(userData)) {
             showPopup();
         }
         else {
-            await updateDoc(doc(db, "users", params.id), {
-                followers: arrayUnion(doc(db, "users", String(userData?.uid))),
+            const profileUserRef = doc(db, "users", params.id);
+            const userRef = doc(db, "users", String(userData?.uid));
+            console.log("handleFollow")
+            console.log(userRef.id);
+
+            await updateDoc(profileUserRef, {
+                followers: startFollowing ? arrayUnion(userRef) : arrayRemove(userRef),
+            });
+
+            await updateDoc(userRef, {
+                following: startFollowing ? arrayUnion(profileUserRef) : arrayRemove(profileUserRef),
             });
         }
     };
 
     useEffect(() => {
         // FIXME: Init user profile
-        console.log(`ID: ${params.id}`);
+        console.log(`profilePage ID: ${params.id}`);
+        console.log(`profilePage MY ID: ${userData?.uid}`)
         const initData = async () => {
             const profileUserRef = doc(db, "users", params.id);
             const profileUserSnapshot = await getDoc(profileUserRef);
@@ -112,6 +141,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             }
             else {
                 const data = profileUserSnapshot.data();
+                const saved = await getSaved(data.saved);
                 const comments: IComment[] = await getComments(data.comments);
                 const topics: ITopic[] = [];
 
@@ -122,19 +152,22 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
 
                 setProfileData({
                     comments,
-                    followers: data.followers.length,
-                    following: data.following.length,
+                    followers: data.followers,
+                    following: data.following,
+                    saved,
                     topics,
                     username: data.username,
                 });
 
-                console.log("PROFILE DATA:");
-                console.log(profileData);
+                setLoading(false);
             }
         };
 
         initData().catch((error) => toast.error(error.message));
-    }, []);
+    }, [userData]);
+
+    console.log("ProfilePage INIT");
+    console.log(userData?.uid);
 
     return (
         <>
@@ -158,16 +191,16 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
 
                         <div className={`flex flex-col justify-between`}>
                             <h1 className={`text-lg font-bold`}>
-                                La_zone_du_66
+                                {profileData.username}
                             </h1>
 
                             <div className={`flex items-center gap-5 text-xs`}>
                                 <p>
-                                    {userData?.followers.length} Followers
+                                    {profileData.followers.length} Followers
                                 </p>
 
                                 <p>
-                                    {userData?.following.length} Following
+                                    {profileData.following.length} Following
                                 </p>
                             </div>
                         </div>
@@ -175,8 +208,16 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                 </div>
 
                 {!isMyProfile() && (
-                    <div className={`px-5`} onClick={handleFollow}>
-                        <IconTextButton text={"Follow"} />
+                    <div className={`px-5`} onClick={() => handleFollow(!isFollowing()).catch((error) => toast.error(error.message))}>
+                        {isFollowing() ? (
+                            <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-gray-200 rounded-sm 
+                                active:bg-gray-100 text-black text-sm cursor-pointer`}>
+                                <FaMinus />
+                                <p>Unfollow</p>
+                            </div>
+                        ) : (
+                            <IconTextButton text={"Follow"} />
+                        )}
                     </div>
                 )}
 
@@ -209,9 +250,15 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                     )}
                 </div>
 
-                <div>
-                    {tabs[selectedTab]}
-                </div>
+                {loading ? (
+                    <div>
+                        Loading...
+                    </div>
+                ) : (
+                    <div>
+                        {tabs[selectedTab]}
+                    </div>
+                )}
             </div>
         </>
     );

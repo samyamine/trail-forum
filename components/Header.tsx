@@ -33,11 +33,17 @@ export default function Header() {
     };
 
     useEffect(() => {
+        console.log("HEADER useEffect");
+        console.log(user);
+
         showSearchRef.current = showSearch;
         if (showSearch && inputRef.current !== null) {
             inputRef.current.focus();
         }
     }, [showSearch]);
+
+    console.log("HEADER init");
+    console.log(user);
 
     return (
         <header className={`fixed top-0 z-10 w-full h-16 px-5 py-3 bg-white border-b-[1px] border-b-gray-200 flex justify-between items-center`}>

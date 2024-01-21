@@ -16,8 +16,10 @@ import {getAuthor, getTopic, getComments} from "@/lib/topic/utils";
 import toast, {Toaster} from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
 import UsernamePopup from "@/components/UsernamePopup";
+import {useAuth} from "@/app/authContext";
 
 export default function HomePage() {
+    const {userData} = useAuth();
     const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
 
     const [showSortOptions, setShowSortOptions] = useState(false);
@@ -46,10 +48,16 @@ export default function HomePage() {
     };
 
     useEffect(() => {
+        console.log("My ID HomePage");
+        console.log(userData?.uid);
+
         getTopic("JeikBzLEROcPWF5pIA7N")
             .then((topicData) => setTopic(topicData))
             .catch((error) => toast.error(error.message));
     }, []);
+
+    console.log("HomePage INIT");
+    console.log(userData);
 
     return topic !== null ? (
         <>

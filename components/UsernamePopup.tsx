@@ -16,6 +16,7 @@ export default function UsernamePopup() {
     const publishUsername = async () => {
         setCharging(true);
 
+        // FIXME: Except if username already assigned to current user
         if (!(await isUsernameAvailable(username))) {
             toast.error("Username not available");
             setCharging(false);

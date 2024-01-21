@@ -18,11 +18,10 @@ import {
     setDoc,
     Unsubscribe
 } from "@firebase/firestore";
-import {IComment, ITopic, IUser} from "@/lib/interfaces";
+import {ITopic, IUser} from "@/lib/interfaces";
 import {isUndefined} from "@/lib/utils";
 import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
-
-
+import {allGeneratedPositionsFor} from "@jridgewell/trace-mapping";
 
 interface IAuthContextProps {
     user: User | null,
@@ -47,6 +46,9 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         /* FIXME: Here I should init ALL the data since this useEffect will also be called
          * Each time the page is manually refreshed
          */
+
+        console.log("USER");
+        console.log(user);
         const initData = async (doc: DocumentSnapshot) => {
             console.log(`CURRENT DATA:`);
             console.log(doc.data());
@@ -142,6 +144,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         await getUserData(credentials.user.uid);
     };
 
+    // FIXME: TEST UNDEFINED UID AFTER Signing up
     const signUpWithEmail = async (email: string, password: string, username: string) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -185,6 +188,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 followers: [],
                 following: [],
             });
+
+            // await getUserData(userCredential.user.uid);
 
             return true;
         }

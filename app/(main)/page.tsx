@@ -4,7 +4,7 @@ import TopicTile from "@/components/TopicTile";
 import Divider from "@/components/Divider";
 import { FaPlus } from "react-icons/fa6";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {usePopup} from "@/app/popupContext";
 import Link from "next/link";
 import AuthPopup from "@/components/AuthPopup";
@@ -19,38 +19,40 @@ import UsernamePopup from "@/components/UsernamePopup";
 import {useAuth} from "@/app/authContext";
 
 export default function HomePage() {
-    const {userData} = useAuth();
     const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
 
-    const [showSortOptions, setShowSortOptions] = useState(false);
+    const trendsRef = useRef<HTMLDivElement>(null);
+    const categoriesRef = useRef<HTMLDivElement>(null);
+
+    const [showTrendOptions, setShowTrendOptions] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
     const [topic, setTopic] = useState<ITopic | null>(null);
 
-
-    const toggleCategorySelector = (): void => {
-        if (!showSortOptions && showCategoryOptions) {
-            setShowCategoryOptions(false);
-            setShowSortOptions(true);
-        }
-        else {
-            setShowSortOptions(!showSortOptions);
-        }
-    };
-
-    const toggleLocationSelector = (): void => {
-        if (!showCategoryOptions && showSortOptions) {
-            setShowSortOptions(false);
-            setShowCategoryOptions(true);
-        }
-        else {
-            setShowCategoryOptions(!showCategoryOptions);
-        }
-    };
-
     useEffect(() => {
+        const handleClickOutsideTrend = (event: MouseEvent) => {
+            if (trendsRef.current && !trendsRef.current.contains(event.target as Node)) {
+                setShowTrendOptions(false);
+            }
+        };
+
+        const handleClickOutsideCategory = (event: MouseEvent) => {
+            if (categoriesRef.current && !categoriesRef.current.contains(event.target as Node)) {
+                setShowCategoryOptions(false);
+            }
+        };
+
+        window.addEventListener('click', handleClickOutsideTrend);
+        window.addEventListener('click', handleClickOutsideCategory);
+
+        // FIXME: Generic to make a real feed
         getTopic("JeikBzLEROcPWF5pIA7N")
             .then((topicData) => setTopic(topicData))
             .catch((error) => toast.error(error.message));
+
+        return () => {
+            window.removeEventListener('click', handleClickOutsideTrend);
+            window.removeEventListener('click', handleClickOutsideCategory);
+        };
     }, []);
 
     return topic !== null ? (
@@ -74,18 +76,23 @@ export default function HomePage() {
 
                         {/*Sort Options*/}
                         <div className={`flex gap-3 text-xs`}>
-                            <div className={`relative flex items-center gap-1 cursor-pointer`} onClick={toggleCategorySelector}>
-                                <div className={`px-3 py-1 ${showSortOptions && "bg-gray-200"} rounded-full 
+                            {/*Trends*/}
+                            <div ref={trendsRef} className={`relative flex items-center gap-1 cursor-pointer`}
+                                onClick={() => setShowTrendOptions(!showTrendOptions)}>
+                                <div className={`px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>Hot</p>
-                                    {showSortOptions ? (
+
+                                    <div className={`${!showTrendOptions && "hidden"}`}>
                                         <LiaAngleUpSolid />
-                                    ) : (
+                                    </div>
+
+                                    <div className={`${showTrendOptions && "hidden"}`}>
                                         <LiaAngleDownSolid />
-                                    )}
+                                    </div>
                                 </div>
 
-                                <div className={`${!showSortOptions && " hidden"} min-w-max p-3 shadow-md bg-white 
+                                <div className={`${!showTrendOptions && " hidden"} min-w-max p-3 shadow-md bg-white 
                                 absolute top-7 left-0 flex flex-col gap-3 border-[1px] border-black`}>
                                     <p>Hot</p>
                                     <p>Latest</p>
@@ -96,15 +103,19 @@ export default function HomePage() {
                             </div>
 
                             {/*Categories*/}
-                            <div className={`cursor-pointer relative`} onClick={toggleLocationSelector}>
+                            <div ref={categoriesRef} className={`cursor-pointer relative`}
+                            onClick={() => setShowCategoryOptions(!showCategoryOptions)}>
                                 <div className={`px-3 py-1 ${showCategoryOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>News</p>
-                                    {showCategoryOptions ? (
+
+                                    <div className={`${!showCategoryOptions && "hidden"}`}>
                                         <LiaAngleUpSolid />
-                                    ) : (
+                                    </div>
+
+                                    <div className={`${showCategoryOptions && "hidden"}`}>
                                         <LiaAngleDownSolid />
-                                    )}
+                                    </div>
                                 </div>
 
                                 <div className={`${!showCategoryOptions && " hidden"} min-w-max p-3 shadow-md bg-white 

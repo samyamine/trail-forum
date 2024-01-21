@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import AuthPopup from "@/components/AuthPopup";
 import {usePopup} from "@/app/popupContext";
 import {useAuth} from "@/app/authContext";
@@ -15,6 +15,8 @@ export default function NewTopicPage() {
     const {isPopupVisible, showPopup} = usePopup();
     const {user} = useAuth();
     const router = useRouter();
+
+    const categoryRef = useRef<HTMLDivElement>(null);
 
     const SUBJECT_MAX_LENGTH = 200;
     const BODY_MAX_LENGTH = 1500;
@@ -81,6 +83,21 @@ export default function NewTopicPage() {
         }
     };
 
+    useEffect(() => {
+        const handleClickOutsideCategory = (event: MouseEvent) => {
+            if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
+                console.log("OUTSIDE")
+                setShowCategoryOptions(false);
+            }
+        };
+
+        window.addEventListener('click', handleClickOutsideCategory);
+
+        return () => {
+            window.removeEventListener('click', handleClickOutsideCategory);
+        };
+    }, []);
+
     return (
         <>
             {/*Signin popup*/}
@@ -111,24 +128,29 @@ export default function NewTopicPage() {
                         Category
                     </h3>
 
-                    <div className={`relative flex items-center gap-1 cursor-pointer text-sm`} onClick={() => setShowCategoryOptions(!showCategoryOptions)}>
-                        <div className={`px-3 py-1 bg-gray-200 rounded-full 
-                                hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
+                    {/*Category Selector*/}
+                    <div ref={categoryRef} className={`relative flex items-center gap-1 cursor-pointer text-sm`}
+                    onClick={() => setShowCategoryOptions(!showCategoryOptions)}>
+                        <div className={`px-3 py-1 bg-gray-200 rounded-full hover:bg-gray-100 active:bg-gray-200 
+                        flex items-center gap-1`}>
                             <p>
                                 {selectedCategory}
                             </p>
-                            {showCategoryOptions ? (
+
+                            <div className={`${!showCategoryOptions && "hidden"}`}>
                                 <LiaAngleUpSolid />
-                            ) : (
+                            </div>
+
+                            <div className={`${showCategoryOptions && "hidden"}`}>
                                 <LiaAngleDownSolid />
-                            )}
+                            </div>
                         </div>
 
                         {showCategoryOptions && (
                             <div className={`min-w-max shadow-md bg-white 
-                                absolute top-7 left-0 border-[1px] border-black`}>
-                                {Object.keys(ETopicType).map((type) => (
-                                    <p className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-200`} onClick={() => setSelectedCategory(type)}>
+                                absolute top-8 left-1/2 -translate-x-1/2 border-[1px] border-black`}>
+                                {Object.keys(ETopicType).map((type, index) => (
+                                    <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-200`} onClick={() => setSelectedCategory(type)}>
                                         {type}
                                     </p>
                                 ))}

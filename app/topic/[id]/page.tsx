@@ -4,18 +4,18 @@ import {FaEllipsis} from "react-icons/fa6";
 import Votes from "@/components/Votes";
 import Share from "@/components/Share";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Divider from "@/components/Divider";
 import CommentTile from "@/components/CommentTile";
-import {TbBookmark, TbBookmarkFilled, TbFlag, TbMessageCircle2Filled, TbTrash} from "react-icons/tb";
+import {TbBookmark, TbBookmarkFilled, TbFlag, TbMessageCircle2Filled} from "react-icons/tb";
 import TopicCategory from "@/components/TopicCategory";
 import {usePopup} from "@/app/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {db} from "@/lib/firebase/config";
 import {
-    addDoc, arrayRemove, arrayUnion, collection, deleteDoc,
-    doc, DocumentData,
-    DocumentReference, DocumentSnapshot, getDoc, serverTimestamp,
+    addDoc, arrayRemove, arrayUnion, collection,
+    doc,
+    serverTimestamp,
     updateDoc,
 } from "@firebase/firestore";
 import toast, {Toaster} from "react-hot-toast";
@@ -24,7 +24,6 @@ import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
 import UsernamePopup from "@/components/UsernamePopup";
-import ProfilePicture from "@/components/ProfilePicture";
 import Link from "next/link";
 
 const COMMENT_MAX_LENGTH = 500;
@@ -40,20 +39,14 @@ export default function TopicPage({ params }: { params: { id: string }}) {
     const {isPopupVisible, isUsernamePopupVisible, showPopup} = usePopup();
     const {userData} = useAuth();
 
+    const sortRef = useRef<HTMLDivElement>(null);
+    const topicOptionsRef = useRef<HTMLDivElement>(null);
+
     const [commentText, setCommentText] = useState("");
     const [commentTooLong, setCommentTooLong] = useState(false);
     const [showSortOptions, setShowSortOptions] = useState(false);
-    const [showReportOption, setShowReportOption] = useState(false);
+    const [showTopicOption, setShowTopicOption] = useState(false);
     const [topicData, setTopicData] = useState<IData | null>(null);
-
-    const deleteComment = async (comment: DocumentReference) => {
-        // FIXME
-
-    };
-
-    const deleteVote = async () => {
-        // FIXME
-    };
 
     const setNewComment = (text: string) => {
         if (text.length <= COMMENT_MAX_LENGTH) {
@@ -165,14 +158,6 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             const topicData = await getTopic(params.id);
             const authorData = await getAuthor(topicData.author);
             const commentsData = await getComments(topicData.comments);
-
-            console.log("topicData");
-            console.log(topicData)
-            console.log("authorData");
-            console.log(authorData)
-            console.log("commentsData");
-            console.log(commentsData)
-
             let commentsNumber = 0;
 
             for (const comment of commentsData) {
@@ -182,7 +167,27 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             setTopicData({ topic: topicData, author: authorData, comments: commentsData, commentsNumber});
         };
 
+        const handleClickOutsideSort = (event: MouseEvent) => {
+            if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+                setShowSortOptions(false);
+            }
+        };
+
+        const handleClickOutsideTopic = (event: MouseEvent) => {
+            if (topicOptionsRef.current && !topicOptionsRef.current.contains(event.target as Node)) {
+                setShowTopicOption(false);
+            }
+        };
+
+        window.addEventListener('click', handleClickOutsideSort);
+        window.addEventListener('click', handleClickOutsideTopic);
+
         fetchData().catch((error) => toast.error(error.message));
+
+        return () => {
+            window.removeEventListener('click', handleClickOutsideSort);
+            window.removeEventListener('click', handleClickOutsideTopic);
+        };
     }, []);
 
     return (
@@ -219,52 +224,37 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 </Link>
                             </div>
 
-                            <div className={`p-2 relative rounded-full active:bg-gray-200 hover:bg-gray-100 cursor-pointer text-xl`}
-                                 onClick={() => setShowReportOption(!showReportOption)}>
+                            <div ref={topicOptionsRef} className={`p-2 relative rounded-full active:bg-gray-200 hover:bg-gray-100 cursor-pointer text-xl`}
+                                 onClick={() => setShowTopicOption(!showTopicOption)}>
                                 <FaEllipsis />
 
-                                {showReportOption && (
-                                    <div className={`absolute top-10 right-0 bg-white shadow-md border-[1px] border-black`}>
-                                        <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
-                                        onClick={() => toggleSave().catch((error) => console.log(error.message))}>
-                                            {isSaved() ? (
-                                                <>
-                                                    <TbBookmarkFilled />
-                                                    <p className={`text-sm`}>
-                                                        Remove
-                                                    </p>
-                                                </>
-                                            ): (
-                                                <>
-                                                    <TbBookmark />
-                                                    <p className={`text-sm`}>
-                                                        Save
-                                                    </p>
-                                                </>
-                                            )}
+                                <div className={`${!showTopicOption && "hidden"} absolute top-10 right-0 bg-white shadow-md border-[1px] border-black`}>
+                                    <div className={`px-5 py-3 hover:bg-gray-200 active:bg-gray-200`}
+                                    onClick={() => toggleSave().catch((error) => console.log(error.message))}>
+                                        <div className={`${!isSaved() && "hidden"} flex items-center gap-2`}>
+                                            <TbBookmarkFilled />
+                                            <p className={`text-sm`}>
+                                                Remove
+                                            </p>
                                         </div>
 
-                                        {isMyTopic() && (
-                                            // FIXME
-                                            <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
-                                                 onClick={() => alert("DELETE")}>
-                                                <TbTrash />
-                                                <p className={`text-sm`}>
-                                                    Delete
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        <div className={`px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
-                                             onClick={() => toast.success("We have received your report notification")}>
-                                            <TbFlag />
-                                            {/*FIXME*/}
+                                        <div className={`${isSaved() && "hidden"} flex items-center gap-2`}>
+                                            <TbBookmark />
                                             <p className={`text-sm`}>
-                                                Report
+                                                Save
                                             </p>
                                         </div>
                                     </div>
-                                )}
+
+                                    <div className={`${isMyTopic() && "hidden"} px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
+                                         onClick={() => toast.success("We have received your report notification")}>
+                                        <TbFlag />
+                                        {/*FIXME*/}
+                                        <p className={`text-sm`}>
+                                            Report
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -302,17 +292,20 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                         <div className={`w-full flex justify-between items-center`}>
                             {/*Sorting*/}
                             {/*FIXME*/}
-                            <div className={`flex items-center`}>
+                            <div ref={sortRef} className={`flex items-center`}>
                                 <p className={`text-sm`}>Sort by: </p>
                                 <div className={`relative text-sm cursor-pointer`} onClick={() => setShowSortOptions(!showSortOptions)}>
                                     <div className={`px-3 py-1 ${showSortOptions && "bg-gray-200"} rounded-full hover:bg-gray-100 active:bg-gray-200 
                                         flex items-center gap-1`}>
                                         <p>Top</p>
-                                        {showSortOptions ? (
+
+                                        <div className={`${!showSortOptions && "hidden"}`}>
                                             <LiaAngleUpSolid />
-                                        ) : (
+                                        </div>
+
+                                        <div className={`${showSortOptions && "hidden"}`}>
                                             <LiaAngleDownSolid />
-                                        )}
+                                        </div>
                                     </div>
 
                                     <div className={`${!showSortOptions && " hidden"} min-w-max p-3 shadow-md bg-white absolute top-7 left-0 flex flex-col gap-3`}>

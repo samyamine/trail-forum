@@ -3,8 +3,7 @@
 import Votes from "@/components/Votes";
 import Share from "@/components/Share";
 import {TbBookmark, TbBookmarkFilled, TbFlag, TbMessageCircle, TbTrash} from "react-icons/tb";
-import {SlOptions} from "react-icons/sl";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {
     addDoc, arrayRemove,
@@ -13,7 +12,6 @@ import {
     doc, DocumentData,
     DocumentReference, DocumentSnapshot,
     getDoc, serverTimestamp,
-    Timestamp,
     updateDoc
 } from "@firebase/firestore";
 import toast, {Toaster} from "react-hot-toast";
@@ -23,7 +21,7 @@ import {useAuth} from "@/app/authContext";
 import {usePopup} from "@/app/popupContext";
 import {formatTime} from "@/lib/topic/utils";
 import Link from "next/link";
-import ProfilePicture from "@/components/ProfilePicture";
+import {FaEllipsis} from "react-icons/fa6";
 
 const REPLY_MAX_LENGTH = 500;
 
@@ -31,7 +29,9 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
     const {userData, user} = useAuth();
     const {showPopup} = usePopup();
 
-    const [showReportOption, setReportOption] = useState(false);
+    const commentOptionsRef = useRef<HTMLDivElement>(null);
+
+    const [showCommentOptions, setCommentOptions] = useState(false);
     const [commentData, setCommentData] = useState<IComment | null>(null);
     const [reply, setReply] = useState("");
     const [replyTooLong, setReplyTooLong] = useState(false);
@@ -163,7 +163,19 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
             }
         };
 
+        const handleClickOutsideOptions = (event: MouseEvent) => {
+            if (commentOptionsRef.current && !commentOptionsRef.current.contains(event.target as Node)) {
+                setCommentOptions(false);
+            }
+        };
+
+        window.addEventListener('click', handleClickOutsideOptions);
+
         getData().catch((error) => toast.error(error.message));
+
+        return () => {
+            window.removeEventListener('click', handleClickOutsideOptions);
+        };
     }, []);
 
     return commentData !== null && (
@@ -178,50 +190,45 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                         </p>
                     </Link>
 
-                    <div className={`${showReportOption && "bg-gray-200"} w-fit h-fit p-2 rounded-full relative hover:bg-gray-200 
-                cursor-pointer`} onClick={() => setReportOption(!showReportOption)}>
-                        <SlOptions />
+                    <div ref={commentOptionsRef} className={`${showCommentOptions && "bg-gray-200"} w-fit h-fit p-2 rounded-full relative hover:bg-gray-200 
+                    cursor-pointer`} onClick={() => setCommentOptions(!showCommentOptions)}>
+                        <FaEllipsis />
 
-                        {showReportOption && (
-                            <div className={`absolute top-7 right-0 bg-white shadow-md border-[1px] border-black z-50`}>
-                                <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
-                                     onClick={() => toggleSave().catch((error) => console.log(error.message))}>
-                                    {isSaved() ? (
-                                        <>
-                                            <TbBookmarkFilled />
-                                            <p className={`text-sm`}>
-                                                Remove
-                                            </p>
-                                        </>
-                                    ): (
-                                        <>
-                                            <TbBookmark />
-                                            <p className={`text-sm`}>
-                                                Save
-                                            </p>
-                                        </>
-                                    )}
+                        <div className={`${!showCommentOptions && "hidden"} absolute top-7 right-0 bg-white shadow-md border-[1px] border-black z-50`}>
+                            <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
+                                 onClick={() => toggleSave().catch((error) => console.log(error.message))}>
+                                <div className={`${!isSaved() && "hidden"} flex gap-2`}>
+                                    <TbBookmarkFilled />
+                                    <p className={`text-sm`}>
+                                        Remove
+                                    </p>
                                 </div>
 
-                                {userData?.uid === commentData.author.id && (
-                                    <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
-                                         onClick={() => toggleSave().catch((error) => console.log(error.message))}>
-                                        <TbTrash />
-                                        <p className={`text-sm`}>
-                                            Delete
-                                        </p>
-                                    </div>
-                                )}
-
-                                <div className={`px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
-                                     onClick={() => toast.success("We have received your report notification")}>
-                                    <TbFlag />
+                                <div className={`${isSaved() && "hidden"} flex gap-2`}>
+                                    <TbBookmark />
                                     <p className={`text-sm`}>
-                                        Report
+                                        Save
                                     </p>
                                 </div>
                             </div>
-                        )}
+
+                            <div className={`${userData?.uid !== commentData.author.id && "hidden"} px-5 py-3 flex items-center gap-2 
+                                hover:bg-gray-200 active:bg-gray-200`}
+                                 onClick={() => toggleSave().catch((error) => console.log(error.message))}>
+                                <TbTrash />
+                                <p className={`text-sm`}>
+                                    Delete
+                                </p>
+                            </div>
+
+                            <div className={`px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
+                                 onClick={() => toast.success("We have received your report notification")}>
+                                <TbFlag />
+                                <p className={`text-sm`}>
+                                    Report
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <h1 className={`mb-4 pl-5 pr-3 text-sm`}>

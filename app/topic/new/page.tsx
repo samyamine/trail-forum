@@ -86,7 +86,6 @@ export default function NewTopicPage() {
     useEffect(() => {
         const handleClickOutsideCategory = (event: MouseEvent) => {
             if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
-                console.log("OUTSIDE")
                 setShowCategoryOptions(false);
             }
         };

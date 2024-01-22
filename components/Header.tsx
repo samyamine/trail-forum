@@ -18,6 +18,8 @@ export default function Header() {
     const { showPopup } = usePopup();
     const { user, userData, logOut } = useAuth();
 
+    const profileActionsRef = useRef<HTMLDivElement>(null);
+
     const [showDrawer, setShowDrawer] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [showProfileActions, setShowProfileActions] = useState(false);
@@ -38,6 +40,20 @@ export default function Header() {
             inputRef.current.focus();
         }
     }, [showSearch]);
+
+    useEffect(() => {
+        const handleClickOutsideOptions = (event: MouseEvent) => {
+            if (profileActionsRef.current && !profileActionsRef.current.contains(event.target as Node)) {
+                setShowProfileActions(false);
+            }
+        };
+
+        window.addEventListener('click', handleClickOutsideOptions);
+
+        return () => {
+            window.removeEventListener('click', handleClickOutsideOptions);
+        };
+    }, []);
 
     return (
         <header className={`fixed top-0 z-10 w-full h-16 px-5 py-3 bg-white border-b-[1px] border-b-gray-200 flex justify-between items-center`}>
@@ -80,31 +96,29 @@ export default function Header() {
                 </div>
 
                 {user !== null ? (
-                    <div className={`relative sm:hidden w-10 h-10 bg-white rounded-full
+                    <div ref={profileActionsRef} className={`relative sm:hidden w-10 h-10 bg-white rounded-full
                      flex justify-center items-center border-[1px] border-black cursor-pointer hover:shadow-md`}
                          onClick={() => setShowProfileActions(!showProfileActions)}>
                         <FaRegUser />
 
-                        {showProfileActions && (
-                            <div className={`min-w-max absolute top-12 right-0 shadow-md bg-white
-                            border-[1px] border-black text-xs`}>
-                                {/*FIXME*/}
-                                <Link href={`/profile/${user.uid}`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
-                                    <FaRegUser />
-                                    <p>
-                                        Profile
-                                    </p>
-                                </Link>
+                        <div className={`${!showProfileActions && "hidden"} min-w-max absolute top-12 right-0 shadow-md bg-white
+                        border-[1px] border-black text-xs`}>
+                            {/*FIXME*/}
+                            <Link href={`/profile/${user.uid}`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
+                                <FaRegUser />
+                                <p>
+                                    Profile
+                                </p>
+                            </Link>
 
-                                <div className={`px-3 py-2 flex gap-3 items-center text-red-400 hover:bg-red-200 active:bg-red-200`}
-                                onClick={handleLogOut}>
-                                    <GoSignOut />
-                                    <p>
-                                        Logout
-                                    </p>
-                                </div>
+                            <div className={`px-3 py-2 flex gap-3 items-center text-red-400 hover:bg-red-200 active:bg-red-200`}
+                            onClick={handleLogOut}>
+                                <GoSignOut />
+                                <p>
+                                    Logout
+                                </p>
                             </div>
-                        )}
+                        </div>
                     </div>
                 ) : (
                     <div className={`sm:hidden whitespace-nowrap h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}

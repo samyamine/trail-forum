@@ -22,6 +22,7 @@ import {usePopup} from "@/app/popupContext";
 import {formatTime} from "@/lib/topic/utils";
 import Link from "next/link";
 import {FaEllipsis} from "react-icons/fa6";
+import {isComment} from "@/lib/types";
 
 const REPLY_MAX_LENGTH = 500;
 
@@ -43,25 +44,25 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
             showPopup();
         }
         else if (isSaved()) {
-            // FIXME: CORRIGER !!! c'est moi, pas l'auteur
-            const authorRef = commentData?.author as DocumentReference;
-            const author = await getDoc(authorRef) as DocumentSnapshot;
-            const authorData = author.data() as DocumentData;
+            const userRef = doc(db, "users", String(userData?.uid));
+            const userDataReference = await getDoc(userRef);
 
-            for (const ref of authorData.saved as DocumentReference[]) {
+            for (const ref of userDataReference.data()?.saved as DocumentReference[]) {
                 if (ref.id === commentData?.uid) {
-                    await updateDoc(authorRef, {
+                    await updateDoc(userRef, {
                         saved: arrayRemove(ref),
                     });
+
+                    toast.success("Comment unsaved from your profile");
 
                     return;
                 }
             }
         }
         else {
-            const authorRef = commentData?.author as DocumentReference;
+            const userRef = doc(db, "users", String(userData?.uid));
 
-            await updateDoc(authorRef, {
+            await updateDoc(userRef, {
                 saved: arrayUnion(doc(db, "comments", String(commentData?.uid))),
             });
 
@@ -195,16 +196,19 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                         <FaEllipsis />
 
                         <div className={`${!showCommentOptions && "hidden"} absolute top-7 right-0 bg-white shadow-md border-[1px] border-black z-50`}>
-                            <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}
-                                 onClick={() => toggleSave().catch((error) => console.log(error.message))}>
-                                <div className={`${!isSaved() && "hidden"} flex gap-2`}>
+                            <div className={`px-5 py-3 flex items-center gap-2 hover:bg-gray-200 active:bg-gray-200`}>
+                                {/*FIXME*/}
+                                <div className={`${!isSaved() && "hidden"} flex gap-2`}
+                                onClick={() => toggleSave().catch((error) => console.log(error.message))}>
                                     <TbBookmarkFilled />
                                     <p className={`text-sm`}>
                                         Remove
                                     </p>
                                 </div>
 
-                                <div className={`${isSaved() && "hidden"} flex gap-2`}>
+                                {/*FIXME*/}
+                                <div className={`${isSaved() && "hidden"} flex gap-2`}
+                                onClick={() => toggleSave().catch((error) => console.log(error.message))}>
                                     <TbBookmark />
                                     <p className={`text-sm`}>
                                         Save

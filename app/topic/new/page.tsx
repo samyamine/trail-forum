@@ -5,7 +5,16 @@ import AuthPopup from "@/components/AuthPopup";
 import {usePopup} from "@/app/popupContext";
 import {useAuth} from "@/app/authContext";
 import toast from "react-hot-toast";
-import {addDoc, collection, doc, DocumentReference, serverTimestamp, Timestamp} from "@firebase/firestore";
+import {
+    addDoc,
+    arrayUnion,
+    collection,
+    doc,
+    DocumentReference,
+    serverTimestamp,
+    Timestamp,
+    updateDoc
+} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
@@ -60,11 +69,12 @@ export default function NewTopicPage() {
             showPopup();
         }
         else {
-            // FIXME: publish topic
+            // FIXME: add topic ref to author
             try {
                 setCharging(true);
+                const authorRef = doc(db, "users", user.uid);
                 const topicRef = await addDoc(collection(db, "topics"), {
-                    author: doc(db, "users", user.uid),
+                    author: authorRef,
                     body,
                     category: selectedCategory,
                     comments: [],
@@ -72,6 +82,10 @@ export default function NewTopicPage() {
                     title: subject,
                     upVoted: [],
                     downVoted: [],
+                });
+
+                await updateDoc(authorRef, {
+                    topics: arrayUnion(topicRef),
                 });
 
                 setCharging(false);

@@ -119,8 +119,6 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             await updateDoc(userRef, {
                 following: startFollowing ? arrayUnion(profileUserRef) : arrayRemove(profileUserRef),
             });
-
-            // setFollowing(startFollowing);
         }
     };
 

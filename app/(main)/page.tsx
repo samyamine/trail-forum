@@ -17,6 +17,7 @@ import toast, {Toaster} from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
 import UsernamePopup from "@/components/UsernamePopup";
 import {useAuth} from "@/app/authContext";
+import {ECategoryType, ETrendType} from "@/lib/enums";
 
 export default function HomePage() {
     const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
@@ -27,6 +28,8 @@ export default function HomePage() {
     const [showTrendOptions, setShowTrendOptions] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
     const [topic, setTopic] = useState<ITopic | null>(null);
+    const [selectedTrend, setSelectedTrend] = useState<string>(ETrendType.Hot);
+    const [selectedCategory, setSelectedCategory] = useState<string>(ECategoryType.News);
 
     useEffect(() => {
         const handleClickOutsideTrend = (event: MouseEvent) => {
@@ -81,7 +84,9 @@ export default function HomePage() {
                                 onClick={() => setShowTrendOptions(!showTrendOptions)}>
                                 <div className={`px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
-                                    <p>Hot</p>
+                                    <p>
+                                        {selectedTrend}
+                                    </p>
 
                                     <div className={`${!showTrendOptions && "hidden"}`}>
                                         <LiaAngleUpSolid />
@@ -92,13 +97,14 @@ export default function HomePage() {
                                     </div>
                                 </div>
 
-                                <div className={`${!showTrendOptions && " hidden"} min-w-max p-3 shadow-md bg-white 
-                                absolute top-7 left-0 flex flex-col gap-3 border-[1px] border-black`}>
-                                    <p>Hot</p>
-                                    <p>Latest</p>
-                                    <p>News</p>
-                                    <p>Following</p>
-                                    <p>Others</p>
+                                <div className={`${!showTrendOptions && " hidden"} min-w-max shadow-md bg-white 
+                                absolute top-7 left-0 border-[1px] border-black`}>
+                                    {Object.keys(ETrendType).map((type, index) => (
+                                        <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}
+                                        onClick={() => setSelectedTrend(type)}>
+                                            {type}
+                                        </p>
+                                    ))}
                                 </div>
                             </div>
 
@@ -107,7 +113,9 @@ export default function HomePage() {
                             onClick={() => setShowCategoryOptions(!showCategoryOptions)}>
                                 <div className={`px-3 py-1 ${showCategoryOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
-                                    <p>News</p>
+                                    <p>
+                                        {selectedCategory}
+                                    </p>
 
                                     <div className={`${!showCategoryOptions && "hidden"}`}>
                                         <LiaAngleUpSolid />
@@ -118,14 +126,14 @@ export default function HomePage() {
                                     </div>
                                 </div>
 
-                                <div className={`${!showCategoryOptions && " hidden"} min-w-max p-3 shadow-md bg-white 
-                                absolute top-7 left-0 flex flex-col gap-3 border-[1px] border-black`}>
-                                    <p>News</p>
-                                    <p>Discussion</p>
-                                    <p>Training</p>
-                                    <p>Races</p>
-                                    <p>Gear</p>
-                                    <p>Live</p>
+                                <div className={`${!showCategoryOptions && " hidden"} min-w-max shadow-md bg-white 
+                                absolute top-7 left-0 border-[1px] border-black`}>
+                                    {Object.keys(ECategoryType).map((type, index) => (
+                                        <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}
+                                        onClick={() => setSelectedCategory(type)}>
+                                            {type}
+                                        </p>
+                                    ))}
                                 </div>
                             </div>
                         </div>

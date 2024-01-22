@@ -1,4 +1,4 @@
-import {ETopicType} from "@/lib/enums";
+import {ECategoryType} from "@/lib/enums";
 
 const topicTypeColor: IDict = {
     Discussion: "bg-blue-500",

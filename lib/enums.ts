@@ -1,5 +1,5 @@
 
-enum ETopicType {
+enum ECategoryType {
     News = "News",
     Discussion = "Discussion",
     Training = "Training",
@@ -8,6 +8,15 @@ enum ETopicType {
     Live = "Live",
 }
 
+enum ETrendType {
+    Hot = "Hot",
+    Latest = "Latest",
+    News = "News",
+    Following = "Following",
+    Others = "Others",
+}
+
 export {
-    ETopicType,
+    ECategoryType,
+    ETrendType,
 }

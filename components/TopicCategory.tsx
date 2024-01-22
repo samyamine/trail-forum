@@ -1,15 +1,15 @@
 import React from "react";
-import {ETopicType} from "@/lib/enums";
+import {ECategoryType} from "@/lib/enums";
 import {IDict} from "@/lib/interfaces";
 
 export default function TopicCategory({ text }: { text: string }) {
     const topicTypeColor: IDict = {
-        [ETopicType.Discussion]: "bg-blue-500",
-        [ETopicType.Gear]: "bg-cyan-400",
-        [ETopicType.Live]: "bg-red-400",
-        [ETopicType.News]: "bg-yellow-500",
-        [ETopicType.Races]: "bg-green-400",
-        [ETopicType.Training]: "bg-purple-400",
+        [ECategoryType.Discussion]: "bg-blue-500",
+        [ECategoryType.Gear]: "bg-cyan-400",
+        [ECategoryType.Live]: "bg-red-400",
+        [ECategoryType.News]: "bg-yellow-500",
+        [ECategoryType.Races]: "bg-green-400",
+        [ECategoryType.Training]: "bg-purple-400",
     };
 
     return (

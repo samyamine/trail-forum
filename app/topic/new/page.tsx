@@ -9,7 +9,7 @@ import {addDoc, collection, doc, DocumentReference, serverTimestamp, Timestamp} 
 import {db} from "@/lib/firebase/config";
 import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
-import {ETopicType} from "@/lib/enums";
+import {ECategoryType} from "@/lib/enums";
 
 export default function NewTopicPage() {
     const {isPopupVisible, showPopup} = usePopup();
@@ -23,7 +23,7 @@ export default function NewTopicPage() {
 
     const [charging, setCharging] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>(ETopicType.Discussion);
+    const [selectedCategory, setSelectedCategory] = useState<string>(ECategoryType.Discussion);
     const [subject, setSubject] = useState("");
     const [subjectTooLong, setSubjectTooLong] = useState(false);
     const [body, setBody] = useState("");
@@ -148,7 +148,7 @@ export default function NewTopicPage() {
                         {showCategoryOptions && (
                             <div className={`min-w-max shadow-md bg-white 
                                 absolute top-8 left-1/2 -translate-x-1/2 border-[1px] border-black`}>
-                                {Object.keys(ETopicType).map((type, index) => (
+                                {Object.keys(ECategoryType).map((type, index) => (
                                     <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-200`} onClick={() => setSelectedCategory(type)}>
                                         {type}
                                     </p>

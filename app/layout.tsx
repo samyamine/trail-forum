@@ -1,6 +1,6 @@
 import './globals.css';
 import {Metadata} from "next";
-import React from "react";
+import React, {StrictMode} from "react";
 import {PopupProvider, usePopup} from "@/app/popupContext";
 import Header from "@/components/Header";
 import {AuthProvider} from "@/app/authContext";

@@ -34,10 +34,10 @@ interface IData {
 }
 
 export default function ProfilePage({ params }: { params: { id: string }}) {
-    const {userData} = useAuth();
+    const {loading, userData} = useAuth();
     const {showPopup, isUsernamePopupVisible, isPopupVisible} = usePopup();
 
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const [selectedTab, setSelectedTab] = useState(ETabs.Topics);
     const [following, setFollowing] = useState(false);
     const [profileData, setProfileData] = useState<IData>({
@@ -124,6 +124,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
 
     useEffect(() => {
         // FIXME: Init user profile
+        console.log("useEffect profile")
         const initData = async () => {
             const profileUserRef = doc(db, "users", params.id);
             const profileUserSnapshot = await getDoc(profileUserRef);
@@ -157,14 +158,18 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                     username: data.username,
                 });
 
-                setLoading(false);
+                // setLoading(false);
             }
         };
 
         initData().catch((error) => toast.error(error.message));
     }, [userData]);
 
-    return (
+    return loading ? (
+        <div className={`w-full h-full flex justify-center items-center`}>
+            LOADING PROFILE
+        </div>
+        ) : (
         <>
             {/*Signin popup*/}
             {isPopupVisible && (
@@ -245,15 +250,19 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                     )}
                 </div>
 
-                {loading ? (
-                    <div>
-                        Loading...
-                    </div>
-                ) : (
-                    <div>
-                        {tabs[selectedTab]}
-                    </div>
-                )}
+                <div>
+                    {tabs[selectedTab]}
+                </div>
+
+                {/*{loading ? (*/}
+                {/*    <div>*/}
+                {/*        Loading...*/}
+                {/*    </div>*/}
+                {/*) : (*/}
+                {/*    <div>*/}
+                {/*        {tabs[selectedTab]}*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
         </>
     );

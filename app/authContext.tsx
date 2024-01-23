@@ -25,6 +25,7 @@ import {allGeneratedPositionsFor} from "@jridgewell/trace-mapping";
 import toast from "react-hot-toast";
 
 interface IAuthContextProps {
+    loading: boolean,
     user: User | null,
     userData: IUser | undefined,
     signInWithEmail: (email: string, password: string) => Promise<void>,
@@ -44,63 +45,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const [userData, setUserData] = useState<IUser>();
     const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     console.log("USER");
-    //     console.log(user);
-    //     // setUserData(undefined);
-    //     const initData = async (doc: DocumentSnapshot) => {
-    //         console.log(`CURRENT DATA:`);
-    //         console.log(doc.data());
-    //
-    //         console.log("CURRENT USER:")
-    //         console.log(user)
-    //
-    //         if (!isUndefined(doc.data())) {
-    //             const data = doc.data() as DocumentData;
-    //             const comments = await getComments(data.comments);
-    //             const saved = await getSaved(data.saved);
-    //             const topics: ITopic[] = [];
-    //
-    //             for (const ref of data.topics) {
-    //                 const topic = await getTopic(ref.id);
-    //                 topics.push(topic);
-    //             }
-    //
-    //             const newUserData: IUser = {
-    //                 uid: doc.id,
-    //                 comments,
-    //                 downVotedComments: data.downVotedComments,
-    //                 downVotedTopics: data.downVotedTopics,
-    //                 topics,
-    //                 upVotedComments: data.upVotedComments,
-    //                 upVotedTopics: data.upVotedTopics,
-    //                 username: data.username,
-    //                 saved,
-    //                 followers: data.followers,
-    //                 following: data.following,
-    //             };
-    //
-    //             setUserData(newUserData);
-    //         }
-    //     };
-    //
-    //     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    //         console.log("ON AUTH STATE CHANGED")
-    //         console.log(currentUser)
-    //         setUser(currentUser);
-    //     });
-    //
-    //     return () => {
-    //         unsubscribe();
-    //         if (user !== null) {
-    //             onSnapshot(doc(db, "users", user.uid), (doc) => {
-    //                 initData(doc).catch((error) => console.log(error.message));
-    //             });
-    //         }
-    //     }
-    // }, [user]);
-
     useEffect(() => {
+        console.log("useEffect Auth")
         const initData = async (snapshot: DocumentSnapshot) => {
             if (!isUndefined(snapshot.data())) {
                 const data = snapshot.data() as DocumentData;
@@ -112,6 +58,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                     const topic = await getTopic(ref.id);
                     topics.push(topic);
                 }
+
 
                 const newUserData: IUser = {
                     uid: snapshot.id,
@@ -142,9 +89,9 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
 
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             console.log("AUTH CHANGED")
-            console.log(currentUser)
-            console.log(!isUndefined(userData))
-            console.log(userData)
+            // console.log(currentUser)
+            // console.log(!isUndefined(userData))
+            // console.log(userData)
             if (currentUser) {
                 const userRef = await handleUserProfile(currentUser);
                 if (userRef === null) {
@@ -169,6 +116,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
             console.log("setUser");
 
             setUser(currentUser);
+            setLoading(false);
         });
 
         console.log("RETURN");
@@ -273,7 +221,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, userData, signInWithEmail, signUpWithEmail, googleSignIn, logOut }}>
+        <AuthContext.Provider value={{ loading, user, userData, signInWithEmail, signUpWithEmail, googleSignIn, logOut }}>
             {children}
         </AuthContext.Provider>
     );

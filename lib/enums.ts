@@ -11,7 +11,6 @@ enum ECategoryType {
 enum ETrendType {
     Hot = "Hot",
     Latest = "Latest",
-    News = "News",
     Following = "Following",
     Others = "Others",
 }

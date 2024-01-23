@@ -64,7 +64,7 @@ export default function Header() {
 
                 <Link href={`/`}>
                     <h1 className={`mx-5 text-2xl cursor-pointer`}>
-                        Logo
+                        Zone Trail
                     </h1>
                 </Link>
             </div>
@@ -111,7 +111,7 @@ export default function Header() {
                                 </p>
                             </Link>
 
-                            <div className={`px-3 py-2 flex gap-3 items-center text-red-400 hover:bg-red-200 active:bg-red-200`}
+                            <div className={`px-3 py-2 flex gap-3 items-center text-red-500 hover:bg-red-200 active:bg-red-200`}
                             onClick={handleLogOut}>
                                 <GoSignOut />
                                 <p>
@@ -160,21 +160,13 @@ export default function Header() {
                             <h3 className={`mb-1 text-lg text-gray-500`}>
                                 Resources
                             </h3>
-                            <Link href={`/about`} className={`hover:underline active:underline cursor-pointer`}
-                            onClick={() => setShowDrawer(false)}>
-                                About us
-                            </Link>
-                            <Link href={`/help`} className={`hover:underline active:underline cursor-pointer`}
-                            onClick={() => setShowDrawer(false)}>
-                                Help
-                            </Link>
                             <Link href={`/contact`} className={`hover:underline active:underline cursor-pointer`}
                             onClick={() => setShowDrawer(false)}>
                                 Contact
                             </Link>
                             <Link href={`/advertise`} className={`hover:underline active:underline cursor-pointer`}
                                   onClick={() => setShowDrawer(false)}>
-                                Advertise on #COMPANY_NAME
+                                Advertise on Zone Trail
                             </Link>
                         </div>
 

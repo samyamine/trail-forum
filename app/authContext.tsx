@@ -125,41 +125,6 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     console.log("Outside userData");
     console.log(userData);
 
-    // const getUserData = async (uid: string) => {
-    //     const docRef = doc(db, "users", uid);
-    //     const docSnapshot = await getDoc(docRef);
-    //
-    //     if (!docSnapshot.exists()) {
-    //         throw new Error("The specified user does not exit anymore");
-    //     }
-    //
-    //     console.log("USER DATA:");
-    //     console.log(docSnapshot.data());
-    //
-    //     if (!isUndefined(docSnapshot.data())) {
-    //         const data = docSnapshot.data() as DocumentData;
-    //
-    //         const newUserData = {
-    //             uid: docSnapshot.id,
-    //             comments: data.comments,
-    //             downVotedComments: data.downVotedComments,
-    //             downVotedTopics: data.downVotedTopics,
-    //             topics: data.topics,
-    //             upVotedComments: data.upVotedComments,
-    //             upVotedTopics: data.upVotedTopics,
-    //             username: data.username,
-    //             saved: data.saved,
-    //             followers: data.followers,
-    //             following: data.following,
-    //         };
-    //
-    //         setUserData(newUserData);
-    //     }
-    //     else {
-    //         setUserData(undefined);
-    //     }
-    // };
-
     const signInWithEmail = async (email: string, password: string) => {
         await signInWithEmailAndPassword(auth, email, password);
 

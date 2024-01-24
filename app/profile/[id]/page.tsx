@@ -125,6 +125,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
     useEffect(() => {
         // FIXME: Init user profile
         console.log("useEffect profile")
+        console.log(userData)
         const initData = async () => {
             const profileUserRef = doc(db, "users", params.id);
             const profileUserSnapshot = await getDoc(profileUserRef);

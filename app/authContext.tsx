@@ -59,7 +59,6 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                     topics.push(topic);
                 }
 
-
                 const newUserData: IUser = {
                     uid: snapshot.id,
                     comments,

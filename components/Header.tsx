@@ -1,6 +1,14 @@
 "use client";
 
-import {FaBars, FaMagnifyingGlass} from "react-icons/fa6";
+import {
+    FaEarthAfrica,
+    FaEarthAmericas,
+    FaEarthAsia,
+    FaEarthEurope,
+    FaEarthOceania,
+    FaMagnifyingGlass,
+    FaMedal
+} from "react-icons/fa6";
 import React, {useEffect, useRef, useState} from "react";
 import {usePopup} from "@/app/popupContext";
 import Link from "next/link";
@@ -9,9 +17,9 @@ import {AiOutlineMenu} from "react-icons/ai";
 import {FaRegUser} from "react-icons/fa";
 import {useAuth} from "@/app/authContext";
 import {GoSignOut} from "react-icons/go";
-import {signOut} from "@firebase/auth";
-import {auth} from "@/lib/firebase/config";
 import {useRouter} from "next/navigation";
+import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
+import {EAfrica, EAsia, EContinent, EEurope, ENorthAmerica, EOceania, ESouthAmerica, ETop} from "@/lib/enums";
 
 export default function Header() {
     const router = useRouter();
@@ -23,6 +31,7 @@ export default function Header() {
     const [showDrawer, setShowDrawer] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [showProfileActions, setShowProfileActions] = useState(false);
+    const [showContinent, setShowContinent] = useState<EContinent | null>(null);
 
     const showSearchRef = useRef(showSearch);
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -32,6 +41,15 @@ export default function Header() {
         await logOut();
         router.push("/");
         // window.location.reload();
+    };
+
+    const handleSetShowContinent = (value: EContinent) => {
+        if (showContinent === value) {
+            setShowContinent(null);
+        }
+        else {
+            setShowContinent(value);
+        }
     };
 
     useEffect(() => {
@@ -62,7 +80,7 @@ export default function Header() {
                     {showDrawer ? (<TfiClose />) : (<AiOutlineMenu />)}
                 </div>
 
-                <Link href={`/`}>
+                <Link href={`/`} className={`${showSearch && "hidden"}`}>
                     <h1 className={`mx-5 text-2xl cursor-pointer`}>
                         Zone Trail
                     </h1>
@@ -81,7 +99,7 @@ export default function Header() {
                     <FaMagnifyingGlass />
                 </div>
 
-                <div className={`${!showSearch && "hidden"} md:hidden flex-grow h-full px-5 bg-gray-100 rounded-full
+                <div className={`${!showSearch && "hidden"} md:hidden flex-grow h-full px-5 ml-2 bg-gray-100 rounded-full
                         flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
                     <FaMagnifyingGlass />
                     <input
@@ -137,7 +155,202 @@ export default function Header() {
                 <div className={`w-full h-full fixed top-16 left-0`}>
                     <div className={`w-full h-full bg-black opacity-60`} onClick={() => setShowDrawer(false)}></div>
 
-                    <div className={`w-2/3 h-full p-3 fixed top-16 left-0 bg-white shadow-md flex flex-col gap-5`}>
+                    <div className={`w-2/3 h-full p-3 fixed top-16 left-0 overflow-y-auto bg-white shadow-md flex flex-col gap-5`}>
+                        <div className={`flex flex-col gap-2 text-sm`}>
+                            <h3 className={`mb-1 text-lg text-gray-500`}>
+                                Location
+                            </h3>
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                            onClick={() => handleSetShowContinent(EContinent.Top)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaMedal />
+                                    <p className={`font-bold`}>
+                                        Top 10
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.Top ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.Top && (
+                                <div>
+                                    {Object.values(ETop).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                        onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                                 onClick={() => handleSetShowContinent(EContinent.Europe)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaEarthEurope />
+                                    <p className={`font-bold`}>
+                                        Europe
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.Europe ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.Europe && (
+                                <div>
+                                    {Object.values(EEurope).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                           onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                                 onClick={() => handleSetShowContinent(EContinent.Africa)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaEarthAfrica />
+                                    <p className={`font-bold`}>
+                                        Africa
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.Africa ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.Africa && (
+                                <div>
+                                    {Object.values(EAfrica).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                           onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                                 onClick={() => handleSetShowContinent(EContinent.NorthAmerica)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaEarthAmericas />
+                                    <p className={`font-bold`}>
+                                        North America
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.NorthAmerica ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.NorthAmerica && (
+                                <div>
+                                    {Object.values(ENorthAmerica).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                           onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                                 onClick={() => handleSetShowContinent(EContinent.SouthAmerica)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaEarthAmericas />
+                                    <p className={`font-bold`}>
+                                        South America
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.SouthAmerica ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.SouthAmerica && (
+                                <div>
+                                    {Object.values(ESouthAmerica).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                           onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                                 onClick={() => handleSetShowContinent(EContinent.Asia)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaEarthAsia />
+                                    <p className={`font-bold`}>
+                                        Asia
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.Asia ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.Asia && (
+                                <div>
+                                    {Object.values(EAsia).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                           onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className={`cursor-pointer flex justify-between items-center`}
+                                 onClick={() => handleSetShowContinent(EContinent.Oceania)}>
+                                <div className={`flex gap-2 items-center`}>
+                                    <FaEarthOceania />
+                                    <p className={`font-bold`}>
+                                        Oceania
+                                    </p>
+                                </div>
+
+                                {showContinent === EContinent.Oceania ? (
+                                    <LiaAngleUpSolid />
+                                ) : (
+                                    <LiaAngleDownSolid />
+                                )}
+                            </div>
+
+                            {showContinent === EContinent.Oceania && (
+                                <div>
+                                    {Object.values(EOceania).map((value, index) => (
+                                        <p key={index} className={`hover:underline active:underline cursor-pointer`}
+                                           onClick={() => alert("FIXME")}>
+                                            {value}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                         <div className={`w-fit flex flex-col gap-1 text-sm`}>
                             <h3 className={`mb-1 text-lg text-gray-500`}>
                                 Social media

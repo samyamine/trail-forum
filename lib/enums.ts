@@ -25,6 +25,11 @@ enum EContinent {
     Top = "top",
 }
 
+enum EAuthPopup {
+    Login,
+    Register,
+}
+
 enum EAfrica {
     Algeria = "Algeria",
     Angola = "Angola",
@@ -258,6 +263,7 @@ enum ETop {
 }
 
 export {
+    EAuthPopup,
     ECategoryType,
     EContinent,
     ETrendType,

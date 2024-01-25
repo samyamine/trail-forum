@@ -70,7 +70,7 @@ export default function HomePage() {
             )}
 
             <div className={`w-full overflow-y-auto`}>
-                <div className={`md:w-1/2 w-full px-5 py-3`}>
+                <div className={`md:w-2/3 lg:w-1/2 w-full px-5 py-3`}>
                     {/*New topic bar*/}
                     <div className={`w-full flex justify-between md:justify-start md:gap-5 items-center`}>
                         <Link href={`/topic/new`}>
@@ -141,14 +141,10 @@ export default function HomePage() {
                 </div>
 
                 <Divider />
-                <div className={`flex`}>
-                    {/*Categories feed*/}
-                    <div className={`max-md:hidden w-1/4 border-r-[1px] border-black`}>
-                        HEY
-                    </div>
+                <div className={`w-full md:flex md:justify-center`}>
 
                     {/*Main topics feed*/}
-                    <div className={`w-full md:w-3/4 lg:mx-10 flex flex-col items-center`}>
+                    <div className={`w-full md:w-2/3 lg:w-1/2 lg:mx-10 flex flex-col items-center`}>
                         <TopicTile topic={topic} />
                         <Divider />
                         <TopicTile topic={topic} />

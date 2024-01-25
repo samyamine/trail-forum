@@ -1,6 +1,6 @@
 "use client";
 
-import React, {createContext, FC, ReactNode, useContext, useEffect, useState} from "react";
+import React, {createContext, FC, ReactNode, useContext, useEffect, useLayoutEffect, useState} from "react";
 import {
     createUserWithEmailAndPassword, GoogleAuthProvider,
     onAuthStateChanged,
@@ -45,7 +45,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const [userData, setUserData] = useState<IUser>();
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         console.log("useEffect Auth")
         const initData = async (snapshot: DocumentSnapshot) => {
             if (!isUndefined(snapshot.data())) {

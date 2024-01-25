@@ -41,7 +41,7 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
                 Loading...
             </div>
         ) : (
-        <div className={`w-full h-fit pb-3 text-gray-900 cursor-pointer`}>
+        <div className={`w-full h-fit pb-3 text-gray-900 md:hover:bg-gray-100 cursor-pointer`}>
             {/*FIXME*/}
             <Link href={`/topic/${topic.uid}`} className={`w-full p-3 block`}>
                 {/*FIXME*/}
@@ -74,7 +74,9 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
                 <div className={`px-3 w-fit flex gap-5`}>
                     {/*FIXME*/}
                     <Votes id={topic.uid} collection={`topics`} initCount={topic.upVoted.length - topic.downVoted.length} />
-                    <Comments count={commentCount} />
+                    <Link href={`/topic/${topic.uid}`}>
+                        <Comments count={commentCount} />
+                    </Link>
                     <Share />
                 </div>
 

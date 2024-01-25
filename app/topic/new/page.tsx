@@ -69,7 +69,6 @@ export default function NewTopicPage() {
             showPopup();
         }
         else {
-            // FIXME: add topic ref to author
             try {
                 setCharging(true);
                 const authorRef = doc(db, "users", user.uid);

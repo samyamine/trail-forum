@@ -3,14 +3,14 @@
 import {usePopup} from "@/app/popupContext";
 import React, {useState} from "react";
 import {TfiClose} from "react-icons/tfi";
-import {FcGoogle} from "react-icons/fc";
 import RegisterPopup from "@/components/RegisterPopup";
 import SignInPopup from "@/components/SignInPopup";
 import {BsArrowLeft} from "react-icons/bs";
+import {EAuthPopup} from "@/lib/enums";
 
 export default function AuthPopup() {
-    const { hidePopup } = usePopup();
-    const [isRegister, setRegister] = useState(false);
+    const { hidePopup, popupType } = usePopup();
+    const [isRegister, setRegister] = useState(popupType === EAuthPopup.Register);
     const [index, setIndex] = useState(0);
 
     return (

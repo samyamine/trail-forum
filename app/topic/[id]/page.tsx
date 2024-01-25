@@ -215,7 +215,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 </div>
                                 {/*FIXME*/}
                                 <Link href={`/profile/${topicData.author.uid}`}
-                                className={`w-fit mb-2 flex items-center gap-2`}>
+                                className={`w-fit flex items-center gap-2`}>
                                     <p className={`text-sm font-bold`}>
                                         {topicData.author.username} - <span className={`font-normal text-gray-500`}>
                                         {formatTime(topicData.topic.creationDate)}
@@ -289,32 +289,32 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                         onChange={(event) => setNewComment(event.target.value)}>
                         </textarea>
 
-                        <div className={`w-full flex justify-between items-center`}>
+                        <div className={`w-full flex justify-end items-center`}>
                             {/*Sorting*/}
                             {/*FIXME*/}
-                            <div ref={sortRef} className={`flex items-center`}>
-                                <p className={`text-sm`}>Sort by: </p>
-                                <div className={`relative text-sm cursor-pointer`} onClick={() => setShowSortOptions(!showSortOptions)}>
-                                    <div className={`px-3 py-1 ${showSortOptions && "bg-gray-200"} rounded-full hover:bg-gray-100 active:bg-gray-200 
-                                        flex items-center gap-1`}>
-                                        <p>Top</p>
+                            {/*<div ref={sortRef} className={`flex items-center`}>*/}
+                            {/*    <p className={`text-sm`}>Sort by: </p>*/}
+                            {/*    <div className={`relative text-sm cursor-pointer`} onClick={() => setShowSortOptions(!showSortOptions)}>*/}
+                            {/*        <div className={`px-3 py-1 ${showSortOptions && "bg-gray-200"} rounded-full hover:bg-gray-100 active:bg-gray-200 */}
+                            {/*            flex items-center gap-1`}>*/}
+                            {/*            <p>Top</p>*/}
 
-                                        <div className={`${!showSortOptions && "hidden"}`}>
-                                            <LiaAngleUpSolid />
-                                        </div>
+                            {/*            <div className={`${!showSortOptions && "hidden"}`}>*/}
+                            {/*                <LiaAngleUpSolid />*/}
+                            {/*            </div>*/}
 
-                                        <div className={`${showSortOptions && "hidden"}`}>
-                                            <LiaAngleDownSolid />
-                                        </div>
-                                    </div>
+                            {/*            <div className={`${showSortOptions && "hidden"}`}>*/}
+                            {/*                <LiaAngleDownSolid />*/}
+                            {/*            </div>*/}
+                            {/*        </div>*/}
 
-                                    <div className={`${!showSortOptions && " hidden"} min-w-max p-3 shadow-md bg-white absolute top-7 left-0 flex flex-col gap-3`}>
-                                        <p>Hot</p>
-                                        <p>Latest</p>
-                                        <p>Oldest</p>
-                                    </div>
-                                </div>
-                            </div>
+                            {/*        <div className={`${!showSortOptions && " hidden"} min-w-max p-3 shadow-md bg-white absolute top-7 left-0 flex flex-col gap-3`}>*/}
+                            {/*            <p>Hot</p>*/}
+                            {/*            <p>Latest</p>*/}
+                            {/*            <p>Oldest</p>*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
 
                             <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-orange-500 rounded-sm shadow-md 
                             active:shadow-sm text-white text-sm cursor-pointer`} onClick={() => postComment().catch((error) => console.log(error.message))}>

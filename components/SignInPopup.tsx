@@ -45,7 +45,7 @@ export default function SignInPopup({ onClickCallback }: {onClickCallback:  Reac
     };
 
     return (
-        <div className={`w-1/2 md:w-[320px] flex flex-col items-center`}>
+        <div className={`w-full max-w-[320px] flex flex-col items-center`}>
             <Toaster />
             <h2 className={`mb-10 text-2xl font-bold`}>
                 Sign in

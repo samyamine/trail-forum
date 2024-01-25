@@ -39,17 +39,16 @@ export default function Header() {
     const { showPopup, changePopupType } = usePopup();
     const { user, userData, logOut } = useAuth();
 
-    const profileActionsRef = useRef<HTMLDivElement>(null);
-
     const [searchText, setSearchText] = useState("");
     const [showDrawer, setShowDrawer] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [showProfileActions, setShowProfileActions] = useState(false);
     const [showContinent, setShowContinent] = useState<EContinent | null>(null);
 
+    const profileActionsRef = useRef<HTMLDivElement>(null);
     const showSearchRef = useRef(showSearch);
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    const disabledSearchRef = useRef<HTMLInputElement | null>(null);
+    const mobileInputRef = useRef<HTMLInputElement | null>(null);
+    const desktopInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleLogOut = async () => {
         await logOut();
@@ -98,8 +97,12 @@ export default function Header() {
 
     useEffect(() => {
         showSearchRef.current = showSearch;
-        if (showSearch && inputRef.current !== null) {
-            inputRef.current.focus();
+        if (showSearch && mobileInputRef.current !== null) {
+            mobileInputRef.current.focus();
+        }
+
+        if (showSearch && desktopInputRef.current !== null) {
+            desktopInputRef.current.focus();
         }
     }, [showSearch]);
 
@@ -125,23 +128,35 @@ export default function Header() {
                 </div>
 
                 <Link href={`/`} className={`${showSearch && "hidden"}`}>
-                    <h1 className={`mx-5 text-2xl cursor-pointer`}>
+                    <h1 className={`sm:mx-5 text-2xl cursor-pointer`}>
                         Zone Trail
                     </h1>
                 </Link>
             </div>
 
-            {/*Desktop Search Bar*/}
-            <div className={`max-md:hidden w-1/2 h-full px-5 ml-2 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}
-            onClick={() => setShowSearch(true)}>
+            {/*Desktop Search Bar Closed*/}
+            <div className={`${showSearch && "hidden"} max-md:hidden w-1/2 h-full px-5 ml-2 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}
+                onClick={() => setShowSearch(true)}>
                 <FaMagnifyingGlass />
                 <p>Search</p>
+            </div>
+
+            {/*Desktop Search Bar Open*/}
+            <div className={`${!showSearch && "hidden"} max-md:hidden flex-grow h-full px-5 ml-2 bg-gray-100 rounded-full
+                        flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
+                <FaMagnifyingGlass />
+                <input
+                    ref={desktopInputRef}
+                    type="text"
+                    placeholder="Search"
+                    className="w-full ml-2 bg-transparent border-none outline-none"
+                    value={searchText}
+                    onChange={(event) => search(event.target.value).catch((error) => toast.error(error.message))}/>
             </div>
 
             <div className={`flex-grow h-full justify-end flex items-center gap-2`}>
                 {/*Mobile Search Bar Closed*/}
                 <div className={`${showSearch && "hidden"} p-3 md:hidden bg-gray-100 rounded-full cursor-pointer`}
-                     ref={disabledSearchRef}
                      onClick={() => setShowSearch(true)}>
                     <FaMagnifyingGlass />
                 </div>
@@ -151,7 +166,7 @@ export default function Header() {
                         flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
                     <FaMagnifyingGlass />
                     <input
-                        ref={inputRef}
+                        ref={mobileInputRef}
                         type="text"
                         placeholder="Search"
                         className="w-full ml-2 bg-transparent border-none outline-none"
@@ -207,7 +222,8 @@ export default function Header() {
                 <div className={`w-full h-full fixed top-16 left-0`}>
                     <div className={`w-full h-full bg-black opacity-60`} onClick={() => setShowDrawer(false)}></div>
 
-                    <div className={`w-2/3 max-w-[300px] h-full p-3 fixed top-16 left-0 overflow-y-auto bg-white shadow-md flex flex-col gap-5`}>
+                    <div className={`w-2/3 max-w-[300px] h-full p-3 pb-24 fixed top-16 left-0 overflow-y-auto bg-white 
+                        shadow-md flex flex-col gap-5`}>
                         <div className={`flex flex-col gap-2 text-sm`}>
                             <h3 className={`mb-1 text-lg text-gray-500`}>
                                 Location
@@ -434,7 +450,6 @@ export default function Header() {
                                 Advertise on Zone Trail
                             </Link>
                         </div>
-
                     </div>
                 </div>
             )}

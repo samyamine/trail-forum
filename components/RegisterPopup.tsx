@@ -166,7 +166,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
     };
 
     return (
-        <div className={`w-1/2 md:w-[320px] flex flex-col items-center`}>
+        <div className={`w-full max-w-[320px] flex flex-col items-center`}>
             <Toaster />
             {steps[index]}
 

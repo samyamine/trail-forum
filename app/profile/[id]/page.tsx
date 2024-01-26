@@ -66,7 +66,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
         [ETabs.Comments]: (
             <div>
                 {profileData.comments.map((comment, index) => (
-                    <div key={index}>
+                    <div key={index} className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
                         <CommentTile comment={comment} />
                         <Divider />
                     </div>
@@ -80,7 +80,9 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                         {isTopic(element) ? (
                             <TopicTile topic={element} />
                         ) : (
-                            <CommentTile comment={element} />
+                            <div className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
+                                <CommentTile comment={element} />
+                            </div>
                         )}
                         <Divider />
                     </div>
@@ -179,7 +181,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             )}
 
             <Toaster />
-            <div className={`w-full flex flex-col gap-2`}>
+            <div className={`w-full flex flex-col`}>
                 {/*Profile header*/}
                 <div className={`px-5 py-3`}>
                     <div className={`flex items-center gap-5`}>

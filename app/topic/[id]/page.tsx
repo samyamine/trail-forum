@@ -191,7 +191,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
     }, []);
 
     return (
-        <>
+        <div className={`w-full flex flex-col items-center`}>
             <Toaster />
 
             {/*Signin popup*/}
@@ -205,7 +205,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             )}
 
             {topicData !== null ? (
-                <div className={`p-5`}>
+                <div className={`w-full md:w-2/3 lg:w-1/2 p-5`}>
                     {/*topic*/}
                     <div className={`mb-4 flex flex-col gap-2`}>
                         <div className={`flex justify-between items-center`}>
@@ -347,6 +347,6 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                     Loading...
                 </div>
             )}
-        </>
+        </div>
     );
 }

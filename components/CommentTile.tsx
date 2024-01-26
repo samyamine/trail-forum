@@ -182,7 +182,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
     return commentData !== null && (
         <>
             <Toaster />
-            <div className={`w-full p-3 text-gray-900 md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
+            <div className={`w-full p-3 text-gray-900`}>
                 <div className={`flex justify-between items-center`}>
                     <Link href={`/profile/${commentData.author.id}`} className={`mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6 bg-red-400 rounded-full`}></div>

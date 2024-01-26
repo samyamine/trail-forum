@@ -25,22 +25,23 @@ export default function RootLayout({children}: { children: React.ReactNode} )  {
                     {children}
                 </main>
 
-                <footer className={`mt-auto bg-black py-8 text-white flex flex-col items-center`}>
-                    <h2>
-                        MENU
-                    </h2>
+                <footer className={`mt-auto bg-black py-8 text-white flex flex-col justify-center items-center`}>
+                    <div className={`py-2 text-center flex flex-col gap-2`}>
+                        <p>
+                            Contact
+                        </p>
+
+                        <p>
+                            Advertise with us
+                        </p>
+                    </div>
 
                     <h3>
-                        The trail addicted community
+                        The trail runner community
                     </h3>
-                    <p>
-                        2024 - LOGO &copy;
-                    </p>
 
                     <p>
-                        Qui sommes nous
-                        Aide
-                        Instagram
+                        2024 - Zone Trail &copy;
                     </p>
                 </footer>
                 </body>

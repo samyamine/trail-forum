@@ -67,9 +67,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             <div>
                 {profileData.comments.map((comment, index) => (
                     <div key={index}>
-                        <div className={`px-3`}>
-                            <CommentTile comment={comment} />
-                        </div>
+                        <CommentTile comment={comment} />
                         <Divider />
                     </div>
                 ))}
@@ -82,9 +80,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                         {isTopic(element) ? (
                             <TopicTile topic={element} />
                         ) : (
-                            <div className={`px-5`}>
-                                <CommentTile comment={element} />
-                            </div>
+                            <CommentTile comment={element} />
                         )}
                         <Divider />
                     </div>
@@ -183,7 +179,8 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             )}
 
             <Toaster />
-            <div className={`flex flex-col gap-2`}>
+            <div className={`w-full flex flex-col gap-2`}>
+                {/*Profile header*/}
                 <div className={`px-5 py-3`}>
                     <div className={`flex items-center gap-5`}>
                         <div className={`w-12 h-12 bg-red-400 rounded-full`}>
@@ -251,19 +248,11 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                     )}
                 </div>
 
-                <div>
-                    {tabs[selectedTab]}
+                <div className={`w-full flex flex-col items-center`}>
+                    <div className={`w-full md:w-2/3 lg:w-1/2`}>
+                        {tabs[selectedTab]}
+                    </div>
                 </div>
-
-                {/*{loading ? (*/}
-                {/*    <div>*/}
-                {/*        Loading...*/}
-                {/*    </div>*/}
-                {/*) : (*/}
-                {/*    <div>*/}
-                {/*        {tabs[selectedTab]}*/}
-                {/*    </div>*/}
-                {/*)}*/}
             </div>
         </>
     );

@@ -174,19 +174,23 @@ export default function Header() {
                         onChange={(event) => search(event.target.value).catch((error) => toast.error(error.message))}/>
                 </div>
 
-                <div className={`max-sm:hidden px-5 py-2 bg-gray-100 rounded-full cursor-pointer hover:shadow-sm`}
-                onClick={() => handleShowPopup()}>
-                    Login
-                </div>
+                {/*<div className={`max-sm:hidden px-5 py-2 bg-gray-100 rounded-full cursor-pointer hover:shadow-sm`}*/}
+                {/*onClick={() => handleShowPopup()}>*/}
+                {/*    Login*/}
+                {/*</div>*/}
 
                 {user !== null ? (
-                    <div ref={profileActionsRef} className={`relative sm:hidden w-10 h-10 bg-white rounded-full
-                     flex justify-center items-center border-[1px] border-black cursor-pointer hover:shadow-md`}
+                    <div ref={profileActionsRef} className={`relative max-sm:w-10 sm:min-w-10 h-10 sm:px-5 bg-white rounded-full
+                        flex sm:gap-2 justify-center items-center border-[1px] border-black cursor-pointer hover:shadow-md`}
                          onClick={() => setShowProfileActions(!showProfileActions)}>
                         <FaRegUser />
 
-                        <div className={`${!showProfileActions && "hidden"} min-w-max absolute top-12 right-0 shadow-md bg-white
-                        border-[1px] border-black text-xs`}>
+                        <div className={`max-sm:hidden text-sm`}>
+                            {userData?.username}
+                        </div>
+
+                        <div className={`${!showProfileActions && "hidden"} min-w-max absolute top-12 right-0 sm:right-1/2 sm:translate-x-1/2
+                            shadow-md bg-white border-[1px] border-black text-xs`}>
                             {/*FIXME*/}
                             <Link href={`/profile/${user.uid}`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
                                 <FaRegUser />
@@ -205,17 +209,29 @@ export default function Header() {
                         </div>
                     </div>
                 ) : (
-                    <div className={`sm:hidden whitespace-nowrap h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
-                         onClick={showPopup}>
-                        Sign In
-                    </div>
+                    <>
+                        <div className={`sm:hidden whitespace-nowrap h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
+                             onClick={showPopup}>
+                            Sign In
+                        </div>
+
+                        <div className={`max-sm:hidden px-5 py-2 bg-gray-100 rounded-full cursor-pointer hover:shadow-sm`}
+                             onClick={() => handleShowPopup()}>
+                            Login
+                        </div>
+
+                        <div className={`max-sm:hidden h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
+                            onClick={() => handleShowPopup(EAuthPopup.Register)}>
+                            Register
+                        </div>
+                    </>
                 )}
 
 
-                <div className={`max-sm:hidden h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
-                onClick={() => handleShowPopup(EAuthPopup.Register)}>
-                    Register
-                </div>
+                {/*<div className={`max-sm:hidden h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}*/}
+                {/*onClick={() => handleShowPopup(EAuthPopup.Register)}>*/}
+                {/*    Register*/}
+                {/*</div>*/}
             </div>
 
             {showDrawer && (

@@ -10,14 +10,20 @@ export default function UsernamePopup() {
     const {user, userData} = useAuth();
     const {hideUsernamePopup} = usePopup();
 
+    const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/;
+
     const [username, setUsername] = useState(String(userData?.username));
     const [charging, setCharging] = useState(false);
 
     const publishUsername = async () => {
         setCharging(true);
 
+        if (!usernameRegex.test(username)) {
+            toast.error("Username should be between 4 and 15 characters long");
+        }
+
         // FIXME: Except if username already assigned to current user
-        if (!(await isUsernameAvailable(username))) {
+        else if (!(await isUsernameAvailable(username))) {
             toast.error("Username not available");
             setCharging(false);
         }

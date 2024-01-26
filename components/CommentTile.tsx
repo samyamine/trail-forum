@@ -182,7 +182,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
     return commentData !== null && (
         <>
             <Toaster />
-            <div className={`w-full py-3 text-gray-900`}>
+            <div className={`w-full p-3 text-gray-900 md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
                 <div className={`flex justify-between items-center`}>
                     <Link href={`/profile/${commentData.author.id}`} className={`mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6 bg-red-400 rounded-full`}></div>
@@ -191,8 +191,9 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                         </p>
                     </Link>
 
-                    <div ref={commentOptionsRef} className={`${showCommentOptions && "bg-gray-200"} w-fit h-fit p-2 rounded-full relative hover:bg-gray-200 
-                    cursor-pointer`} onClick={() => setCommentOptions(!showCommentOptions)}>
+                    <div ref={commentOptionsRef} className={`${showCommentOptions && "bg-gray-200"} w-fit h-fit p-2 
+                        rounded-full relative hover:bg-gray-200 cursor-pointer`}
+                        onClick={() => setCommentOptions(!showCommentOptions)}>
                         <FaEllipsis />
 
                         <div className={`${!showCommentOptions && "hidden"} absolute top-7 right-0 bg-white shadow-md border-[1px] border-black z-50`}>
@@ -216,14 +217,14 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                                 </div>
                             </div>
 
-                            <div className={`${userData?.uid !== commentData.author.id && "hidden"} px-5 py-3 flex items-center gap-2 
-                                hover:bg-gray-200 active:bg-gray-200`}
-                                 onClick={() => toggleSave().catch((error) => console.log(error.message))}>
-                                <TbTrash />
-                                <p className={`text-sm`}>
-                                    Delete
-                                </p>
-                            </div>
+                            {/*<div className={`${userData?.uid !== commentData.author.id && "hidden"} px-5 py-3 flex items-center gap-2 */}
+                            {/*    hover:bg-gray-200 active:bg-gray-200`}*/}
+                            {/*     onClick={() => toggleSave().catch((error) => console.log(error.message))}>*/}
+                            {/*    <TbTrash />*/}
+                            {/*    <p className={`text-sm`}>*/}
+                            {/*        Delete*/}
+                            {/*    </p>*/}
+                            {/*</div>*/}
 
                             <div className={`px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
                                  onClick={() => toast.success("We have received your report notification")}>

@@ -19,9 +19,10 @@ import {db} from "@/lib/firebase/config";
 import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import {ECategoryType} from "@/lib/enums";
+import UsernamePopup from "@/components/UsernamePopup";
 
 export default function NewTopicPage() {
-    const {isPopupVisible, showPopup} = usePopup();
+    const {isPopupVisible, showPopup, isUsernamePopupVisible} = usePopup();
     const {user} = useAuth();
     const router = useRouter();
 
@@ -111,14 +112,19 @@ export default function NewTopicPage() {
     }, []);
 
     return (
-        <>
+        <div className={`flex justify-center`}>
             {/*Signin popup*/}
             {isPopupVisible && (
                 <AuthPopup />
             )}
+
+            {/*Google auth set username popup*/}
+            {isUsernamePopupVisible && (
+                <UsernamePopup />
+            )}
             
-            <div className={`relative px-5 py-5 flex flex-col gap-5`}>
-                <h1 className={`text-2xl font-bold`}>
+            <div className={`relative md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-5 flex flex-col items-center-center gap-5`}>
+                <h1 className={`w-full text-2xl font-bold`}>
                     Start a new topic
                 </h1>
 
@@ -183,7 +189,7 @@ export default function NewTopicPage() {
 
 
                 <p className={`text-sm text-justify`}>
-                    By posting, you acknowledge that you have read and abide by
+                    By creating a topic, you acknowledge that you have read and abide by
                     our <span className={`underline text-orange-500 cursor-pointer`}> Terms and Conditions.</span>
                 </p>
 
@@ -193,6 +199,6 @@ export default function NewTopicPage() {
                     {charging ? "Loading..." : "Create topic"}
                 </div>
             </div>
-        </>
+        </div>
     );
 }

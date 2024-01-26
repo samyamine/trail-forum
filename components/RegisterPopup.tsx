@@ -34,7 +34,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
     };
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const usernameRegex = /^[a-zA-Z0-9_-]{4,}$/;
+    const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/;
     const passwordRegex = /^(?=.*[a-zA-Z0-9])[\w!@#$%^&*()_-]{8,}$/;
 
     // FIXME: useRef

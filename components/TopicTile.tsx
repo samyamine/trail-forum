@@ -41,7 +41,8 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
                 Loading...
             </div>
         ) : (
-        <div className={`w-full h-fit pb-3 text-gray-900 md:hover:bg-gray-100 cursor-pointer`}>
+        <div className={`w-full h-fit pb-3 text-gray-900 md:hover:bg-gray-100 cursor-pointer
+            md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
             {/*FIXME*/}
             <Link href={`/topic/${topic.uid}`} className={`w-full p-3 block`}>
                 {/*FIXME*/}

@@ -2,8 +2,8 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import AuthPopup from "@/components/AuthPopup";
-import {usePopup} from "@/app/popupContext";
-import {useAuth} from "@/app/authContext";
+import {usePopup} from "@/app/[lang]/popupContext";
+import {useAuth} from "@/app/[lang]/authContext";
 import toast from "react-hot-toast";
 import {
     addDoc,

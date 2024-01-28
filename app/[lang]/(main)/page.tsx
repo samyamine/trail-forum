@@ -2,22 +2,17 @@
 
 import TopicTile from "@/components/TopicTile";
 import Divider from "@/components/Divider";
-import { FaPlus } from "react-icons/fa6";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import React, {useEffect, useRef, useState} from "react";
-import {usePopup} from "@/app/popupContext";
 import Link from "next/link";
 import AuthPopup from "@/components/AuthPopup";
-import ProfilePicture from "@/components/ProfilePicture";
 import IconTextButton from "@/components/IconTextButton";
-import {doc, DocumentData, getDoc} from "@firebase/firestore";
-import {db} from "@/lib/firebase/config";
-import {getAuthor, getTopic, getComments} from "@/lib/topic/utils";
-import toast, {Toaster} from "react-hot-toast";
+import {getTopic} from "@/lib/topic/utils";
+import toast from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
 import UsernamePopup from "@/components/UsernamePopup";
-import {useAuth} from "@/app/authContext";
 import {ECategoryType, ETrendType} from "@/lib/enums";
+import {usePopup} from "@/app/[lang]/popupContext";
 
 export default function HomePage() {
     const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();

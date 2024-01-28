@@ -17,8 +17,8 @@ import {
 import toast, {Toaster} from "react-hot-toast";
 import {isUndefined} from "@/lib/utils";
 import {db} from "@/lib/firebase/config";
-import {useAuth} from "@/app/authContext";
-import {usePopup} from "@/app/popupContext";
+import {useAuth} from "@/app/[lang]/authContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import {formatTime} from "@/lib/topic/utils";
 import Link from "next/link";
 import {FaEllipsis} from "react-icons/fa6";

@@ -1,6 +1,6 @@
 "use client";
 
-import {usePopup} from "@/app/popupContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import React, {useState} from "react";
 import {TfiClose} from "react-icons/tfi";
 import RegisterPopup from "@/components/RegisterPopup";

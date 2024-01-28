@@ -9,7 +9,7 @@ import Divider from "@/components/Divider";
 import CommentTile from "@/components/CommentTile";
 import {TbBookmark, TbBookmarkFilled, TbFlag, TbMessageCircle2Filled} from "react-icons/tb";
 import TopicCategory from "@/components/TopicCategory";
-import {usePopup} from "@/app/popupContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {db} from "@/lib/firebase/config";
 import {
@@ -19,7 +19,7 @@ import {
     updateDoc,
 } from "@firebase/firestore";
 import toast, {Toaster} from "react-hot-toast";
-import {useAuth} from "@/app/authContext";
+import {useAuth} from "@/app/[lang]/authContext";
 import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";

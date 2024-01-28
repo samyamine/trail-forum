@@ -2,10 +2,9 @@
 
 import {FcGoogle} from "react-icons/fc";
 import React, {useState} from "react";
-import {useAuth} from "@/app/authContext";
+import {useAuth} from "@/app/[lang]/authContext";
 import toast, {Toaster} from "react-hot-toast";
-import {usePopup} from "@/app/popupContext";
-import {sign} from "crypto";
+import {usePopup} from "@/app/[lang]/popupContext";
 
 export default function SignInPopup({ onClickCallback }: {onClickCallback:  React.MouseEventHandler<HTMLDivElement>}) {
     const {signInWithEmail, googleSignIn} = useAuth();

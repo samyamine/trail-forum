@@ -10,12 +10,10 @@ import {
     FaMedal
 } from "react-icons/fa6";
 import React, {useEffect, useRef, useState} from "react";
-import {usePopup} from "@/app/popupContext";
 import Link from "next/link";
 import {TfiClose} from "react-icons/tfi";
 import {AiOutlineMenu} from "react-icons/ai";
 import {FaRegUser} from "react-icons/fa";
-import {useAuth} from "@/app/authContext";
 import {GoSignOut} from "react-icons/go";
 import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
@@ -33,8 +31,15 @@ import {
 import {collection, getDocs, or, query, where} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import toast from "react-hot-toast";
+import {usePopup} from "@/app/[lang]/popupContext";
+import {useAuth} from "@/app/[lang]/authContext";
+import {getDictionary} from "@/lib/dictionary";
+import {isUndefined} from "@/lib/utils";
 
-export default function Header() {
+export default function Header({ lang }: {lang: string}) {
+    // FIXME: Get it in the root layout
+    const [dictionary, setDictionary] = useState();
+
     const router = useRouter();
     const { showPopup, changePopupType } = usePopup();
     const { user, userData, logOut } = useAuth();
@@ -113,6 +118,11 @@ export default function Header() {
             }
         };
 
+        getDictionary(lang).then((dict) => {
+            console.log("DICTIONARY");
+            console.log(dict);
+            setDictionary(dict);
+        });
         window.addEventListener('click', handleClickOutsideOptions);
 
         return () => {
@@ -120,7 +130,7 @@ export default function Header() {
         };
     }, []);
 
-    return (
+    return !isUndefined(dictionary) && (
         <header className={`fixed top-0 z-10 w-full h-16 px-5 py-3 bg-white border-b-[1px] border-b-gray-200 flex justify-between items-center`}>
             <div className={`w-fit flex items-center gap-2`}>
                 <div className={`text-xl cursor-pointer`} onClick={() => setShowDrawer(!showDrawer)}>
@@ -212,17 +222,17 @@ export default function Header() {
                     <>
                         <div className={`sm:hidden whitespace-nowrap h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
                              onClick={showPopup}>
-                            Sign In
+                            {dictionary.header.mobile_login}
                         </div>
 
                         <div className={`max-sm:hidden px-5 py-2 bg-gray-100 rounded-full cursor-pointer hover:shadow-sm`}
                              onClick={() => handleShowPopup()}>
-                            Login
+                            {dictionary.header.login}
                         </div>
 
                         <div className={`max-sm:hidden h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
                             onClick={() => handleShowPopup(EAuthPopup.Register)}>
-                            Register
+                            {dictionary.header.register}
                         </div>
                     </>
                 )}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, {useEffect, useState} from "react";
-import {useAuth} from "@/app/authContext";
+import {useAuth} from "@/app/[lang]/authContext";
 import IconTextButton from "@/components/IconTextButton";
 import TopicTile from "@/components/TopicTile";
 import Divider from "@/components/Divider";
@@ -10,7 +10,7 @@ import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import toast, {Toaster} from "react-hot-toast";
 import {isUndefined} from "@/lib/utils";
 import {isTopic} from "@/lib/types";
-import {usePopup} from "@/app/popupContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import UsernamePopup from "@/components/UsernamePopup";
 import {arrayRemove, arrayUnion, doc, DocumentReference, getDoc, updateDoc} from "@firebase/firestore";

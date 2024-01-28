@@ -9,8 +9,8 @@ import {createUserWithEmailAndPassword} from "@firebase/auth";
 import {collection, doc, getDocs, query, setDoc, where} from "@firebase/firestore";
 import {auth, db} from "@/lib/firebase/config";
 import toast, {Toaster} from "react-hot-toast";
-import {useAuth} from "@/app/authContext";
-import {usePopup} from "@/app/popupContext";
+import {useAuth} from "@/app/[lang]/authContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import {isUsernameAvailable} from "@/lib/utils";
 
 export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>}) {

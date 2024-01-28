@@ -1,17 +1,17 @@
 import './globals.css';
 import {Metadata} from "next";
 import React, {StrictMode} from "react";
-import {PopupProvider, usePopup} from "@/app/popupContext";
 import Header from "@/components/Header";
-import {AuthProvider} from "@/app/authContext";
 import {Toaster} from "react-hot-toast";
+import {AuthProvider} from "@/app/[lang]/authContext";
+import {PopupProvider} from "@/app/[lang]/popupContext";
 
 export const metadata: Metadata = {
     title: 'Trail Forum',
     description: 'The trail runners community',
 };
 
-export default function RootLayout({children}: { children: React.ReactNode} )  {
+export default function RootLayout({children, params}: {children: React.ReactNode, params: {lang: string}} )  {
     return (
         <AuthProvider>
             <PopupProvider>
@@ -19,7 +19,7 @@ export default function RootLayout({children}: { children: React.ReactNode} )  {
                 <body className={`flex flex-col min-h-screen`}>
                 {/*className={`bg-[#0B1416]`}*/}
                 <Toaster />
-                <Header />
+                <Header lang={params.lang} />
 
                 <main className={`mt-16 flex-grow`}>
                     {children}

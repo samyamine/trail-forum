@@ -1,12 +1,12 @@
 "use client";
 
 import {TbArrowBigDown, TbArrowBigUp} from "react-icons/tb";
-import {useAuth} from "@/app/authContext";
+import {useAuth} from "@/app/[lang]/authContext";
 import {useEffect, useState} from "react";
 import {isUndefined} from "@/lib/utils";
 import {arrayRemove, arrayUnion, doc, DocumentReference, getDoc, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
-import {usePopup} from "@/app/popupContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import toast from "react-hot-toast";
 
 export default function Votes({ initCount, collection, id }: { initCount: number, collection: string, id: string }) {

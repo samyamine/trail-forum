@@ -1,7 +1,7 @@
 import toast, {Toaster} from "react-hot-toast";
 import React, {useState} from "react";
-import {useAuth} from "@/app/authContext";
-import {usePopup} from "@/app/popupContext";
+import {useAuth} from "@/app/[lang]/authContext";
+import {usePopup} from "@/app/[lang]/popupContext";
 import {isUsernameAvailable} from "@/lib/utils";
 import {doc, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";

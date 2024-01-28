@@ -35,10 +35,11 @@ import {usePopup} from "@/app/[lang]/popupContext";
 import {useAuth} from "@/app/[lang]/authContext";
 import {getDictionary} from "@/lib/dictionary";
 import {isUndefined} from "@/lib/utils";
+import {IDict} from "@/lib/interfaces";
 
 export default function Header({ lang }: {lang: string}) {
     // FIXME: Get it in the root layout
-    const [dictionary, setDictionary] = useState();
+    const [dictionary, setDictionary] = useState<any>();
 
     const router = useRouter();
     const { showPopup, changePopupType } = usePopup();
@@ -117,6 +118,10 @@ export default function Header({ lang }: {lang: string}) {
                 setShowProfileActions(false);
             }
         };
+
+        if (lang !== "fr" && lang !== "en") {
+            throw new Error(`Language ${lang} is not supported`);
+        }
 
         getDictionary(lang).then((dict) => {
             console.log("DICTIONARY");

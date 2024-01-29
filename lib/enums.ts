@@ -107,7 +107,7 @@ enum ENorthAmerica {
     Nicaragua = "Nicaragua",
     Panama = "Panama",
     SaintKittsAndNevis = "Saint Kitts and Nevis",
-    SaintLucia = "SaintLucia",
+    SaintLucia = "Saint Lucia",
     SaintVincentAndTheGrenadines = "Saint Vincent and the Grenadines",
     TrinidadAndTobago = "Trinidad and Tobago",
     UnitedStates = "United States",

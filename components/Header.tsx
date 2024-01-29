@@ -126,6 +126,8 @@ export default function Header({ lang }: {lang: string}) {
         getDictionary(lang).then((dict) => {
             console.log("DICTIONARY");
             console.log(dict);
+            console.log("AFRICA")
+            console.log(Object.entries(dict.africa));
             setDictionary(dict);
         });
         window.addEventListener('click', handleClickOutsideOptions);
@@ -153,7 +155,7 @@ export default function Header({ lang }: {lang: string}) {
             <div className={`${showSearch && "hidden"} max-md:hidden w-1/2 h-full px-5 ml-2 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}
                 onClick={() => setShowSearch(true)}>
                 <FaMagnifyingGlass />
-                <p>Search</p>
+                <p>{dictionary.header.search}</p>
             </div>
 
             {/*Desktop Search Bar Open*/}
@@ -163,7 +165,7 @@ export default function Header({ lang }: {lang: string}) {
                 <input
                     ref={desktopInputRef}
                     type="text"
-                    placeholder="Search"
+                    placeholder={dictionary.header.search}
                     className="w-full ml-2 bg-transparent border-none outline-none"
                     value={searchText}
                     onChange={(event) => search(event.target.value).catch((error) => toast.error(error.message))}/>
@@ -183,7 +185,7 @@ export default function Header({ lang }: {lang: string}) {
                     <input
                         ref={mobileInputRef}
                         type="text"
-                        placeholder="Search"
+                        placeholder={dictionary.header.search}
                         className="w-full ml-2 bg-transparent border-none outline-none"
                         value={searchText}
                         onChange={(event) => search(event.target.value).catch((error) => toast.error(error.message))}/>
@@ -210,7 +212,7 @@ export default function Header({ lang }: {lang: string}) {
                             <Link href={`/profile/${user.uid}`} className={`px-3 py-2 flex gap-3 items-center hover:bg-gray-200 active:bg-gray-200`}>
                                 <FaRegUser />
                                 <p>
-                                    Profile
+                                    {dictionary.header.profile}
                                 </p>
                             </Link>
 
@@ -218,7 +220,7 @@ export default function Header({ lang }: {lang: string}) {
                             onClick={handleLogOut}>
                                 <GoSignOut />
                                 <p>
-                                    Logout
+                                    {dictionary.header.logout}
                                 </p>
                             </div>
                         </div>
@@ -257,7 +259,7 @@ export default function Header({ lang }: {lang: string}) {
                         shadow-md flex flex-col gap-5`}>
                         <div className={`flex flex-col gap-2 text-sm`}>
                             <h3 className={`mb-1 text-lg text-gray-500`}>
-                                Location
+                                {dictionary.header.location}
                             </h3>
 
                             <div className={`cursor-pointer flex justify-between items-center`}
@@ -265,7 +267,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaMedal />
                                     <p className={`font-bold`}>
-                                        Top 10
+                                        {dictionary.header.top}
                                     </p>
                                 </div>
 
@@ -278,10 +280,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.Top && (
                                 <div>
-                                    {Object.values(ETop).map((value, index) => (
+                                    {Object.entries(dictionary.top).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                        onClick={() => alert("FIXME")}>
-                                            {value}
+                                           onClick={() => alert("FIXME")}>
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -292,7 +294,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaEarthEurope />
                                     <p className={`font-bold`}>
-                                        Europe
+                                        {dictionary.header.europe}
                                     </p>
                                 </div>
 
@@ -305,10 +307,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.Europe && (
                                 <div>
-                                    {Object.values(EEurope).map((value, index) => (
+                                    {Object.entries(dictionary.europe).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
                                            onClick={() => alert("FIXME")}>
-                                            {value}
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -319,7 +321,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaEarthAfrica />
                                     <p className={`font-bold`}>
-                                        Africa
+                                        {dictionary.header.africa}
                                     </p>
                                 </div>
 
@@ -332,10 +334,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.Africa && (
                                 <div>
-                                    {Object.values(EAfrica).map((value, index) => (
+                                    {Object.entries(dictionary.africa).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
                                            onClick={() => alert("FIXME")}>
-                                            {value}
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -346,7 +348,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaEarthAmericas />
                                     <p className={`font-bold`}>
-                                        North America
+                                        {dictionary.header.northAmerica}
                                     </p>
                                 </div>
 
@@ -359,10 +361,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.NorthAmerica && (
                                 <div>
-                                    {Object.values(ENorthAmerica).map((value, index) => (
+                                    {Object.entries(dictionary.northAmerica).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
                                            onClick={() => alert("FIXME")}>
-                                            {value}
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -373,7 +375,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaEarthAmericas />
                                     <p className={`font-bold`}>
-                                        South America
+                                        {dictionary.header.southAmerica}
                                     </p>
                                 </div>
 
@@ -386,10 +388,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.SouthAmerica && (
                                 <div>
-                                    {Object.values(ESouthAmerica).map((value, index) => (
+                                    {Object.entries(dictionary.southAmerica).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
                                            onClick={() => alert("FIXME")}>
-                                            {value}
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -400,7 +402,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaEarthAsia />
                                     <p className={`font-bold`}>
-                                        Asia
+                                        {dictionary.header.asia}
                                     </p>
                                 </div>
 
@@ -413,10 +415,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.Asia && (
                                 <div>
-                                    {Object.values(EAsia).map((value, index) => (
+                                    {Object.entries(dictionary.asia).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
                                            onClick={() => alert("FIXME")}>
-                                            {value}
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -427,7 +429,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div className={`flex gap-2 items-center`}>
                                     <FaEarthOceania />
                                     <p className={`font-bold`}>
-                                        Oceania
+                                        {dictionary.header.oceania}
                                     </p>
                                 </div>
 
@@ -440,10 +442,10 @@ export default function Header({ lang }: {lang: string}) {
 
                             {showContinent === EContinent.Oceania && (
                                 <div>
-                                    {Object.values(EOceania).map((value, index) => (
+                                    {Object.entries(dictionary.oceania).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
                                            onClick={() => alert("FIXME")}>
-                                            {value}
+                                            {String(value)}
                                         </p>
                                     ))}
                                 </div>
@@ -452,33 +454,33 @@ export default function Header({ lang }: {lang: string}) {
 
                         <div className={`w-fit flex flex-col gap-1 text-sm`}>
                             <h3 className={`mb-1 text-lg text-gray-500`}>
-                                Social media
+                                {dictionary.header.socialMedia}
                             </h3>
                             <p className={`hover:underline active:underline cursor-pointer`}>
-                                Instagram
+                                {dictionary.header.instagram}
                             </p>
                             <p className={`hover:underline active:underline cursor-pointer`}>
-                                Facebook
+                                {dictionary.header.facebook}
                             </p>
                             <p className={`hover:underline active:underline cursor-pointer`}>
-                                Twitter
+                                {dictionary.header.twitter}
                             </p>
                             <p className={`hover:underline active:underline cursor-pointer`}>
-                                TikTok
+                                {dictionary.header.tikTok}
                             </p>
                         </div>
 
                         <div className={`w-fit flex flex-col gap-1 text-sm`}>
                             <h3 className={`mb-1 text-lg text-gray-500`}>
-                                Resources
+                                {dictionary.header.resources}
                             </h3>
                             <Link href={`/contact`} className={`hover:underline active:underline cursor-pointer`}
                             onClick={() => setShowDrawer(false)}>
-                                Contact
+                                {dictionary.header.contact}
                             </Link>
                             <Link href={`/advertise`} className={`hover:underline active:underline cursor-pointer`}
                                   onClick={() => setShowDrawer(false)}>
-                                Advertise on Zone Trail
+                                {dictionary.header.advertise}
                             </Link>
                         </div>
                     </div>
@@ -491,7 +493,7 @@ export default function Header({ lang }: {lang: string}) {
 
                     <div className={`w-full min-h-40 p-3 fixed top-16 left-0 bg-white shadow-md 
                     flex justify-center items-center`}>
-                        No result.
+                        {dictionary.header.noResult}.
                     </div>
                 </div>
             )}

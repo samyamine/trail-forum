@@ -1,5 +1,9 @@
 "use client";
 
+export async function generateStaticParams() {
+    return { lang: "fr" };
+}
+
 import React, {useEffect, useRef, useState} from "react";
 import AuthPopup from "@/components/AuthPopup";
 import {usePopup} from "@/app/[lang]/popupContext";
@@ -21,7 +25,7 @@ import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import {ECategoryType} from "@/lib/enums";
 import UsernamePopup from "@/components/UsernamePopup";
 
-export default function NewTopicPage() {
+export default function NewTopicPage({ params }: { params: { lang: string }}) {
     const {isPopupVisible, showPopup, isUsernamePopupVisible} = usePopup();
     const {user} = useAuth();
     const router = useRouter();

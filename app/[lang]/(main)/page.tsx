@@ -1,5 +1,9 @@
 "use client";
 
+export async function generateStaticParams() {
+    return { lang: "fr" };
+}
+
 import TopicTile from "@/components/TopicTile";
 import Divider from "@/components/Divider";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";

@@ -1,5 +1,8 @@
+export async function generateStaticParams() {
+    return { lang: "fr" };
+}
 
-export default function ContactPage() {
+export default function ContactPage({ params }: { params: { lang: string }}) {
     return (
         <div className={`px-5 py-3`}>
             <h1 className={`py-5 text-2xl font-bold`}>

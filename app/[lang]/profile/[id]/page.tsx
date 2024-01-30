@@ -1,5 +1,9 @@
 "use client";
 
+export async function generateStaticParams() {
+    return { id: "fTn2KGNMyyRei1J8FZUQ6M5ICDA3", lang: "fr" };
+}
+
 import React, {useEffect, useState} from "react";
 import {useAuth} from "@/app/[lang]/authContext";
 import IconTextButton from "@/components/IconTextButton";

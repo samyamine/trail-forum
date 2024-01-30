@@ -1,10 +1,5 @@
 
-// Return a list of `params` to populate the [slug] dynamic segment
-export async function generateStaticParams() {
-    return { lang: "fr" };
-}
-
-export default function AboutPage({ params }: { params: { lang: string }}) {
+export default function AboutPage() {
     return (
         <div className={`px-5 py-5`}>
             <h1 className={`py-5 font-bold text-2xl`}>

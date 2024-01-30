@@ -1,8 +1,5 @@
-export async function generateStaticParams() {
-    return { lang: "fr" };
-}
 
-export default function HelpPage({ params }: { params: { lang: string }}) {
+export default function HelpPage() {
     return (
         <div>
             HELP

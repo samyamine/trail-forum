@@ -1,9 +1,5 @@
 "use client";
 
-export async function generateStaticParams() {
-    return { id: "55Pab03VkDOehOHuPtk6", lang: "fr" };
-}
-
 import {FaEllipsis} from "react-icons/fa6";
 import Votes from "@/components/Votes";
 import Share from "@/components/Share";

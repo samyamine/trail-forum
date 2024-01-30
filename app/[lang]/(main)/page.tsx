@@ -13,13 +13,15 @@ import {ITopic} from "@/lib/interfaces";
 import UsernamePopup from "@/components/UsernamePopup";
 import {ECategoryType, ETrendType} from "@/lib/enums";
 import {usePopup} from "@/app/[lang]/popupContext";
+import {getDictionary} from "@/lib/dictionary";
 
-export default function HomePage() {
+export default function HomePage({ params }: {params: { lang: string }}) {
     const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
 
     const trendsRef = useRef<HTMLDivElement>(null);
     const categoriesRef = useRef<HTMLDivElement>(null);
 
+    const [dictionary, setDictionary] = useState<any>();
     const [showTrendOptions, setShowTrendOptions] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
     const [topic, setTopic] = useState<ITopic | null>(null);
@@ -38,6 +40,14 @@ export default function HomePage() {
                 setShowCategoryOptions(false);
             }
         };
+
+        if (params.lang !== "fr" && params.lang !== "en") {
+            throw new Error(`Language ${params.lang} is not supported`);
+        }
+
+        getDictionary(params.lang).then((dict) => {
+            setDictionary(dict);
+        });
 
         window.addEventListener('click', handleClickOutsideTrend);
         window.addEventListener('click', handleClickOutsideCategory);
@@ -140,17 +150,17 @@ export default function HomePage() {
 
                     {/*Main topics feed*/}
                     <div className={`w-full md:w-2/3 lg:w-1/2 lg:mx-10 flex flex-col items-center`}>
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
                     </div>
                 </div>

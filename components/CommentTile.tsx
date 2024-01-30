@@ -23,10 +23,11 @@ import {formatTime} from "@/lib/topic/utils";
 import Link from "next/link";
 import {FaEllipsis} from "react-icons/fa6";
 import {isComment} from "@/lib/types";
+import {getDictionary} from "@/lib/dictionary";
 
 const REPLY_MAX_LENGTH = 500;
 
-export default function CommentTile({ comment }: { comment: IComment | DocumentReference }) {
+export default function CommentTile({ comment, dictionary }: { comment: IComment | DocumentReference, dictionary: any }) {
     const {userData, user} = useAuth();
     const {showPopup} = usePopup();
 
@@ -34,6 +35,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
 
     const [showCommentOptions, setCommentOptions] = useState(false);
     const [commentData, setCommentData] = useState<IComment | null>(null);
+    const [authorName, setAuthorName] = useState("deleted user");
     const [reply, setReply] = useState("");
     const [replyTooLong, setReplyTooLong] = useState(false);
     const [showReply, setShowReply] = useState(false);
@@ -147,6 +149,13 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                     throw new Error("Comment does not exist");
                 }
 
+                const author = await getDoc(commentSnapshot.data().author);
+
+                if (author.exists()) {
+                    const authorData = author.data() as IUser;
+                    setAuthorName(authorData.username);
+                }
+
                 setCommentData({
                     uid: commentSnapshot.id,
                     answers: commentSnapshot.data().answers,
@@ -160,6 +169,13 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                 });
             }
             else {
+                const author = await getDoc(comment.author);
+
+                if (author.exists()) {
+                    const authorData = author.data() as IUser;
+                    setAuthorName(authorData.username);
+                }
+
                 setCommentData(comment);
             }
         };
@@ -187,7 +203,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                     <Link href={`/profile/${commentData.author.id}`} className={`mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6 bg-red-400 rounded-full`}></div>
                         <p className={`font-bold text-sm`}>
-                            user - <span className={`font-normal text-gray-500`}>{formatTime(commentData.creationDate)}</span>
+                            {authorName} - <span className={`font-normal text-gray-500`}>{formatTime(commentData.creationDate, dictionary)}</span>
                         </p>
                     </Link>
 
@@ -203,7 +219,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                                 onClick={() => toggleSave().catch((error) => console.log(error.message))}>
                                     <TbBookmarkFilled />
                                     <p className={`text-sm`}>
-                                        Remove
+                                        {dictionary.comment.remove}
                                     </p>
                                 </div>
 
@@ -212,25 +228,16 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                                 onClick={() => toggleSave().catch((error) => console.log(error.message))}>
                                     <TbBookmark />
                                     <p className={`text-sm`}>
-                                        Save
+                                        {dictionary.comment.save}
                                     </p>
                                 </div>
                             </div>
-
-                            {/*<div className={`${userData?.uid !== commentData.author.id && "hidden"} px-5 py-3 flex items-center gap-2 */}
-                            {/*    hover:bg-gray-200 active:bg-gray-200`}*/}
-                            {/*     onClick={() => toggleSave().catch((error) => console.log(error.message))}>*/}
-                            {/*    <TbTrash />*/}
-                            {/*    <p className={`text-sm`}>*/}
-                            {/*        Delete*/}
-                            {/*    </p>*/}
-                            {/*</div>*/}
 
                             <div className={`px-5 py-3 flex items-center gap-2 hover:bg-red-200 active:bg-red-200 text-red-500`}
                                  onClick={() => toast.success("We have received your report notification")}>
                                 <TbFlag />
                                 <p className={`text-sm`}>
-                                    Report
+                                    {dictionary.comment.report}
                                 </p>
                             </div>
                         </div>
@@ -243,12 +250,12 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                 <div className={`pl-5 pr-3 flex gap-5`}>
                     <Votes id={commentData.uid} collection={`comments`} initCount={commentData.upVoted.length - commentData.downVoted.length} />
                     <div className={`px-2 rounded-full cursor-pointer flex gap-1 items-center border-[1px] border-black 
-                hover:bg-gray-300 ${showReply && "bg-gray-300"} text-xs`}
+                        hover:bg-gray-300 ${showReply && "bg-gray-300"} text-xs`}
                          onClick={() => setShowReply(!showReply)}>
                         <div>
                             <TbMessageCircle />
                         </div>
-                        <p className={`p-1`}>Reply</p>
+                        <p className={`p-1`}>{dictionary.comment.reply}</p>
                     </div>
                     <Share />
                 </div>
@@ -258,7 +265,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                         <p className={`text-xs`}>{REPLY_MAX_LENGTH - reply.length}</p>
                         <textarea className={`w-full p-2 resize-none overflow-y-auto ${replyTooLong ? "bg-red-200" : "bg-gray-100"}
                         rounded-lg border-[1px] border-gray-400 text-sm placeholder-gray-400`}
-                                  rows={5} cols={50} placeholder={`What is your opinion ?`} value={reply}
+                                  rows={5} cols={50} placeholder={dictionary.comment.opinion} value={reply}
                                   onChange={(event) => setNewReply(event.target.value)}>
                         </textarea>
 
@@ -266,7 +273,7 @@ export default function CommentTile({ comment }: { comment: IComment | DocumentR
                             <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-orange-500 rounded-sm shadow-md 
                             active:shadow-sm text-white text-sm cursor-pointer`}
                                  onClick={() => postReply().catch((error) => console.log(error.message))}>
-                                <p>{loading ? "Loading..." : "Reply"}</p>
+                                <p>{loading ? `${dictionary.loading}...` : dictionary.comment.reply}</p>
                             </div>
                         </div>
                     </div>

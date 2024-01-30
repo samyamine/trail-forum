@@ -17,6 +17,7 @@ import {arrayRemove, arrayUnion, doc, DocumentReference, getDoc, updateDoc} from
 import {db} from "@/lib/firebase/config";
 import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
 import {FaMinus, FaPlus} from "react-icons/fa6";
+import {getDictionary} from "@/lib/dictionary";
 
 enum ETabs {
     Comments = "Comments",
@@ -33,11 +34,11 @@ interface IData {
     username: string,
 }
 
-export default function ProfilePage({ params }: { params: { id: string }}) {
+export default function ProfilePage({ params }: { params: { id: string, lang: string }}) {
     const {loading, userData} = useAuth();
     const {showPopup, isUsernamePopupVisible, isPopupVisible} = usePopup();
 
-    // const [loading, setLoading] = useState(true);
+    const [dictionary, setDictionary] = useState<any>();
     const [selectedTab, setSelectedTab] = useState(ETabs.Topics);
     const [following, setFollowing] = useState(false);
     const [profileData, setProfileData] = useState<IData>({
@@ -67,7 +68,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             <div>
                 {profileData.comments.map((comment, index) => (
                     <div key={index} className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
-                        <CommentTile comment={comment} />
+                        <CommentTile comment={comment} dictionary={dictionary} />
                         <Divider />
                     </div>
                 ))}
@@ -78,10 +79,10 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                 {profileData.saved.map((element, index) => (
                     <div key={index}>
                         {isTopic(element) ? (
-                            <TopicTile topic={element} />
+                            <TopicTile topic={element} dictionary={dictionary} />
                         ) : (
                             <div className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
-                                <CommentTile comment={element} />
+                                <CommentTile comment={element} dictionary={dictionary} />
                             </div>
                         )}
                         <Divider />
@@ -93,7 +94,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             <div>
                 {profileData.topics.map((topic, index) => (
                     <div key={index}>
-                        <TopicTile topic={topic} />
+                        <TopicTile topic={topic} dictionary={dictionary} />
                         <Divider />
                     </div>
                 ))}
@@ -161,12 +162,20 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
             }
         };
 
+        if (params.lang !== "fr" && params.lang !== "en") {
+            throw new Error(`Language ${params.lang} is not supported`);
+        }
+
+        getDictionary(params.lang).then((dict) => {
+            setDictionary(dict);
+        });
+
         initData().catch((error) => toast.error(error.message));
     }, [userData]);
 
     return loading ? (
         <div className={`w-full h-full flex justify-center items-center`}>
-            LOADING PROFILE
+            Loading...
         </div>
         ) : (
         <>
@@ -196,11 +205,11 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
 
                             <div className={`flex items-center gap-5 text-xs`}>
                                 <p>
-                                    {profileData.followers.length} Followers
+                                    {profileData.followers.length} {dictionary.profile.followers}
                                 </p>
 
                                 <p>
-                                    {profileData.following.length} Following
+                                    {profileData.following.length} {dictionary.profile.following}
                                 </p>
                             </div>
                         </div>
@@ -213,10 +222,10 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                             <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-gray-200 rounded-sm 
                                 active:bg-gray-100 text-black text-sm cursor-pointer`}>
                                 <FaMinus />
-                                <p>Unfollow</p>
+                                <p>{dictionary.profile.unfollow}</p>
                             </div>
                         ) : (
-                            <IconTextButton text={"Follow"} />
+                            <IconTextButton text={dictionary.profile.follow} />
                         )}
                     </div>
                 )}
@@ -226,7 +235,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                     cursor-pointer ${selectedTab === ETabs.Topics && "text-orange-500 border-b-[1px] border-orange-500"}`}
                          onClick={() => setSelectedTab(ETabs.Topics)}>
                         <p>
-                            Topics
+                            {dictionary.profile.topics}
                         </p>
                     </div>
 
@@ -234,7 +243,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                         cursor-pointer ${selectedTab === ETabs.Comments && "text-orange-500 border-b-[1px] border-orange-500"}`}
                          onClick={() => setSelectedTab(ETabs.Comments)}>
                         <p>
-                            Comments
+                            {dictionary.profile.comments}
                         </p>
                     </div>
 
@@ -244,7 +253,7 @@ export default function ProfilePage({ params }: { params: { id: string }}) {
                         cursor-pointer ${selectedTab === ETabs.Saved && "text-orange-500 border-b-[1px] border-orange-500"}`}
                              onClick={() => setSelectedTab(ETabs.Saved)}>
                             <p>
-                                Saved
+                                {dictionary.profile.saved}
                             </p>
                         </div>
                     )}

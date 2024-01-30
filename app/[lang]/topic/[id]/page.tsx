@@ -25,6 +25,7 @@ import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
 import UsernamePopup from "@/components/UsernamePopup";
 import Link from "next/link";
+import {getDictionary} from "@/lib/dictionary";
 
 const COMMENT_MAX_LENGTH = 500;
 
@@ -35,13 +36,14 @@ interface IData {
     commentsNumber: number,
 }
 
-export default function TopicPage({ params }: { params: { id: string }}) {
+export default function TopicPage({ params }: { params: { id: string, lang: string }}) {
     const {isPopupVisible, isUsernamePopupVisible, showPopup} = usePopup();
     const {userData} = useAuth();
 
     const sortRef = useRef<HTMLDivElement>(null);
     const topicOptionsRef = useRef<HTMLDivElement>(null);
 
+    const [dictionary, setDictionary] = useState<any>();
     const [commentText, setCommentText] = useState("");
     const [commentTooLong, setCommentTooLong] = useState(false);
     const [showSortOptions, setShowSortOptions] = useState(false);
@@ -179,6 +181,14 @@ export default function TopicPage({ params }: { params: { id: string }}) {
             }
         };
 
+        if (params.lang !== "fr" && params.lang !== "en") {
+            throw new Error(`Language ${params.lang} is not supported`);
+        }
+
+        getDictionary(params.lang).then((dict) => {
+            setDictionary(dict);
+        });
+
         window.addEventListener('click', handleClickOutsideSort);
         window.addEventListener('click', handleClickOutsideTopic);
 
@@ -218,7 +228,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                 className={`w-fit flex items-center gap-2`}>
                                     <p className={`text-sm font-bold`}>
                                         {topicData.author.username} - <span className={`font-normal text-gray-500`}>
-                                        {formatTime(topicData.topic.creationDate)}
+                                        {formatTime(topicData.topic.creationDate, dictionary)}
                                         </span>
                                     </p>
                                 </Link>
@@ -234,14 +244,14 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                         <div className={`${!isSaved() && "hidden"} flex items-center gap-2`}>
                                             <TbBookmarkFilled />
                                             <p className={`text-sm`}>
-                                                Remove
+                                                {dictionary.topic.remove}
                                             </p>
                                         </div>
 
                                         <div className={`${isSaved() && "hidden"} flex items-center gap-2`}>
                                             <TbBookmark />
                                             <p className={`text-sm`}>
-                                                Save
+                                                {dictionary.topic.save}
                                             </p>
                                         </div>
                                     </div>
@@ -251,7 +261,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                         <TbFlag />
                                         {/*FIXME*/}
                                         <p className={`text-sm`}>
-                                            Report
+                                            {dictionary.topic.report}
                                         </p>
                                     </div>
                                 </div>
@@ -275,7 +285,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                id={topicData.topic.uid} collection={"topics"} />
                         <div className={`flex items-center gap-2 text-xs font-bold text-gray-400`}>
                             <TbMessageCircle2Filled />
-                            <p>{topicData.commentsNumber} Comments</p>
+                            <p>{topicData.commentsNumber} {dictionary.topic.comments}</p>
                         </div>
                         <Share />
                     </div>
@@ -285,7 +295,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                         <p className={`text-xs`}>{COMMENT_MAX_LENGTH - commentText.length}</p>
                         <textarea className={`w-full p-2 resize-none overflow-y-auto ${commentTooLong ? "bg-red-200" : "bg-gray-100"}
                         rounded-lg border-[1px] border-gray-400 text-sm placeholder-gray-400`}
-                                  rows={5} cols={50} placeholder={`What is your opinion ?`} value={commentText}
+                                  rows={5} cols={50} placeholder={dictionary.topic.opinion} value={commentText}
                         onChange={(event) => setNewComment(event.target.value)}>
                         </textarea>
 
@@ -318,7 +328,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
 
                             <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-orange-500 rounded-sm shadow-md 
                             active:shadow-sm text-white text-sm cursor-pointer`} onClick={() => postComment().catch((error) => console.log(error.message))}>
-                                <p>Post comment</p>
+                                <p>{dictionary.topic.reply}</p>
                             </div>
                         </div>
                     </div>
@@ -327,7 +337,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                     <Divider />
                     {topicData.comments.map((comment, index) => (
                         <div key={index} className={`flex flex-col`}>
-                            <CommentTile comment={comment} />
+                            <CommentTile comment={comment} dictionary={dictionary} />
 
                             {comment.answers.map((nestedAnswer, nestedIndex) => (
                                 <div key={`n${nestedIndex}`} className={`flex justify-start`}>
@@ -335,7 +345,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                                         <div className={`w-0.5 h-full bg-gray-300`}></div>
                                     </div>
                                     <div className={`flex-grow`}>
-                                        <CommentTile comment={nestedAnswer} />
+                                        <CommentTile comment={nestedAnswer} dictionary={dictionary} />
                                     </div>
                                 </div>
                             ))}
@@ -344,6 +354,7 @@ export default function TopicPage({ params }: { params: { id: string }}) {
                 </div>
             ) : (
                 <div className={`w-full h-full mt-10 flex flex-grow justify-center items-center`}>
+                    {/*FIXME*/}
                     Loading...
                 </div>
             )}

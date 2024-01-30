@@ -1,6 +1,7 @@
 import {doc, DocumentData, DocumentReference, DocumentSnapshot, getDoc, Timestamp} from "@firebase/firestore";
-import {IComment, ITopic, IUser} from "@/lib/interfaces";
+import {IComment, IDict, ITopic, IUser} from "@/lib/interfaces";
 import {db} from "@/lib/firebase/config";
+import {getDictionary} from "@/lib/dictionary";
 
 async function getAuthor(authorReference: DocumentReference): Promise<IUser> {
     const authorSnapshot = await getDoc(authorReference);
@@ -139,7 +140,7 @@ async function getCommentAnswers(answerReferences: DocumentReference[]): Promise
     return answers;
 }
 
-function formatTime(timestamp: Timestamp): string {
+function formatTime(timestamp: Timestamp, dictionary: any): string {
     const now = Timestamp.now();
     const elapsedSeconds = now.seconds - timestamp.seconds;
 
@@ -148,16 +149,16 @@ function formatTime(timestamp: Timestamp): string {
     const day = 24 * hour;
 
     if (elapsedSeconds < minute) {
-        return `${elapsedSeconds} second${elapsedSeconds !== 1 ? 's' : ''} ago`;
+        return `${dictionary.formatTime.prepend} ${elapsedSeconds} ${dictionary.formatTime.second}${elapsedSeconds !== 1 ? 's' : ''} ${dictionary.formatTime.append}`;
     } else if (elapsedSeconds < hour) {
         const minutes = Math.floor(elapsedSeconds / minute);
-        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        return `${dictionary.formatTime.prepend} ${minutes} ${dictionary.formatTime.minute}${minutes !== 1 ? 's' : ''} ${dictionary.formatTime.append}`;
     } else if (elapsedSeconds < day) {
         const hours = Math.floor(elapsedSeconds / hour);
-        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+        return `${dictionary.formatTime.prepend} ${hours} ${dictionary.formatTime.hour}${hours !== 1 ? 's' : ''} ${dictionary.formatTime.append}`;
     } else {
         const days = Math.floor(elapsedSeconds / day);
-        return `${days} day${days !== 1 ? 's' : ''} ago`;
+        return `${dictionary.formatTime.prepend} ${days} ${dictionary.formatTime.day}${days !== 1 ? 's' : ''} ${dictionary.formatTime.append}`;
     }
 }
 

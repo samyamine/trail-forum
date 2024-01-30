@@ -124,12 +124,9 @@ export default function Header({ lang }: {lang: string}) {
         }
 
         getDictionary(lang).then((dict) => {
-            console.log("DICTIONARY");
-            console.log(dict);
-            console.log("AFRICA")
-            console.log(Object.entries(dict.africa));
             setDictionary(dict);
         });
+
         window.addEventListener('click', handleClickOutsideOptions);
 
         return () => {

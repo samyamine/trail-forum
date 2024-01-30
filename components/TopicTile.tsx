@@ -13,7 +13,7 @@ import {DocumentSnapshot, getDoc} from "@firebase/firestore";
 import {formatTime, getAuthor} from "@/lib/topic/utils";
 import toast from "react-hot-toast";
 
-export default function TopicTile({ topic }: { topic: ITopic }) {
+export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictionary: any }) {
     const [author, setAuthor] = useState<IUser | null>(null);
     const [commentCount, setCommentCount] = useState(0);
 
@@ -38,7 +38,7 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
     return author === null ?
         (
             <div>
-                Loading...
+                {dictionary.loading}...
             </div>
         ) : (
         <div className={`w-full h-fit pb-3 text-gray-900 md:hover:bg-gray-100 cursor-pointer
@@ -47,14 +47,13 @@ export default function TopicTile({ topic }: { topic: ITopic }) {
             <Link href={`/topic/${topic.uid}`} className={`w-full p-3 block`}>
                 {/*FIXME*/}
                 <object>
-                    <Link href={`/profile/${author.uid}`}
-                          className={`w-fit mb-2 flex items-center gap-2`}>
+                    <Link href={`/profile/${author.uid}`} className={`w-fit mb-2 flex items-center gap-2`}>
                         <div className={`w-6 h-6`}>
                             {/*FIXME*/}
                             <ProfilePicture />
                         </div>
                         <p className={`text-sm`}>
-                            {author.username} - <span className={`text-gray-500`}>{formatTime(topic.creationDate)}</span>
+                            {author.username} - <span className={`text-gray-500`}>{formatTime(topic.creationDate, dictionary)}</span>
                         </p>
                     </Link>
                 </object>

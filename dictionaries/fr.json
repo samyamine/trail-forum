@@ -1,4 +1,5 @@
 {
+  "loading": "Chargement",
   "header": {
     "mobileLogin": "Connexion",
     "location": "Localisation",
@@ -248,5 +249,39 @@
     "spain": "Espagne",
     "unitedKingdom": "Royaume-Uni",
     "unitedStates": "Etats-Unis"
+  },
+  "formatTime": {
+    "second":  "seconde",
+    "minute": "minute",
+    "hour":  "heur",
+    "day": "jour",
+    "prepend": "Il y a",
+    "append": ""
+  },
+  "comment": {
+    "remove": "Enlever",
+    "report": "Signaler",
+    "save": "Enregistrer",
+    "reply": "Répondre",
+    "opinion": "Qu'en pensez-vous ?"
+  },
+  "topic": {
+    "comments": "Commentaires",
+    "remove": "Enlever",
+    "report": "Signaler",
+    "save": "Enregistrer",
+    "reply": "Publier",
+    "opinion": "Qu'en pensez-vous ?"
+  },
+  "profile": {
+    "followers": "Followers",
+    "following": "suivi(e)s",
+    "unfollow": "Ne plus suivre",
+    "follow": "Suivre",
+    "topics": "Topics",
+    "comments": "Comentaires",
+    "saved":  "Enregistrés"
+  },
+  "main": {
   }
 }

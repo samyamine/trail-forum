@@ -16,13 +16,10 @@ import {
     getDoc,
     onSnapshot,
     setDoc,
-    Unsubscribe
 } from "@firebase/firestore";
 import {ITopic, IUser} from "@/lib/interfaces";
 import {isUndefined} from "@/lib/utils";
 import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
-import {allGeneratedPositionsFor} from "@jridgewell/trace-mapping";
-import toast from "react-hot-toast";
 
 interface IAuthContextProps {
     loading: boolean,
@@ -79,29 +76,15 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
             }
         };
 
-        const handleUserProfile = async (currentUser: User) => {
-            const userRef = doc(db, "users", currentUser.uid);
-            const snapshot = await getDoc(userRef);
-
-            return snapshot.exists() ? userRef : null;
-        };
-
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             console.log("AUTH CHANGED")
             if (currentUser) {
-                const userRef = await handleUserProfile(currentUser);
-                if (userRef === null) {
-                    // FIXME: improve flow
-                    toast.error("Specified user does not exist in database");
-                    await signOut(auth);
-                    window.location.reload();
-                }
-                else {
-                    onSnapshot(userRef, (snapshot) => {
-                        console.log("SNAPSHOT");
-                        initData(snapshot).catch((error) => console.log(error.message));
-                    });
-                }
+                console.log(currentUser.providerData);
+
+                onSnapshot(doc(db, "users", currentUser.uid), (snapshot) => {
+                    console.log("SNAPSHOT");
+                    initData(snapshot).catch((error) => console.log(error.message));
+                });
             }
 
             if (currentUser === null) {
@@ -135,6 +118,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     const signUpWithEmail = async (email: string, password: string, username: string) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
+        console.log("ADDING...")
         await setDoc(doc(db, "users", userCredential.user.uid), {
             answers: [],
             comments: [],
@@ -148,6 +132,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
             followers: [],
             following: [],
         });
+
+        console.log("ADDED !")
     };
 
     const logOut = async () => signOut(auth);
@@ -170,7 +156,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 topics: [],
                 upVotedComments: [],
                 upVotedTopics: [],
-                // FIXME
+                // FIXME: random username
                 username: "funny-generated-username",
                 followers: [],
                 following: [],

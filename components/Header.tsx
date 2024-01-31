@@ -35,16 +35,22 @@ import {usePopup} from "@/app/[lang]/popupContext";
 import {useAuth} from "@/app/[lang]/authContext";
 import {getDictionary} from "@/lib/dictionary";
 import {isUndefined} from "@/lib/utils";
-import {IDict} from "@/lib/interfaces";
+import {IDict, ITopic} from "@/lib/interfaces";
+import {getTopic} from "@/lib/topic/utils";
+import TopicTile from "@/components/TopicTile";
+import Divider from "@/components/Divider";
 
 export default function Header({ lang }: {lang: string}) {
     // FIXME: Get it in the root layout
     const [dictionary, setDictionary] = useState<any>();
 
+
     const router = useRouter();
     const { showPopup, changePopupType } = usePopup();
     const { user, userData, logOut } = useAuth();
 
+    const [topics, setTopics] = useState<ITopic[]>([]);
+    const [searchResults, setSearchResults] = useState<ITopic[]>([]);
     const [searchText, setSearchText] = useState("");
     const [showDrawer, setShowDrawer] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
@@ -61,6 +67,31 @@ export default function Header({ lang }: {lang: string}) {
         router.push("/");
         // window.location.reload();
     };
+
+    const handleShowSearch = async (value: boolean) => {
+        setShowSearch(value);
+
+        if (value) {
+            // GET ALL TOPICS
+            const topicsContent = [];
+            const querySnapshot = await getDocs(collection(db, "topics"));
+
+            for (const document of querySnapshot.docs) {
+                const topic = await getTopic(document.id);
+
+                topicsContent.push(topic);
+            }
+
+            setTopics(topicsContent);
+
+            console.log("TOPICS")
+            console.log(topicsContent)
+        }
+        else {
+            setTopics([]);
+            setSearchResults([]);
+        }
+    }
 
     const handleSetShowContinent = (value: EContinent) => {
         if (showContinent === value) {
@@ -79,25 +110,28 @@ export default function Header({ lang }: {lang: string}) {
     const search = async (newText: string) => {
         // FIXME
         console.log("Entering search");
+        console.log(topics)
         setSearchText(newText);
-        if (newText !== "") {
-            console.log("newText !== \"\"")
-            const searchQuery = query(
-                collection(db, "topics"),
-                or(
-                    where("body", "array-contains", newText),
-                    where("title", "array-contains", newText),
-                )
-            );
 
-            const searchQuerySnapshot = await getDocs(searchQuery);
-            console.log("searchQuerySnapshot")
-            console.log(searchQuerySnapshot.docs)
+        if (newText.length >= 3) {
+            const newSearchResults: ITopic[] = [];
+            console.log("newText >= 3");
+            console.log(topics)
 
-            for (const snapshot of searchQuerySnapshot.docs) {
-                console.log("search snapshot: ");
-                console.log(snapshot);
+            for (const topic of topics) {
+                const title = topic.title.toLowerCase();
+                const body = topic.body.toLowerCase();
+                const text = newText.toLowerCase();
+
+                if (title.includes(text) || body.includes(text)) {
+                    newSearchResults.push(topic);
+                }
             }
+
+            setSearchResults(newSearchResults);
+        }
+        else {
+            setSearchResults([]);
         }
     };
 
@@ -149,14 +183,14 @@ export default function Header({ lang }: {lang: string}) {
             </div>
 
             {/*Desktop Search Bar Closed*/}
-            <div className={`${showSearch && "hidden"} max-md:hidden w-1/2 h-full px-5 ml-2 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}
-                onClick={() => setShowSearch(true)}>
+            <div className={`${showSearch && "hidden"} max-lg:hidden w-1/2 h-full px-5 ml-2 bg-gray-100 rounded-full flex items-center gap-2 hover:shadow-sm cursor-pointer`}
+                onClick={() => handleShowSearch(true)}>
                 <FaMagnifyingGlass />
                 <p>{dictionary.header.search}</p>
             </div>
 
             {/*Desktop Search Bar Open*/}
-            <div className={`${!showSearch && "hidden"} max-md:hidden flex-grow h-full px-5 ml-2 bg-gray-100 rounded-full
+            <div className={`${!showSearch && "hidden"} max-lg:hidden flex-grow h-full px-5 ml-2 bg-gray-100 rounded-full
                         flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
                 <FaMagnifyingGlass />
                 <input
@@ -170,13 +204,13 @@ export default function Header({ lang }: {lang: string}) {
 
             <div className={`flex-grow h-full justify-end flex items-center gap-2`}>
                 {/*Mobile Search Bar Closed*/}
-                <div className={`${showSearch && "hidden"} p-3 md:hidden bg-gray-100 rounded-full cursor-pointer`}
-                     onClick={() => setShowSearch(true)}>
+                <div className={`${showSearch && "hidden"} p-3 lg:hidden bg-gray-100 rounded-full cursor-pointer`}
+                     onClick={() => handleShowSearch(true)}>
                     <FaMagnifyingGlass />
                 </div>
 
                 {/*Mobile Search Bar Open*/}
-                <div className={`${!showSearch && "hidden"} md:hidden flex-grow h-full px-5 ml-2 bg-gray-100 rounded-full
+                <div className={`${!showSearch && "hidden"} lg:hidden flex-grow h-full px-5 ml-2 bg-gray-100 rounded-full
                         flex items-center gap-2 hover:shadow-sm cursor-pointer`}>
                     <FaMagnifyingGlass />
                     <input
@@ -226,7 +260,7 @@ export default function Header({ lang }: {lang: string}) {
                     <>
                         <div className={`sm:hidden whitespace-nowrap h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
                              onClick={showPopup}>
-                            {dictionary.header.mobile_login}
+                            {dictionary.header.mobileLogin}
                         </div>
 
                         <div className={`max-sm:hidden px-5 py-2 bg-gray-100 rounded-full cursor-pointer hover:shadow-sm`}
@@ -486,11 +520,24 @@ export default function Header({ lang }: {lang: string}) {
 
             {showSearch && (
                 <div className={`w-full h-full fixed top-16 left-0`}>
-                    <div className={`w-full h-full bg-black opacity-60`} onClick={() => setShowSearch(false)}></div>
+                    <div className={`w-full h-full bg-black opacity-60`} onClick={() => handleShowSearch(false)}></div>
 
                     <div className={`w-full min-h-40 p-3 fixed top-16 left-0 bg-white shadow-md 
-                    flex justify-center items-center`}>
-                        {dictionary.header.noResult}.
+                    flex flex-col justify-center items-center`}>
+                        {searchResults.length === 0 ? (
+                            <p>
+                                {dictionary.header.noResult}.
+                            </p>
+                        ) : (
+                            <>
+                                {searchResults.map((result, index) => (
+                                    <div key={index} className={`w-full`} onClick={() => setShowSearch(false)}>
+                                        <TopicTile topic={result} dictionary={dictionary} />
+                                        <Divider />
+                                    </div>
+                                ))}
+                            </>
+                        )}
                     </div>
                 </div>
             )}

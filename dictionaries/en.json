@@ -284,7 +284,21 @@
     "saved": "Saved"
   },
   "main": {
-
+    "newTopic": "New Topic",
+    "categories": {
+      "News": "News",
+      "Discussion": "Discussion",
+      "Training": "Training",
+      "Races": "Races",
+      "Gear": "Gear",
+      "Live": "Live"
+    },
+    "trends": {
+      "Hot": "Hot",
+      "Latest": "Latest",
+      "Following": "Following",
+      "Others": "Others"
+    }
   },
   "contact": {
     "contact": "Contact",

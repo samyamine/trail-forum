@@ -284,6 +284,21 @@
     "saved":  "Enregistrés"
   },
   "main": {
+    "newTopic": "Nouveau Topic",
+    "categories": {
+      "News": "Actualités",
+      "Discussion": "Discussion",
+      "Training": "Training",
+      "Races": "Courses",
+      "Gear": "Gear",
+      "Live": "Direct"
+    },
+    "trends": {
+      "Hot": "Tendance",
+      "Latest": "Récents",
+      "Following": "Suivi(e)s",
+      "Others": "Autres"
+    }
   },
   "contact": {
     "contact": "Contacter",

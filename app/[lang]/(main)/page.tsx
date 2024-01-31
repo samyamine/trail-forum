@@ -80,7 +80,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                     {/*New topic bar*/}
                     <div className={`w-full flex justify-between md:justify-start md:gap-5 items-center`}>
                         <Link href={`/topic/new`}>
-                            <IconTextButton text={"New Topic"} />
+                            <IconTextButton text={dictionary.main.newTopic} />
                         </Link>
 
                         {/*Sort Options*/}
@@ -91,7 +91,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                                 <div className={`px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>
-                                        {selectedTrend}
+                                        {dictionary.main.trends[selectedTrend]}
                                     </p>
 
                                     <div className={`${!showTrendOptions && "hidden"}`}>
@@ -108,7 +108,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                                     {Object.keys(ETrendType).map((type, index) => (
                                         <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}
                                         onClick={() => setSelectedTrend(type)}>
-                                            {type}
+                                            {dictionary.main.trends[type]}
                                         </p>
                                     ))}
                                 </div>
@@ -120,7 +120,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                                 <div className={`px-3 py-1 ${showCategoryOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>
-                                        {selectedCategory}
+                                        {dictionary.main.categories[selectedCategory]}
                                     </p>
 
                                     <div className={`${!showCategoryOptions && "hidden"}`}>
@@ -137,7 +137,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                                     {Object.keys(ECategoryType).map((type, index) => (
                                         <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}
                                         onClick={() => setSelectedCategory(type)}>
-                                            {type}
+                                            {dictionary.main.categories[type]}
                                         </p>
                                     ))}
                                 </div>

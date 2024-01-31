@@ -257,7 +257,7 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
                         </div>
                         <p className={`p-1`}>{dictionary.comment.reply}</p>
                     </div>
-                    <Share />
+                    <Share dictionary={dictionary} />
                 </div>
 
                 {showReply && (

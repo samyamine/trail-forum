@@ -77,7 +77,7 @@ export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictio
                     <Link href={`/topic/${topic.uid}`}>
                         <Comments count={commentCount} />
                     </Link>
-                    <Share />
+                    <Share dictionary={dictionary} />
                 </div>
 
                 {/*FIXME*/}

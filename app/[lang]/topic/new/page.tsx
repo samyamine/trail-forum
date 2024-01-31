@@ -10,9 +10,7 @@ import {
     arrayUnion,
     collection,
     doc,
-    DocumentReference,
     serverTimestamp,
-    Timestamp,
     updateDoc
 } from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
@@ -20,8 +18,10 @@ import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import {ECategoryType} from "@/lib/enums";
 import UsernamePopup from "@/components/UsernamePopup";
+import {getDictionary} from "@/lib/dictionary";
+import {isUndefined} from "@/lib/utils";
 
-export default function NewTopicPage() {
+export default function NewTopicPage({ params }: { params: { lang: string }}) {
     const {isPopupVisible, showPopup, isUsernamePopupVisible} = usePopup();
     const {user} = useAuth();
     const router = useRouter();
@@ -31,6 +31,7 @@ export default function NewTopicPage() {
     const SUBJECT_MAX_LENGTH = 200;
     const BODY_MAX_LENGTH = 1500;
 
+    const [dictionary, setDictionary] = useState<any>();
     const [charging, setCharging] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>(ECategoryType.Discussion);
@@ -106,44 +107,56 @@ export default function NewTopicPage() {
 
         window.addEventListener('click', handleClickOutsideCategory);
 
+        if (params.lang !== "fr" && params.lang !== "en") {
+            throw new Error(`Language ${params.lang} is not supported`);
+        }
+
+        getDictionary(params.lang).then((dict) => {
+            setDictionary(dict);
+        });
+
         return () => {
             window.removeEventListener('click', handleClickOutsideCategory);
         };
     }, []);
 
-    return (
+    return isUndefined(dictionary) ? (
+        <div>
+            Loading...
+        </div>
+        ) : (
         <div className={`flex justify-center`}>
             {/*Signin popup*/}
             {isPopupVisible && (
-                <AuthPopup />
+                <AuthPopup dictionary={dictionary} />
             )}
 
             {/*Google auth set username popup*/}
             {isUsernamePopupVisible && (
-                <UsernamePopup />
+                <UsernamePopup dictionary={dictionary} />
             )}
             
             <div className={`relative md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-5 flex flex-col items-center-center gap-5`}>
                 <h1 className={`w-full text-2xl font-bold`}>
-                    Start a new topic
+                    {dictionary.newTopic.title}
                 </h1>
 
                 <div>
                     <div className={`w-full mb-2 flex justify-between items-center`}>
                         <h3 className={`text-md`}>
-                            Subject
+                            {dictionary.newTopic.subject}
                         </h3>
                         <p className={`text-xs`}>{SUBJECT_MAX_LENGTH - subject.length}</p>
                     </div>
                     <input id={`subject`} type={`text`} className={`w-full px-4 py-2 ${subjectTooLong ? "bg-red-200" : "bg-gray-100"} 
                     rounded-lg border-[1px] ${subjectTooLong ? "border-red-400" : "border-gray-400"} text-sm placeholder-gray-400`}
-                    placeholder={`Any advice to improve my performances ?`} value={subject}
+                    placeholder={dictionary.newTopic.subjectPlaceholder} value={subject}
                     onChange={(event) => setNewSubject(event.target.value)}/>
                 </div>
 
                 <div className={`flex gap-3 items-center`}>
                     <h3 className={`text-md`}>
-                        Category
+                        {dictionary.newTopic.category}
                     </h3>
 
                     {/*Category Selector*/}
@@ -182,21 +195,20 @@ export default function NewTopicPage() {
                     <textarea className={`w-full p-2 resize-none overflow-y-auto bg-gray-100 rounded-lg
                         border-[1px] border-gray-400 text-sm placeholder-gray-400 ${subjectTooLong ? "bg-red-200" : "bg-gray-100"}
                         ${subjectTooLong ? "border-red-400" : "border-gray-400"}`}
-                              rows={10} cols={50} placeholder={`Write your questions here...`} value={body}
+                              rows={10} cols={50} placeholder={dictionary.newTopic.questionPlaceholder} value={body}
                             onChange={(event) => setNewBody(event.target.value)}>
                     </textarea>
                 </div>
 
 
                 <p className={`text-sm text-justify`}>
-                    By creating a topic, you acknowledge that you have read and abide by
-                    our <span className={`underline text-orange-500 cursor-pointer`}> Terms and Conditions.</span>
+                    {dictionary.newTopic.termsAndConditionCaution} <span className={`underline text-orange-500 cursor-pointer`}> {dictionary.newTopic.termsAndCondition}.</span>
                 </p>
 
                 {/*Category*/}
                 <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white text-center cursor-pointer`}
                 onClick={() => createTopic()}>
-                    {charging ? "Loading..." : "Create topic"}
+                    {charging ? `${dictionary.loading}...` : `${dictionary.newTopic.button}`}
                 </div>
             </div>
         </div>

@@ -173,7 +173,7 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
         initData().catch((error) => toast.error(error.message));
     }, [userData]);
 
-    return loading ? (
+    return loading || isUndefined(dictionary) ? (
         <div className={`w-full h-full flex justify-center items-center`}>
             Loading...
         </div>
@@ -181,12 +181,12 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
         <>
             {/*Signin popup*/}
             {isPopupVisible && (
-                <AuthPopup />
+                <AuthPopup dictionary={dictionary} />
             )}
 
             {/*Create username popup*/}
             {isUsernamePopupVisible && (
-                <UsernamePopup />
+                <UsernamePopup dictionary={dictionary} />
             )}
 
             <Toaster />

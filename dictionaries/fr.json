@@ -1,5 +1,6 @@
 {
   "loading": "Chargement",
+  "share": "Partager",
   "header": {
     "mobileLogin": "Connexion",
     "location": "Localisation",
@@ -283,5 +284,43 @@
     "saved":  "Enregistrés"
   },
   "main": {
+  },
+  "contact": {
+    "contact": "Contacter",
+    "text1": "Chez Zone Trail, nous veillons à ce qu'il soit facile et rapide de contacter notre équipe et que les réponses que nous leur apportons soient pertinentes. Utilisez les informations suivantes pour envoyer votre message et obtenir une réponse dans les 24 heures",
+    "support": "Pour tous types de problèmes, contactez",
+    "questions": "Pour des questions d'ordre général, contactez",
+    "suggestions": "Puisque nous développons et maintenons cette plateforme dans le but de vous satisfaire pleinement, nous prenons très attentivement vos suggestions. Si vous avez quelque chose à suggérer pour améliorer Zone Trail, veuillez nous envoyer un e-mail à"
+  },
+  "newTopic": {
+    "title": "Créer un nouveau topic",
+    "subject": "Sujet",
+    "subjectPlaceholder": "Des conseils pour améliorer ma performance ?",
+    "category": "Catégorie",
+    "questionPlaceholder": "Écrivez votre question ici...",
+    "termsAndConditionCaution": "En créant un topic, vous reconnaissez avoir lu et accepté nos",
+    "termsAndCondition": "Termes et Conditions",
+    "button": "Créer un topic"
+  },
+  "register": {
+    "register": "S'inscrire",
+    "continue": "Continuer",
+    "login": "Se connecter",
+    "alreadyRegistered": "Vous avez déjà un compte ?",
+    "google": "Continuer avec Google",
+    "or": "ou",
+    "email": "E-mail",
+    "username": "Nom d'utilisateur",
+    "createUsername": "Créez votre nom d'utilisateur",
+    "usernameText": "est entièrement anonyme et toutes vos interactions seront publiées\n                    sous votre nom d'utilisateur. Notez que vous ne pourrez pas le changer plus tard.",
+    "password": "Mot de passe",
+    "createPassword": "Créez votre mot de passe",
+    "repeatPassword": "Répétez le mot de passe",
+    "termsAndConditionCaution": "Vous reconnaissez avoir lu et accepté nos",
+    "finish": "Terminer"
+  },
+  "signIn": {
+    "signIn": "Se connecter",
+    "notRegistered": "Vous n'avez pas de compte ?"
   }
 }

@@ -13,8 +13,8 @@ import {useAuth} from "@/app/[lang]/authContext";
 import {usePopup} from "@/app/[lang]/popupContext";
 import {isUsernameAvailable} from "@/lib/utils";
 
-export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>}) {
-    const {user, signUpWithEmail, googleSignIn} = useAuth();
+export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType, dictionary }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>, dictionary: any}) {
+    const {signUpWithEmail, googleSignIn} = useAuth();
     const {hidePopup, showUsernamePopup} = usePopup();
 
     const handleSignInGoogle = async () => {
@@ -60,7 +60,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
         (
             <>
                 <h2 className={`mb-10 text-2xl font-bold`}>
-                    Register
+                    {dictionary.register.register}
                 </h2>
 
                 <div className={`w-full px-5 py-2 rounded-lg border-[1px] border-black flex 
@@ -69,61 +69,59 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
                     <FcGoogle />
 
                     <p className={`text-base`}>
-                        Continue with Google
+                        {dictionary.register.google}
                     </p>
                 </div>
 
                 <div className={`w-full my-5 flex justify-between items-center`}>
                     <div className={`w-1/2 h-[1px] mr-3 bg-black`}></div>
-                    Or
+                    {dictionary.register.or}
                     <div className={`w-1/2 h-[1px] ml-3 bg-black`}></div>
                 </div>
 
 
                 <div className={`w-full mb-10 flex flex-col items-center gap-5`}>
                     <input required={true} type={`email`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Email`}
+                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.email}
                     onChange={(event) => setEmail(event.target.value)} value={email}/>
                 </div>
             </>
         ),
         (
             <>
-                <h2 className={`mb-10 text-2xl font-bold`}>
-                    Create your username
+                <h2 className={`mb-10 text-2xl font-bold text-center`}>
+                    {dictionary.register.createUsername}
                 </h2>
 
                 <p className={`px-5 py-2 mb-5 text-center`}>
-                    #COMPANY_NAME is completely anonymous and all your interactions will be published
-                    under your username. Pay attention because you won't be able to change it later.
+                    Zone Trail {dictionary.register.usernameText}
                 </p>
 
                 <div className={`w-full mb-10 flex flex-col items-center gap-1`}>
                     <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Username`}
+                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.username}
                     onChange={(event) => setUsername(event.target.value)} value={username}/>
                 </div>
             </>
         ),
         (
             <>
-                <h2 className={`mb-10 text-2xl font-bold`}>
-                    Create your password
+                <h2 className={`mb-10 text-2xl font-bold text-center`}>
+                    {dictionary.register.createPassword}
                 </h2>
 
                 <div className={`w-full mb-10 flex flex-col items-center gap-5`}>
                     <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Password`}
+                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.password}
                     onChange={(event) => setPassword(event.target.value)} value={password}/>
 
                     <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Repeat password`}
+                        border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.repeatPassword}
                     onChange={(event) => setPasswordConfirmation(event.target.value)} value={passwordConfirmation}/>
                 </div>
 
                 <p className={`px-5 py-2 mb-5 text-center text-sm`}>
-                    You acknowledge that you have read and abide by
-                    our <span className={`underline text-orange-500 cursor-pointer`}> Terms&nbsp;and&nbsp;Conditions</span>.
+                    {dictionary.register.termsAndConditionCaution} <span className={`underline text-orange-500 cursor-pointer`}> {dictionary.newTopic.termsAndCondition}</span>.
                 </p>
             </>
         )
@@ -162,7 +160,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
     };
 
     const getRegisterButtonContent = () => {
-        return charging ? "Loading..." : "Register";
+        return charging ? `${dictionary.loading}...` : `${dictionary.register.register}`;
     };
 
     return (
@@ -174,7 +172,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
             onClick={buttonClickCallback}>
                 {index === 2 ? getRegisterButtonContent() : (
                     <>
-                        Continue
+                        {dictionary.register.continue}
                         <BsArrowRight />
                     </>
                 )}
@@ -182,10 +180,10 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
 
             <div className={`flex gap-1 text-sm`}>
                 <p>
-                    Already have an account ?
+                    {dictionary.register.alreadyRegistered}
                 </p>
                 <div className={`text-orange-500 underline cursor-pointer`} onClick={onSwitchAuthType}>
-                    Login
+                    {dictionary.register.login}
                 </div>
             </div>
         </div>

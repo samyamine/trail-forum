@@ -1,33 +1,52 @@
+"use client";
 
-export default function ContactPage() {
-    return (
+import {useEffect, useLayoutEffect, useState} from "react";
+import {getDictionary} from "@/lib/dictionary";
+import {isUndefined} from "@/lib/utils";
+
+export default function ContactPage({ params }: { params: { lang: string }}) {
+    const [dictionary, setDictionary] = useState<any>();
+
+    useEffect(() => {
+        console.log(`PARAMS: ${params}`);
+
+        if (params.lang !== "fr" && params.lang !== "en") {
+            throw new Error(`Language ${params.lang} is not supported`);
+        }
+
+        getDictionary(params.lang).then((dict) => {
+            setDictionary(dict);
+        });
+    }, [dictionary]);
+
+    return isUndefined(dictionary) ? (
+        <div>
+            Loading...
+        </div>
+        ) : (
         <div className={`px-5 py-3`}>
             <h1 className={`py-5 text-2xl font-bold`}>
-                Contact #COMPANY_NAME
+                {dictionary.contact.contact} Zone Trail
             </h1>
 
             <div className={`flex flex-col gap-6`}>
                 <p>
-                    At #COMPANY_NAME, we make sure it is easy and fast to contact our team
-                    and the responses we deliver are relevant. Use the following
-                    details to send your message and get an answer within 24h.
+                    {dictionary.contact.text1}
                 </p>
 
                 <p>
-                    If you have any kind of problem, please contact <br/>
-                    <span className={`text-orange-500 underline cursor-pointer`}>support@#COMPANY_NAME.com</span>
+                    {dictionary.contact.support} <br/>
+                    <span className={`text-orange-500 underline cursor-pointer`}>support@zonetrail.com</span>
                 </p>
 
                 <p>
-                    For general questions, please contact<br/>
-                    <span className={`text-orange-500 underline cursor-pointer`}>questions@#COMPANY_NAME.com</span>
+                    {dictionary.contact.questions}<br/>
+                    <span className={`text-orange-500 underline cursor-pointer`}>questions@zonetrail.com</span>
                 </p>
 
                 <p>
-                    Since we develop and maintain this platform with the aim to fully satisfy
-                    you, we take your suggestions very carefully. If you have anything to
-                    suggest to make #COMPANY_NAME better, please email us at&nbsp;
-                    <span className={`text-orange-500 underline cursor-pointer`}>suggestions@#COMPANY_NAME.com</span>
+                    {dictionary.contact.suggestions}&nbsp;
+                    <span className={`text-orange-500 underline cursor-pointer`}>suggestions@zonetrail.com</span>
                 </p>
             </div>
 

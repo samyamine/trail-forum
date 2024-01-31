@@ -6,7 +6,7 @@ import {useAuth} from "@/app/[lang]/authContext";
 import toast, {Toaster} from "react-hot-toast";
 import {usePopup} from "@/app/[lang]/popupContext";
 
-export default function SignInPopup({ onClickCallback }: {onClickCallback:  React.MouseEventHandler<HTMLDivElement>}) {
+export default function SignInPopup({ dictionary, onClickCallback }: { dictionary: any, onClickCallback:  React.MouseEventHandler<HTMLDivElement>}) {
     const {signInWithEmail, googleSignIn} = useAuth();
     const {hidePopup, showUsernamePopup} = usePopup();
 
@@ -47,7 +47,7 @@ export default function SignInPopup({ onClickCallback }: {onClickCallback:  Reac
         <div className={`w-full max-w-[320px] flex flex-col items-center`}>
             <Toaster />
             <h2 className={`mb-10 text-2xl font-bold`}>
-                Sign in
+                {dictionary.signIn.signIn}
             </h2>
 
             <div className={`w-full px-5 py-2 rounded-lg border-[1px] border-black flex 
@@ -56,37 +56,37 @@ export default function SignInPopup({ onClickCallback }: {onClickCallback:  Reac
                 <FcGoogle />
 
                 <p className={`text-base`}>
-                    Continue with Google
+                    {dictionary.register.google}
                 </p>
             </div>
 
             <div className={`w-full my-5 flex justify-between items-center`}>
                 <div className={`w-1/2 h-[1px] mr-3 bg-black`}></div>
-                Or
+                {dictionary.register.or}
                 <div className={`w-1/2 h-[1px] ml-3 bg-black`}></div>
             </div>
 
             <div className={`w-full mb-10 flex flex-col items-center gap-5`}>
                 <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Email`}
+                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.email}
                 onChange={(event) => setEmail(event.target.value)} value={email}/>
 
                 <input type={`password`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
-                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={`Password`}
+                border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.password}
                 onChange={(event) => setPassword(event.target.value)} value={password}/>
             </div>
 
             <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer`}
             onClick={handleSignInEmail}>
-                {charging ? "Loading..." : "Sign In"}
+                {charging ? `${dictionary.loading}...` : `${dictionary.signIn.signIn}`}
             </div>
 
             <div className={`flex gap-1 text-sm`}>
                 <p>
-                    Don't have an account ?
+                    {dictionary.signIn.notRegistered}
                 </p>
                 <div className={`text-orange-500 underline cursor-pointer`} onClick={onClickCallback}>
-                    Register
+                    {dictionary.register.register}
                 </div>
             </div>
         </div>

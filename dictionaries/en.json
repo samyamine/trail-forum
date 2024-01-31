@@ -1,5 +1,6 @@
 {
   "loading": "Loading",
+  "share": "Share",
   "header": {
     "mobileLogin": "Sign In",
     "location": "Location",
@@ -281,5 +282,47 @@
     "topics": "Topics",
     "comments": "Comments",
     "saved": "Saved"
+  },
+  "main": {
+
+  },
+  "contact": {
+    "contact": "Contact",
+    "text1": "At Zone Trail, we make sure it is easy and fast to contact our team and the responses we deliver are relevant. Use the following details to send your message and get an answer within 24h.",
+    "support": "If you have any kind of problem, please contact",
+    "questions": "For general questions, please contact",
+    "suggestions": "Since we develop and maintain this platform with the aim to fully satisfy you, we take your suggestions very carefully. If you have anything to suggest to make Zone Trail better, please email us at"
+  },
+  "newTopic": {
+    "title": "Start a new topic",
+    "subject": "Subject",
+    "subjectPlaceholder": "Any advice to improve my performances ?",
+    "category": "Category",
+    "questionPlaceholder": "Write your questions here...",
+    "termsAndConditionCaution": "By creating a topic, you acknowledge that you have read and abide by our",
+    "termsAndCondition": "Terms and Conditions",
+    "button": "Create topic",
+    "usernameText": "is completely anonymous and all your interactions will be published\n                    under your username. Pay attention because you won't be able to change it later."
+  },
+  "register": {
+    "register": "Register",
+    "continue": "Continue",
+    "login": "Login",
+    "alreadyRegistered": "Already have an account ?",
+    "google": "Continue with Google",
+    "or": "or",
+    "email": "E-mail",
+    "username": "Username",
+    "createUsername": "Create your username",
+    "usernameText": "is completely anonymous and all your interactions will be published\n                    under your username. Choose it wisely since you won't be able to change it later.",
+    "password": "Password",
+    "createPassword": "Create your password",
+    "repeatPassword": "Repeat password",
+    "termsAndConditionCaution": "you acknowledge that you have read and abide by our",
+    "finish": "Finish"
+  },
+  "signIn": {
+    "signIn": "Sign In",
+    "notRegistered": "Don't have an account ?"
   }
 }

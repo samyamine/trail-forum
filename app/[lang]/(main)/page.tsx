@@ -14,6 +14,7 @@ import UsernamePopup from "@/components/UsernamePopup";
 import {ECategoryType, ETrendType} from "@/lib/enums";
 import {usePopup} from "@/app/[lang]/popupContext";
 import {getDictionary} from "@/lib/dictionary";
+import {isUndefined} from "@/lib/utils";
 
 export default function HomePage({ params }: {params: { lang: string }}) {
     const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
@@ -63,15 +64,15 @@ export default function HomePage({ params }: {params: { lang: string }}) {
         };
     }, []);
 
-    return topic !== null ? (
+    return topic !== null && !isUndefined(dictionary) ? (
         <>
             {/*Signin popup*/}
             {isPopupVisible && (
-                <AuthPopup />
+                <AuthPopup dictionary={dictionary} />
             )}
 
             {isUsernamePopupVisible && (
-                <UsernamePopup />
+                <UsernamePopup dictionary={dictionary} />
             )}
 
             <div className={`w-full overflow-y-auto`}>

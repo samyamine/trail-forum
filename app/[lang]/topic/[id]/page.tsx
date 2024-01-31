@@ -206,12 +206,12 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
             {/*Signin popup*/}
             {isPopupVisible && (
-                <AuthPopup />
+                <AuthPopup dictionary={dictionary} />
             )}
 
             {/*Create username popup*/}
             {isUsernamePopupVisible && (
-                <UsernamePopup />
+                <UsernamePopup dictionary={dictionary} />
             )}
 
             {topicData !== null ? (
@@ -287,7 +287,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                             <TbMessageCircle2Filled />
                             <p>{topicData.commentsNumber} {dictionary.topic.comments}</p>
                         </div>
-                        <Share />
+                        <Share dictionary={dictionary} />
                     </div>
 
                     {/*Add Comment*/}

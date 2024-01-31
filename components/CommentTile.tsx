@@ -29,7 +29,7 @@ const REPLY_MAX_LENGTH = 500;
 
 export default function CommentTile({ comment, dictionary }: { comment: IComment | DocumentReference, dictionary: any }) {
     const {userData, user} = useAuth();
-    const {showPopup} = usePopup();
+    const {showAuthPopup, showSharePopup} = usePopup();
 
     const commentOptionsRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +43,7 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
 
     const toggleSave = async () => {
         if (isUndefined(userData)) {
-            showPopup();
+            showAuthPopup();
         }
         else if (isSaved()) {
             const userRef = doc(db, "users", String(userData?.uid));
@@ -90,7 +90,7 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
         setLoading(true);
         if (isUndefined(userData)) {
             setLoading(false);
-            showPopup();
+            showAuthPopup();
         }
         else if (reply.length === 0) {
             throw new Error("Comment is too short");
@@ -257,7 +257,7 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
                         </div>
                         <p className={`p-1`}>{dictionary.comment.reply}</p>
                     </div>
-                    <Share dictionary={dictionary} />
+                    <Share dictionary={dictionary} onClickCallback={() => showSharePopup(isComment(comment) ? comment.uid : comment.id)} />
                 </div>
 
                 {showReply && (

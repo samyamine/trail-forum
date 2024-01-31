@@ -9,7 +9,7 @@ import {BsArrowLeft} from "react-icons/bs";
 import {EAuthPopup} from "@/lib/enums";
 
 export default function AuthPopup({ dictionary }: { dictionary: any }) {
-    const { hidePopup, popupType } = usePopup();
+    const { hideAuthPopup, popupType } = usePopup();
     const [isRegister, setRegister] = useState(popupType === EAuthPopup.Register);
     const [index, setIndex] = useState(0);
 
@@ -24,7 +24,7 @@ export default function AuthPopup({ dictionary }: { dictionary: any }) {
 
                 <div className={`p-2 rounded-full cursor-pointer`} onClick={() => {
                     setRegister(false);
-                    hidePopup();
+                    hideAuthPopup();
                 }}>
                     <TfiClose />
                 </div>

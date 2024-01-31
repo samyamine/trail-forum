@@ -88,9 +88,6 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
 
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             console.log("AUTH CHANGED")
-            // console.log(currentUser)
-            // console.log(!isUndefined(userData))
-            // console.log(userData)
             if (currentUser) {
                 const userRef = await handleUserProfile(currentUser);
                 if (userRef === null) {
@@ -163,6 +160,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         const docSnapshot = await getDoc(docRef);
 
         if (!docSnapshot.exists()) {
+            console.log("NOT EXISTING")
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 answers: [],
                 comments: [],
@@ -181,6 +179,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
             return true;
         }
 
+        console.log("EXISTING")
         return false;
     };
 

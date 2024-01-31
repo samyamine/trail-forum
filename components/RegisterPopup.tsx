@@ -15,17 +15,17 @@ import {isUsernameAvailable} from "@/lib/utils";
 
 export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType, dictionary }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>, dictionary: any}) {
     const {signUpWithEmail, googleSignIn} = useAuth();
-    const {hidePopup, showUsernamePopup} = usePopup();
+    const {hideAuthPopup, showUsernamePopup} = usePopup();
 
     const handleSignInGoogle = async () => {
         try {
             const firstTimeSignIn = await googleSignIn();
             if (firstTimeSignIn) {
-                hidePopup();
+                hideAuthPopup();
                 showUsernamePopup();
             }
             else {
-                hidePopup();
+                hideAuthPopup();
                 toast.success("You are now logged in");
             }
         } catch (error: any) {
@@ -141,7 +141,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
                 try {
                     await signUpWithEmail(email, password, username);
                     setCharging(false);
-                    hidePopup();
+                    hideAuthPopup();
                 } catch (error: any) {
                     toast.error(error.message);
                 }

@@ -4,11 +4,15 @@ import React, {createContext, FC, ReactNode, useContext, useState} from "react";
 import {EAuthPopup} from "@/lib/enums";
 
 interface IPopupContextProps {
-    isPopupVisible: boolean,
+    isAuthPopupVisible: boolean,
     popupType: EAuthPopup,
-    changePopupType: (type: EAuthPopup) => void,
-    showPopup: () => void,
-    hidePopup: () => void,
+    changeAuthPopupType: (type: EAuthPopup) => void,
+    showAuthPopup: () => void,
+    hideAuthPopup: () => void,
+    showSharePopup: (id: string) => void,
+    hideSharePopup: () => void,
+    sharePopupID: string,
+    isSharePopupVisible: boolean,
     isUsernamePopupVisible: boolean,
     showUsernamePopup: () => void,
     hideUsernamePopup: () => void,
@@ -21,22 +25,46 @@ interface IPopupProviderProps {
 const PopupContext = createContext<IPopupContextProps | undefined>(undefined);
 
 export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
-    const [isPopupVisible, setPopupVisible] = useState(false);
+    const [isAuthPopupVisible, setIsAuthPopupVisible] = useState(false);
+    const [isSharePopupVisible, setIsSharePopupVisible] = useState(false);
+    const [sharePopupID, setSharePopupID] = useState("");
     const [popupType, setPopupType] = useState(EAuthPopup.Login);
     const [isUsernamePopupVisible, setUsernamePopupVisible] = useState(false);
 
-    const showPopup = () => setPopupVisible(true);
+    const showAuthPopup = () => setIsAuthPopupVisible(true);
 
-    const hidePopup = () => setPopupVisible(false);
+    const hideAuthPopup = () => setIsAuthPopupVisible(false);
 
-    const changePopupType = (type: EAuthPopup) => setPopupType(type);
+    const showSharePopup = (id: string) => {
+        setSharePopupID(id);
+        setIsSharePopupVisible(true);
+    };
+
+    const hideSharePopup = () => {
+        setSharePopupID("");
+        setIsSharePopupVisible(false);
+    }
+
+    const changeAuthPopupType = (type: EAuthPopup) => setPopupType(type);
 
     const showUsernamePopup = () => setUsernamePopupVisible(true);
 
     const hideUsernamePopup = () => setUsernamePopupVisible(false);
 
     return (
-        <PopupContext.Provider value={{ isPopupVisible, popupType, changePopupType, showPopup, hidePopup, isUsernamePopupVisible, showUsernamePopup, hideUsernamePopup }}>
+        <PopupContext.Provider value={{
+            isAuthPopupVisible,
+            popupType,
+            changeAuthPopupType,
+            showAuthPopup,
+            hideAuthPopup,
+            showSharePopup,
+            hideSharePopup,
+            sharePopupID,
+            isSharePopupVisible,
+            isUsernamePopupVisible,
+            showUsernamePopup,
+            hideUsernamePopup }}>
             {children}
         </PopupContext.Provider>
     );

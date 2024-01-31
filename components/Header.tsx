@@ -46,7 +46,7 @@ export default function Header({ lang }: {lang: string}) {
 
 
     const router = useRouter();
-    const { showPopup, changePopupType } = usePopup();
+    const { showAuthPopup, changeAuthPopupType } = usePopup();
     const { user, userData, logOut } = useAuth();
 
     const [topics, setTopics] = useState<ITopic[]>([]);
@@ -103,8 +103,8 @@ export default function Header({ lang }: {lang: string}) {
     };
 
     const handleShowPopup = (type = EAuthPopup.Login) => {
-        changePopupType(type);
-        showPopup();
+        changeAuthPopupType(type);
+        showAuthPopup();
     }
 
     const search = async (newText: string) => {
@@ -259,7 +259,7 @@ export default function Header({ lang }: {lang: string}) {
                 ) : (
                     <>
                         <div className={`sm:hidden whitespace-nowrap h-full px-5 py-2 bg-orange-500 rounded-full text-white cursor-pointer hover:shadow-md`}
-                             onClick={showPopup}>
+                             onClick={showAuthPopup}>
                             {dictionary.header.mobileLogin}
                         </div>
 

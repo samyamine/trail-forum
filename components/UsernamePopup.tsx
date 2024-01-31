@@ -7,7 +7,7 @@ import {doc, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 
 export default function UsernamePopup({ dictionary }: { dictionary: any }) {
-    const {user, userData} = useAuth();
+    const {userData} = useAuth();
     const {hideUsernamePopup} = usePopup();
 
     const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/;

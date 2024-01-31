@@ -18,6 +18,7 @@ import {db} from "@/lib/firebase/config";
 import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
 import {FaMinus, FaPlus} from "react-icons/fa6";
 import {getDictionary} from "@/lib/dictionary";
+import SharePopup from "@/components/SharePopup";
 
 enum ETabs {
     Comments = "Comments",
@@ -36,7 +37,7 @@ interface IData {
 
 export default function ProfilePage({ params }: { params: { id: string, lang: string }}) {
     const {loading, userData} = useAuth();
-    const {showPopup, isUsernamePopupVisible, isPopupVisible} = usePopup();
+    const {showAuthPopup, isUsernamePopupVisible, isAuthPopupVisible, isSharePopupVisible} = usePopup();
 
     const [dictionary, setDictionary] = useState<any>();
     const [selectedTab, setSelectedTab] = useState(ETabs.Topics);
@@ -105,7 +106,7 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
     // FIXME
     const handleFollow = async (startFollowing: boolean) => {
         if (isUndefined(userData)) {
-            showPopup();
+            showAuthPopup();
         }
         else {
             const profileUserRef = doc(db, "users", params.id);
@@ -180,13 +181,17 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
         ) : (
         <>
             {/*Signin popup*/}
-            {isPopupVisible && (
+            {isAuthPopupVisible && (
                 <AuthPopup dictionary={dictionary} />
             )}
 
             {/*Create username popup*/}
             {isUsernamePopupVisible && (
                 <UsernamePopup dictionary={dictionary} />
+            )}
+
+            {isSharePopupVisible && (
+                <SharePopup dictionary={dictionary} />
             )}
 
             <Toaster />

@@ -6,9 +6,9 @@ import {useAuth} from "@/app/[lang]/authContext";
 import toast, {Toaster} from "react-hot-toast";
 import {usePopup} from "@/app/[lang]/popupContext";
 
-export default function SignInPopup({ dictionary, onClickCallback }: { dictionary: any, onClickCallback:  React.MouseEventHandler<HTMLDivElement>}) {
+export default function SignInPopup({ dictionary, onClickCallback }: { dictionary: any, onClickCallback: React.MouseEventHandler<HTMLDivElement>}) {
     const {signInWithEmail, googleSignIn} = useAuth();
-    const {hidePopup, showUsernamePopup} = usePopup();
+    const {hideAuthPopup, showUsernamePopup} = usePopup();
 
     // FIXME: useRef
     const [charging, setCharging] = useState(false);
@@ -20,7 +20,7 @@ export default function SignInPopup({ dictionary, onClickCallback }: { dictionar
             setCharging(true);
             await signInWithEmail(email, password);
             setCharging(false);
-            hidePopup();
+            hideAuthPopup();
         } catch (error: any) {
             toast.error(error.message);
             setCharging(false);
@@ -30,16 +30,19 @@ export default function SignInPopup({ dictionary, onClickCallback }: { dictionar
     const handleSignInGoogle = async () => {
         try {
             const firstTimeSignIn = await googleSignIn();
+            console.log(`FIRST TIME GOOGLE SIGN IN ? ${firstTimeSignIn}`);
             if (firstTimeSignIn) {
-                hidePopup();
+                hideAuthPopup();
                 showUsernamePopup();
+                console.log("firstTimeSignIn TRUE")
             }
             else {
-                hidePopup();
+                hideAuthPopup();
+                console.log("firstTimeSignIn FALSE")
                 toast.success("You are now logged in");
             }
         } catch (error: any) {
-            toast.error(error.message);
+            toast.error(`ERROR: ${error.message}`);
         }
     };
 

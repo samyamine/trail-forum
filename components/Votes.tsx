@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 
 export default function Votes({ initCount, collection, id }: { initCount: number, collection: string, id: string }) {
     const {userData} = useAuth();
-    const {showPopup} = usePopup();
+    const {showAuthPopup} = usePopup();
 
     const [votes, setVotes] = useState({ up: false, down: false });
     const [count, setCount] = useState(initCount);
@@ -43,7 +43,7 @@ export default function Votes({ initCount, collection, id }: { initCount: number
 
     const onUpVote = async () => {
         if (isUndefined(userData)) {
-            showPopup();
+            showAuthPopup();
         }
         else if (votes.up) {
             const userUID = String(userData?.uid);
@@ -114,7 +114,7 @@ export default function Votes({ initCount, collection, id }: { initCount: number
 
     const onDownVote = async () => {
         if (isUndefined(userData)) {
-            showPopup();
+            showAuthPopup();
         }
         else if (votes.down) {
             const userUID = String(userData?.uid);

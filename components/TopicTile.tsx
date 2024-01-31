@@ -12,8 +12,11 @@ import {ITopic, IUser} from "@/lib/interfaces";
 import {DocumentSnapshot, getDoc} from "@firebase/firestore";
 import {formatTime, getAuthor} from "@/lib/topic/utils";
 import toast from "react-hot-toast";
+import {usePopup} from "@/app/[lang]/popupContext";
 
 export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictionary: any }) {
+    const {showSharePopup} = usePopup();
+
     const [author, setAuthor] = useState<IUser | null>(null);
     const [commentCount, setCommentCount] = useState(0);
 
@@ -77,7 +80,7 @@ export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictio
                     <Link href={`/topic/${topic.uid}`}>
                         <Comments count={commentCount} />
                     </Link>
-                    <Share dictionary={dictionary} />
+                    <Share dictionary={dictionary} onClickCallback={() => showSharePopup(topic.uid)} />
                 </div>
 
                 {/*FIXME*/}

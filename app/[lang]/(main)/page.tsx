@@ -15,9 +15,10 @@ import {ECategoryType, ETrendType} from "@/lib/enums";
 import {usePopup} from "@/app/[lang]/popupContext";
 import {getDictionary} from "@/lib/dictionary";
 import {isUndefined} from "@/lib/utils";
+import SharePopup from "@/components/SharePopup";
 
 export default function HomePage({ params }: {params: { lang: string }}) {
-    const { isPopupVisible, hidePopup, isUsernamePopupVisible } = usePopup();
+    const { isAuthPopupVisible, hideAuthPopup, isUsernamePopupVisible, isSharePopupVisible } = usePopup();
 
     const trendsRef = useRef<HTMLDivElement>(null);
     const categoriesRef = useRef<HTMLDivElement>(null);
@@ -67,12 +68,16 @@ export default function HomePage({ params }: {params: { lang: string }}) {
     return topic !== null && !isUndefined(dictionary) ? (
         <>
             {/*Signin popup*/}
-            {isPopupVisible && (
+            {isAuthPopupVisible && (
                 <AuthPopup dictionary={dictionary} />
             )}
 
             {isUsernamePopupVisible && (
                 <UsernamePopup dictionary={dictionary} />
+            )}
+
+            {isSharePopupVisible && (
+                <SharePopup dictionary={dictionary} />
             )}
 
             <div className={`w-full overflow-y-auto`}>

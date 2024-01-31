@@ -26,6 +26,7 @@ import {isUndefined} from "@/lib/utils";
 import UsernamePopup from "@/components/UsernamePopup";
 import Link from "next/link";
 import {getDictionary} from "@/lib/dictionary";
+import SharePopup from "@/components/SharePopup";
 
 const COMMENT_MAX_LENGTH = 500;
 
@@ -37,7 +38,7 @@ interface IData {
 }
 
 export default function TopicPage({ params }: { params: { id: string, lang: string }}) {
-    const {isPopupVisible, isUsernamePopupVisible, showPopup} = usePopup();
+    const {isAuthPopupVisible, isUsernamePopupVisible, isSharePopupVisible, showAuthPopup, showSharePopup} = usePopup();
     const {userData} = useAuth();
 
     const sortRef = useRef<HTMLDivElement>(null);
@@ -65,7 +66,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
     const toggleSave = async () => {
         if (isUndefined(userData)) {
-            showPopup();
+            showAuthPopup();
         }
         else if (isSaved()) {
             const authorRef = doc(db, "users", String(userData?.uid));
@@ -121,7 +122,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
     const postComment = async () => {
         if (isUndefined(userData)) {
-            showPopup();
+            showAuthPopup();
         }
         else if (commentText.length === 0) {
             toast.error("Comment is too short");
@@ -205,13 +206,17 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
             <Toaster />
 
             {/*Signin popup*/}
-            {isPopupVisible && (
+            {isAuthPopupVisible && (
                 <AuthPopup dictionary={dictionary} />
             )}
 
             {/*Create username popup*/}
             {isUsernamePopupVisible && (
                 <UsernamePopup dictionary={dictionary} />
+            )}
+
+            {isSharePopupVisible && (
+                <SharePopup dictionary={dictionary} />
             )}
 
             {topicData !== null ? (
@@ -287,7 +292,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                             <TbMessageCircle2Filled />
                             <p>{topicData.commentsNumber} {dictionary.topic.comments}</p>
                         </div>
-                        <Share dictionary={dictionary} />
+                        <Share dictionary={dictionary} onClickCallback={() => showSharePopup(params.id)} />
                     </div>
 
                     {/*Add Comment*/}

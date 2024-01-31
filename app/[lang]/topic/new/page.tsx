@@ -20,9 +20,10 @@ import {ECategoryType} from "@/lib/enums";
 import UsernamePopup from "@/components/UsernamePopup";
 import {getDictionary} from "@/lib/dictionary";
 import {isUndefined} from "@/lib/utils";
+import SharePopup from "@/components/SharePopup";
 
 export default function NewTopicPage({ params }: { params: { lang: string }}) {
-    const {isPopupVisible, showPopup, isUsernamePopupVisible} = usePopup();
+    const {isAuthPopupVisible, showAuthPopup, isUsernamePopupVisible, isSharePopupVisible} = usePopup();
     const {user} = useAuth();
     const router = useRouter();
 
@@ -68,7 +69,7 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
 
     const createTopic = async () => {
         if (user === null) {
-            showPopup();
+            showAuthPopup();
         }
         else {
             try {
@@ -127,13 +128,17 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
         ) : (
         <div className={`flex justify-center`}>
             {/*Signin popup*/}
-            {isPopupVisible && (
+            {isAuthPopupVisible && (
                 <AuthPopup dictionary={dictionary} />
             )}
 
             {/*Google auth set username popup*/}
             {isUsernamePopupVisible && (
                 <UsernamePopup dictionary={dictionary} />
+            )}
+
+            {isSharePopupVisible && (
+                <SharePopup dictionary={dictionary} />
             )}
             
             <div className={`relative md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-5 flex flex-col items-center-center gap-5`}>

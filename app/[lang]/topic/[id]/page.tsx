@@ -272,7 +272,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                             {topicData.topic.title}
                         </h2>
 
-                        <TopicCategory text={topicData.topic.category} />
+                        <TopicCategory text={topicData.topic.category} dictionary={dictionary} />
 
                         <p className={`text-sm`}>
                             {topicData.topic.body}

@@ -66,7 +66,7 @@ export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictio
                 <div className={`mb-2`}>
                     {/*FIXME*/}
                     {/*String(topicTypeColor.Gear)*/}
-                    <TopicCategory text={topic.category} />
+                    <TopicCategory text={topic.category} dictionary={dictionary} />
                 </div>
             </Link>
 

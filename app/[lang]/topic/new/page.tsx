@@ -165,7 +165,7 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
                         <div className={`px-3 py-1 bg-gray-200 rounded-full hover:bg-gray-100 active:bg-gray-200 
                         flex items-center gap-1`}>
                             <p>
-                                {selectedCategory}
+                                {dictionary.main.categories[selectedCategory]}
                             </p>
 
                             <div className={`${!showCategoryOptions && "hidden"}`}>
@@ -182,7 +182,7 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
                                 absolute top-8 left-1/2 -translate-x-1/2 border-[1px] border-black`}>
                                 {Object.keys(ECategoryType).map((type, index) => (
                                     <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-200`} onClick={() => setSelectedCategory(type)}>
-                                        {type}
+                                        {dictionary.main.categories[type]}
                                     </p>
                                 ))}
                             </div>

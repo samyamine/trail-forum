@@ -25,7 +25,7 @@ export default function SharePopup({ dictionary }: { dictionary: any }) {
 
             <div className={`p-3 bg-white absolute flex flex-col justify-center items-center`}>
                 <h2 className={`mb-3 text-2xl font-bold`}>
-                    Share
+                    {dictionary.share}
                 </h2>
 
                 <div className={`flex justify-center gap-2`}>

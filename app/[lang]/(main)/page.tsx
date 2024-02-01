@@ -14,7 +14,7 @@ import InitAccountPopup from "@/components/InitAccountPopup";
 import {ECategoryType, ETrendType} from "@/lib/enums";
 import {usePopup} from "@/app/[lang]/popupContext";
 import {getDictionary} from "@/lib/dictionary";
-import {isUndefined} from "@/lib/utils";
+import {feedBuilder, isUndefined} from "@/lib/utils";
 import SharePopup from "@/components/SharePopup";
 
 export default function HomePage({ params }: {params: { lang: string }}) {
@@ -27,6 +27,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
     const [showTrendOptions, setShowTrendOptions] = useState(false);
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
     const [topic, setTopic] = useState<ITopic | null>(null);
+    const [topics, setTopics] = useState<ITopic[] | undefined>();
     const [selectedTrend, setSelectedTrend] = useState<string>(ETrendType.Hot);
     const [selectedCategory, setSelectedCategory] = useState<string>(ECategoryType.News);
 
@@ -55,9 +56,13 @@ export default function HomePage({ params }: {params: { lang: string }}) {
         window.addEventListener('click', handleClickOutsideCategory);
 
         // FIXME: Generic to make a real feed
-        getTopic("JeikBzLEROcPWF5pIA7N")
-            .then((topicData) => setTopic(topicData))
-            .catch((error) => toast.error(error.message));
+        feedBuilder()
+            .then((topics) => setTopics(topics))
+            .catch((error) => console.log(error.message));
+
+        // getTopic("JeikBzLEROcPWF5pIA7N")
+        //     .then((topicData) => setTopic(topicData))
+        //     .catch((error) => toast.error(error.message));
 
         return () => {
             window.removeEventListener('click', handleClickOutsideTrend);
@@ -65,7 +70,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
         };
     }, []);
 
-    return topic !== null && !isUndefined(dictionary) ? (
+    return !isUndefined(topics) && !isUndefined(dictionary) ? (
         <>
             {/*Signin popup*/}
             {isAuthPopupVisible && (
@@ -156,18 +161,12 @@ export default function HomePage({ params }: {params: { lang: string }}) {
 
                     {/*Main topics feed*/}
                     <div className={`w-full md:w-2/3 lg:w-1/2 lg:mx-10 flex flex-col items-center`}>
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
+                        {topics?.map((topic, index) => (
+                            <div className={`w-full`} key={index}>
+                                <TopicTile topic={topic} dictionary={dictionary} />
+                                <Divider />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

@@ -337,5 +337,8 @@
   "signIn": {
     "signIn": "Se connecter",
     "notRegistered": "Vous n'avez pas de compte ?"
+  },
+  "selectCountryPage": {
+    "title": "Sélectionnez votre pays"
   }
 }

@@ -10,7 +10,7 @@ import IconTextButton from "@/components/IconTextButton";
 import {getTopic} from "@/lib/topic/utils";
 import toast from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
-import UsernamePopup from "@/components/UsernamePopup";
+import InitAccountPopup from "@/components/InitAccountPopup";
 import {ECategoryType, ETrendType} from "@/lib/enums";
 import {usePopup} from "@/app/[lang]/popupContext";
 import {getDictionary} from "@/lib/dictionary";
@@ -18,7 +18,7 @@ import {isUndefined} from "@/lib/utils";
 import SharePopup from "@/components/SharePopup";
 
 export default function HomePage({ params }: {params: { lang: string }}) {
-    const { isAuthPopupVisible, hideAuthPopup, isUsernamePopupVisible, isSharePopupVisible } = usePopup();
+    const { isAuthPopupVisible, hideAuthPopup, isInitAccountPopupVisible, isSharePopupVisible } = usePopup();
 
     const trendsRef = useRef<HTMLDivElement>(null);
     const categoriesRef = useRef<HTMLDivElement>(null);
@@ -72,8 +72,8 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                 <AuthPopup dictionary={dictionary} />
             )}
 
-            {isUsernamePopupVisible && (
-                <UsernamePopup dictionary={dictionary} />
+            {isInitAccountPopupVisible && (
+                <InitAccountPopup dictionary={dictionary} />
             )}
 
             {isSharePopupVisible && (

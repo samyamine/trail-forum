@@ -23,7 +23,7 @@ import {useAuth} from "@/app/[lang]/authContext";
 import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
-import UsernamePopup from "@/components/UsernamePopup";
+import InitAccountPopup from "@/components/InitAccountPopup";
 import Link from "next/link";
 import {getDictionary} from "@/lib/dictionary";
 import SharePopup from "@/components/SharePopup";
@@ -38,7 +38,7 @@ interface IData {
 }
 
 export default function TopicPage({ params }: { params: { id: string, lang: string }}) {
-    const {isAuthPopupVisible, isUsernamePopupVisible, isSharePopupVisible, showAuthPopup, showSharePopup} = usePopup();
+    const {isAuthPopupVisible, isInitAccountPopupVisible, isSharePopupVisible, showAuthPopup, showSharePopup} = usePopup();
     const {userData} = useAuth();
 
     const sortRef = useRef<HTMLDivElement>(null);
@@ -211,8 +211,8 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
             )}
 
             {/*Create username popup*/}
-            {isUsernamePopupVisible && (
-                <UsernamePopup dictionary={dictionary} />
+            {isInitAccountPopupVisible && (
+                <InitAccountPopup dictionary={dictionary} />
             )}
 
             {isSharePopupVisible && (

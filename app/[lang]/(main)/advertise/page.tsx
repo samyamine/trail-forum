@@ -4,10 +4,10 @@ import {usePopup} from "@/app/[lang]/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {useEffect, useState} from "react";
 import {getDictionary} from "@/lib/dictionary";
-import UsernamePopup from "@/components/UsernamePopup";
+import InitAccountPopup from "@/components/InitAccountPopup";
 
 export default function AdvertisePage({ params }: { params: { lang: string } }) {
-    const {isAuthPopupVisible, isUsernamePopupVisible} = usePopup();
+    const {isAuthPopupVisible, isInitAccountPopupVisible} = usePopup();
 
     const [dictionary, setDictionary] = useState<any>();
 
@@ -27,8 +27,8 @@ export default function AdvertisePage({ params }: { params: { lang: string } }) 
                 <AuthPopup dictionary={dictionary} />
             )}
 
-            {isUsernamePopupVisible && (
-                <UsernamePopup dictionary={dictionary} />
+            {isInitAccountPopupVisible && (
+                <InitAccountPopup dictionary={dictionary} />
             )}
 
             <div className={`px-5 py-3`}>

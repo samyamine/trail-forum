@@ -13,9 +13,9 @@ interface IPopupContextProps {
     hideSharePopup: () => void,
     sharePopupID: string,
     isSharePopupVisible: boolean,
-    isUsernamePopupVisible: boolean,
-    showUsernamePopup: () => void,
-    hideUsernamePopup: () => void,
+    isInitAccountPopupVisible: boolean,
+    showInitAccountPopup: () => void,
+    hideInitAccountPopup: () => void,
     // showCountryPopup: () => void,
     // hideCountryPopup: () => void,
     // isCountryPopupVisible: boolean,
@@ -32,8 +32,7 @@ export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
     const [isSharePopupVisible, setIsSharePopupVisible] = useState(false);
     const [sharePopupID, setSharePopupID] = useState("");
     const [popupType, setPopupType] = useState(EAuthPopup.Login);
-    const [isUsernamePopupVisible, setUsernamePopupVisible] = useState(false);
-    const [isCountryPopupVisible, setIsCountryPopupVisible] = useState(false);
+    const [isInitAccountPopupVisible, setIsInitAccountPopupVisible] = useState(false);
 
     const showAuthPopup = () => setIsAuthPopupVisible(true);
 
@@ -51,13 +50,9 @@ export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
 
     const changeAuthPopupType = (type: EAuthPopup) => setPopupType(type);
 
-    const showUsernamePopup = () => setUsernamePopupVisible(true);
+    const showInitAccountPopup = () => setIsInitAccountPopupVisible(true);
 
-    const hideUsernamePopup = () => setUsernamePopupVisible(false);
-
-    const showCountryPopup = () => setIsCountryPopupVisible(true);
-
-    const hideCountryPopup = () => setIsCountryPopupVisible(false);
+    const hideInitAccountPopup = () => setIsInitAccountPopupVisible(false);
 
     return (
         <PopupContext.Provider value={{
@@ -70,9 +65,9 @@ export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
             hideSharePopup,
             sharePopupID,
             isSharePopupVisible,
-            isUsernamePopupVisible,
-            showUsernamePopup,
-            hideUsernamePopup
+            isInitAccountPopupVisible,
+            showInitAccountPopup,
+            hideInitAccountPopup
         }}>
             {children}
         </PopupContext.Provider>

@@ -14,7 +14,7 @@ import {Country} from "@/lib/types";
 
 export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType, dictionary }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>, dictionary: any}) {
     const {signUpWithEmail, googleSignIn} = useAuth();
-    const {hideAuthPopup, showUsernamePopup} = usePopup();
+    const {hideAuthPopup, showInitAccountPopup} = usePopup();
 
     const countryRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +23,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
             const firstTimeSignIn = await googleSignIn();
             if (firstTimeSignIn) {
                 hideAuthPopup();
-                showUsernamePopup();
+                showInitAccountPopup();
             }
             else {
                 hideAuthPopup();
@@ -134,13 +134,15 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
         (
             <div className={`relative flex flex-col items-center`}>
                 <h2 className={`mb-10 text-2xl font-bold`}>
-                    Select your country
+                    {dictionary.selectCountryPage.title}
                 </h2>
 
                 <div className={`relative flex flex-col`} ref={countryRef}>
                     <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
                         rounded-lg border-[1px] border-black`}
                         onClick={() => setShowSearchCountry(true)}>
+
+                        {/*FIXME: Translate countries*/}
                         <input type={`text`} className={`px-4 py-2 flex-grow text-sm rounded-lg outline-0`}
                                onChange={(event) => setCountrySearch(event.target.value)}
                                value={countrySearch}/>

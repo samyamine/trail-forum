@@ -11,9 +11,9 @@ import {EAsia, EEurope} from "@/lib/enums";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import {allCountries} from "@/lib/consts";
 
-export default function UsernamePopup({ dictionary }: { dictionary: any }) {
+export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
     const {userData} = useAuth();
-    const {hideUsernamePopup} = usePopup();
+    const {hideInitAccountPopup} = usePopup();
 
     const countryRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +79,7 @@ export default function UsernamePopup({ dictionary }: { dictionary: any }) {
 
             setCharging(false);
             toast.success("You are now logged in");
-            hideUsernamePopup();
+            hideInitAccountPopup();
         }
     };
 
@@ -110,13 +110,15 @@ export default function UsernamePopup({ dictionary }: { dictionary: any }) {
         (
             <div className={`relative flex flex-col items-center`}>
                 <h2 className={`mb-10 text-2xl font-bold`}>
-                    Select your country
+                    {dictionary.selectCountryPage.title}
                 </h2>
 
                 <div className={`relative flex flex-col`} ref={countryRef}>
                     <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
                         rounded-lg border-[1px] border-black`}
                          onClick={() => setShowSearchCountry(true)}>
+
+                        {/*FIXME: Translate countries*/}
                         <input type={`text`} className={`px-4 py-2 flex-grow text-sm rounded-lg outline-0`}
                                onChange={(event) => setCountrySearch(event.target.value)}
                                value={countrySearch}/>

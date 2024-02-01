@@ -8,7 +8,7 @@ import {usePopup} from "@/app/[lang]/popupContext";
 
 export default function SignInPopup({ dictionary, onClickCallback }: { dictionary: any, onClickCallback: React.MouseEventHandler<HTMLDivElement>}) {
     const {signInWithEmail, googleSignIn} = useAuth();
-    const {hideAuthPopup, showUsernamePopup} = usePopup();
+    const {hideAuthPopup, showInitAccountPopup} = usePopup();
 
     // FIXME: useRef
     const [charging, setCharging] = useState(false);
@@ -33,7 +33,7 @@ export default function SignInPopup({ dictionary, onClickCallback }: { dictionar
             console.log(`FIRST TIME GOOGLE SIGN IN ? ${firstTimeSignIn}`);
             if (firstTimeSignIn) {
                 hideAuthPopup();
-                showUsernamePopup();
+                showInitAccountPopup();
                 console.log("firstTimeSignIn TRUE")
             }
             else {

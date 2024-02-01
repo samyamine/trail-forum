@@ -12,7 +12,7 @@ import {isUndefined} from "@/lib/utils";
 import {isTopic} from "@/lib/types";
 import {usePopup} from "@/app/[lang]/popupContext";
 import AuthPopup from "@/components/AuthPopup";
-import UsernamePopup from "@/components/UsernamePopup";
+import InitAccountPopup from "@/components/InitAccountPopup";
 import {arrayRemove, arrayUnion, doc, DocumentReference, getDoc, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
@@ -37,7 +37,7 @@ interface IData {
 
 export default function ProfilePage({ params }: { params: { id: string, lang: string }}) {
     const {loading, userData} = useAuth();
-    const {showAuthPopup, isUsernamePopupVisible, isAuthPopupVisible, isSharePopupVisible} = usePopup();
+    const {showAuthPopup, isInitAccountPopupVisible, isAuthPopupVisible, isSharePopupVisible} = usePopup();
 
     const [dictionary, setDictionary] = useState<any>();
     const [selectedTab, setSelectedTab] = useState(ETabs.Topics);
@@ -186,8 +186,8 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
             )}
 
             {/*Create username popup*/}
-            {isUsernamePopupVisible && (
-                <UsernamePopup dictionary={dictionary} />
+            {isInitAccountPopupVisible && (
+                <InitAccountPopup dictionary={dictionary} />
             )}
 
             {isSharePopupVisible && (

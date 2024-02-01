@@ -17,13 +17,13 @@ import {db} from "@/lib/firebase/config";
 import {useRouter} from "next/navigation";
 import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import {ECategoryType} from "@/lib/enums";
-import UsernamePopup from "@/components/UsernamePopup";
+import InitAccountPopup from "@/components/InitAccountPopup";
 import {getDictionary} from "@/lib/dictionary";
 import {isUndefined} from "@/lib/utils";
 import SharePopup from "@/components/SharePopup";
 
 export default function NewTopicPage({ params }: { params: { lang: string }}) {
-    const {isAuthPopupVisible, showAuthPopup, isUsernamePopupVisible, isSharePopupVisible} = usePopup();
+    const {isAuthPopupVisible, showAuthPopup, isInitAccountPopupVisible, isSharePopupVisible} = usePopup();
     const {user, userData} = useAuth();
     const router = useRouter();
 
@@ -135,8 +135,8 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
             )}
 
             {/*Google auth set username popup*/}
-            {isUsernamePopupVisible && (
-                <UsernamePopup dictionary={dictionary} />
+            {isInitAccountPopupVisible && (
+                <InitAccountPopup dictionary={dictionary} />
             )}
 
             {isSharePopupVisible && (

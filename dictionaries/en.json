@@ -338,5 +338,8 @@
   "signIn": {
     "signIn": "Sign In",
     "notRegistered": "Don't have an account ?"
+  },
+  "selectCountryPage": {
+    "title": "Select your country"
   }
 }

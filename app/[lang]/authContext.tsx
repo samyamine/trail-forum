@@ -26,7 +26,7 @@ interface IAuthContextProps {
     user: User | null,
     userData: IUser | undefined,
     signInWithEmail: (email: string, password: string) => Promise<void>,
-    signUpWithEmail: (email: string, password: string, username: string) => Promise<void>,
+    signUpWithEmail: (email: string, password: string, username: string, country: string) => Promise<void>,
     googleSignIn: () => Promise<boolean>,
     logOut: () => Promise<void>,
 }
@@ -59,6 +59,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
                 const newUserData: IUser = {
                     uid: snapshot.id,
                     comments,
+                    country: data.country,
                     downVotedComments: data.downVotedComments,
                     downVotedTopics: data.downVotedTopics,
                     topics,
@@ -115,13 +116,13 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     };
 
     // FIXME: TEST UNDEFINED UID AFTER Signing up
-    const signUpWithEmail = async (email: string, password: string, username: string) => {
+    const signUpWithEmail = async (email: string, password: string, username: string, country: string) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        console.log("ADDING...")
         await setDoc(doc(db, "users", userCredential.user.uid), {
             answers: [],
             comments: [],
+            country,
             downVotedComments: [],
             downVotedTopics: [],
             saved: [],
@@ -145,11 +146,12 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         const docRef = doc(db, "users", userCredential.user.uid);
         const docSnapshot = await getDoc(docRef);
 
+        // FIXME: Change default country behavior
         if (!docSnapshot.exists()) {
-            console.log("NOT EXISTING")
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 answers: [],
                 comments: [],
+                country: "Afghanistan",
                 downVotedComments: [],
                 downVotedTopics: [],
                 saved: [],
@@ -165,12 +167,19 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
             return true;
         }
 
-        console.log("EXISTING")
         return false;
     };
 
     return (
-        <AuthContext.Provider value={{ loading, user, userData, signInWithEmail, signUpWithEmail, googleSignIn, logOut }}>
+        <AuthContext.Provider value={{
+            loading,
+            user,
+            userData,
+            signInWithEmail,
+            signUpWithEmail,
+            googleSignIn,
+            logOut
+        }}>
             {children}
         </AuthContext.Provider>
     );

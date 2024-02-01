@@ -24,7 +24,7 @@ import SharePopup from "@/components/SharePopup";
 
 export default function NewTopicPage({ params }: { params: { lang: string }}) {
     const {isAuthPopupVisible, showAuthPopup, isUsernamePopupVisible, isSharePopupVisible} = usePopup();
-    const {user} = useAuth();
+    const {user, userData} = useAuth();
     const router = useRouter();
 
     const categoryRef = useRef<HTMLDivElement>(null);
@@ -75,11 +75,13 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
             try {
                 setCharging(true);
                 const authorRef = doc(db, "users", user.uid);
+
                 const topicRef = await addDoc(collection(db, "topics"), {
                     author: authorRef,
                     body,
                     category: selectedCategory,
                     comments: [],
+                    country: userData?.country,
                     creationDate: serverTimestamp(),
                     title: subject,
                     upVoted: [],

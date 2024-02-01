@@ -16,6 +16,9 @@ interface IPopupContextProps {
     isUsernamePopupVisible: boolean,
     showUsernamePopup: () => void,
     hideUsernamePopup: () => void,
+    // showCountryPopup: () => void,
+    // hideCountryPopup: () => void,
+    // isCountryPopupVisible: boolean,
 }
 
 interface IPopupProviderProps {
@@ -30,6 +33,7 @@ export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
     const [sharePopupID, setSharePopupID] = useState("");
     const [popupType, setPopupType] = useState(EAuthPopup.Login);
     const [isUsernamePopupVisible, setUsernamePopupVisible] = useState(false);
+    const [isCountryPopupVisible, setIsCountryPopupVisible] = useState(false);
 
     const showAuthPopup = () => setIsAuthPopupVisible(true);
 
@@ -51,6 +55,10 @@ export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
 
     const hideUsernamePopup = () => setUsernamePopupVisible(false);
 
+    const showCountryPopup = () => setIsCountryPopupVisible(true);
+
+    const hideCountryPopup = () => setIsCountryPopupVisible(false);
+
     return (
         <PopupContext.Provider value={{
             isAuthPopupVisible,
@@ -64,7 +72,8 @@ export const PopupProvider: FC<IPopupProviderProps> = ({ children }) => {
             isSharePopupVisible,
             isUsernamePopupVisible,
             showUsernamePopup,
-            hideUsernamePopup }}>
+            hideUsernamePopup
+        }}>
             {children}
         </PopupContext.Provider>
     );

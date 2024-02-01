@@ -22,6 +22,7 @@ interface ITopic {
     body: string,
     category: string,
     comments: DocumentReference[],
+    country: string,
     creationDate: Timestamp,
     title: string,
     upVoted: DocumentReference[],
@@ -31,6 +32,7 @@ interface ITopic {
 interface IUser {
     uid: string,
     comments: IComment[],
+    country: string,
     downVotedComments: DocumentReference[],
     downVotedTopics: DocumentReference[],
     saved: (ITopic | IComment)[],

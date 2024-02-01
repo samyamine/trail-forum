@@ -1,21 +1,22 @@
 "use client";
 
-import React, {useState} from "react";
-import {TfiClose} from "react-icons/tfi";
+import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {FcGoogle} from "react-icons/fc";
-import SignInPopup from "@/components/SignInPopup";
 import {BsArrowRight} from "react-icons/bs";
-import {createUserWithEmailAndPassword} from "@firebase/auth";
-import {collection, doc, getDocs, query, setDoc, where} from "@firebase/firestore";
-import {auth, db} from "@/lib/firebase/config";
 import toast, {Toaster} from "react-hot-toast";
 import {useAuth} from "@/app/[lang]/authContext";
 import {usePopup} from "@/app/[lang]/popupContext";
 import {isUsernameAvailable} from "@/lib/utils";
+import {EAsia} from "@/lib/enums";
+import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
+import {allCountries} from "@/lib/consts";
+import {Country} from "@/lib/types";
 
 export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthType, dictionary }: {index: number, setIndexCallback:  () => void, onSwitchAuthType:  React.MouseEventHandler<HTMLDivElement>, dictionary: any}) {
     const {signUpWithEmail, googleSignIn} = useAuth();
     const {hideAuthPopup, showUsernamePopup} = usePopup();
+
+    const countryRef = useRef<HTMLDivElement>(null);
 
     const handleSignInGoogle = async () => {
         try {
@@ -43,18 +44,44 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [username, setUsername] = useState("");
+    const [countrySearch, setCountrySearch] = useState<string>(EAsia.Afghanistan);
+    const [showSearchCountry, setShowSearchCountry] = useState(false);
 
     const errorCheckers = [
         (): boolean => !emailRegex.test(email),
         (): boolean => !usernameRegex.test(username),
+        (): boolean => !Object.values(allCountries).includes(countrySearch),
         (): boolean => password !== passwordConfirmation || !passwordRegex.test(password),
     ];
 
     const errorMessages = [
         "Wrong e-mail format",
         "Username should contains at least 4 characters among letters, numbers, '_' and '-'",
+        "Country does not exist",
         "passwords do not match and/or are not at least 8 characters long",
     ];
+
+    const handleChangeCountrySearch = (value: string) => {
+        setCountrySearch(value);
+        setShowSearchCountry(false);
+    };
+
+    const filterCountries = (): ReactNode => {
+        const filteredCountries = Object.values(allCountries).filter((value) => String(value).includes(countrySearch));
+
+        return filteredCountries.length === 0 ? (
+            <div key={index} className={`px-3 py-2`}>
+                No Result.
+            </div>
+        ) : (
+            filteredCountries.map((value, index) => (
+                <div key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100 cursor-pointer`}
+                     onClick={() => handleChangeCountrySearch(String(value))}>
+                    {value}
+                </div>
+            ))
+        );
+    };
 
     const steps = [
         (
@@ -105,6 +132,34 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
             </>
         ),
         (
+            <div className={`relative flex flex-col items-center`}>
+                <h2 className={`mb-10 text-2xl font-bold`}>
+                    Select your country
+                </h2>
+
+                <div className={`relative flex flex-col`} ref={countryRef}>
+                    <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
+                        rounded-lg border-[1px] border-black`}
+                        onClick={() => setShowSearchCountry(true)}>
+                        <input type={`text`} className={`px-4 py-2 flex-grow text-sm rounded-lg outline-0`}
+                               onChange={(event) => setCountrySearch(event.target.value)}
+                               value={countrySearch}/>
+
+                        {showSearchCountry ? (
+                            <LiaAngleUpSolid />
+                        ) : (
+                            <LiaAngleDownSolid />
+                        )}
+                    </div>
+
+                    <div className={`${!showSearchCountry && "hidden"} min-w-full w-max max-h-[300px] overflow-y-auto absolute 
+                        top-12 left-1/2 -translate-x-1/2 bg-white shadow-md border-[1px] border-black`}>
+                        {filterCountries()}
+                    </div>
+                </div>
+            </div>
+        ),
+        (
             <>
                 <h2 className={`mb-10 text-2xl font-bold text-center`}>
                     {dictionary.register.createPassword}
@@ -127,8 +182,20 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
         )
     ];
 
+    useEffect(() => {
+        const handleClickOutsideCountry = (event: MouseEvent) => {
+            if (countryRef.current && !countryRef.current.contains(event.target as Node)) {
+                setShowSearchCountry(false);
+            }
+        };
+
+        window.addEventListener('click', handleClickOutsideCountry);
+
+        return () => window.removeEventListener('click', handleClickOutsideCountry);
+    }, []);
+
     const buttonClickCallback = async () => {
-        if (index === 2) {
+        if (index === 3) {
             setCharging(true);
 
             if (errorCheckers[index]()) {
@@ -139,7 +206,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
             }
             else {
                 try {
-                    await signUpWithEmail(email, password, username);
+                    await signUpWithEmail(email, password, username, countrySearch);
                     setCharging(false);
                     hideAuthPopup();
                 } catch (error: any) {
@@ -168,9 +235,9 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
             <Toaster />
             {steps[index]}
 
-            <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer ${index !== 2 && "flex items-center gap-3"}`}
+            <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer ${index !== 3 && "flex items-center gap-3"}`}
             onClick={buttonClickCallback}>
-                {index === 2 ? getRegisterButtonContent() : (
+                {index === 3 ? getRegisterButtonContent() : (
                     <>
                         {dictionary.register.continue}
                         <BsArrowRight />

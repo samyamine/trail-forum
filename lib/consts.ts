@@ -1,4 +1,4 @@
-import {ECategoryType} from "@/lib/enums";
+import {EAfrica, EAsia, ECategoryType, EEurope, ENorthAmerica, EOceania, ESouthAmerica} from "@/lib/enums";
 import {IDict} from "@/lib/interfaces";
 
 const topicTypeColor: IDict = {
@@ -10,6 +10,16 @@ const topicTypeColor: IDict = {
     Training: "bg-purple-400",
 };
 
+const allCountries: IDict = {
+    ...EAfrica,
+    ...EAsia,
+    ...EEurope,
+    ...ENorthAmerica,
+    ...ESouthAmerica,
+    ...EOceania
+};
+
 export {
+    allCountries,
     topicTypeColor,
 }

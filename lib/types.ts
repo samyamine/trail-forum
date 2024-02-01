@@ -1,4 +1,7 @@
 import {IComment, ITopic} from "@/lib/interfaces";
+import {EAfrica, EAsia, EEurope, ENorthAmerica, EOceania, ESouthAmerica} from "@/lib/enums";
+
+export type Country = EEurope | EAfrica | ESouthAmerica | ENorthAmerica | EAsia | EOceania;
 
 function isTopic(data: any): data is ITopic {
     return 'uid' in data && 'author' in data && 'body' in data

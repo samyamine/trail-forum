@@ -176,8 +176,8 @@ export default function Header({ lang }: {lang: string}) {
                 </div>
 
                 <Link href={`/`} className={`${showSearch && "hidden"}`}>
-                    <h1 className={`sm:mx-5 text-2xl cursor-pointer`}>
-                        Zone Trail
+                    <h1 className={`sm:mx-5 text-2xl cursor-pointer font-titillium`}>
+                        Zone<span className={`text-orange-500`}>Trail</span>
                     </h1>
                 </Link>
             </div>
@@ -505,14 +505,25 @@ export default function Header({ lang }: {lang: string}) {
                             <h3 className={`mb-1 text-lg text-gray-500`}>
                                 {dictionary.header.resources}
                             </h3>
+
                             <Link href={`/contact`} className={`hover:underline active:underline cursor-pointer`}
-                            onClick={() => setShowDrawer(false)}>
+                                onClick={() => setShowDrawer(false)}>
                                 {dictionary.header.contact}
                             </Link>
-                            <Link href={`/advertise`} className={`hover:underline active:underline cursor-pointer`}
-                                  onClick={() => setShowDrawer(false)}>
-                                {dictionary.header.advertise}
+
+                            <Link href={`/privacy`} className={`hover:underline active:underline cursor-pointer`}
+                                onClick={() => setShowDrawer(false)}>
+                                Privacy policy
                             </Link>
+
+                            <Link href={`/terms`} className={`hover:underline active:underline cursor-pointer`}
+                                onClick={() => setShowDrawer(false)}>
+                                Terms of use
+                            </Link>
+                            {/*<Link href={`/advertise`} className={`hover:underline active:underline cursor-pointer`}*/}
+                            {/*      onClick={() => setShowDrawer(false)}>*/}
+                            {/*    {dictionary.header.advertise}*/}
+                            {/*</Link>*/}
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,6 @@
 import {FaEllipsis} from "react-icons/fa6";
 import Votes from "@/components/Votes";
 import Share from "@/components/Share";
-import {LiaAngleDownSolid, LiaAngleUpSolid} from "react-icons/lia";
 import React, {useEffect, useRef, useState} from "react";
 import Divider from "@/components/Divider";
 import CommentTile from "@/components/CommentTile";

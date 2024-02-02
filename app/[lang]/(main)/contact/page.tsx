@@ -6,6 +6,7 @@ import {isUndefined} from "@/lib/utils";
 import {usePopup} from "@/app/[lang]/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import InitAccountPopup from "@/components/InitAccountPopup";
+import Link from "next/link";
 
 export default function ContactPage({ params }: { params: { lang: string }}) {
     const {isAuthPopupVisible, isInitAccountPopupVisible} = usePopup();
@@ -38,30 +39,44 @@ export default function ContactPage({ params }: { params: { lang: string }}) {
                     <InitAccountPopup dictionary={dictionary} />
                 )}
 
-                <div className={`px-5 py-3`}>
-                    <h1 className={`py-5 text-2xl font-bold`}>
-                        {dictionary.contact.contact} Zone Trail
-                    </h1>
+                <div className={"flex justify-center"}>
+                    <div className={`md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-3 text-center`}>
+                        <h1 className={`py-5 text-2xl font-bold`}>
+                            {dictionary.contact.contact}
+                        </h1>
 
-                    <div className={`flex flex-col gap-6`}>
-                        <p>
-                            {dictionary.contact.text1}
-                        </p>
+                        <div className={`flex flex-col gap-6`}>
+                            <p>
+                                {dictionary.contact.text1}
+                            </p>
 
-                        <p>
-                            {dictionary.contact.support} <br/>
-                            <span className={`text-orange-500 underline cursor-pointer`}>support@zonetrail.com</span>
-                        </p>
+                            <p>
+                                {dictionary.contact.support}&nbsp;
+                                <span className={`text-orange-500 underline cursor-pointer`}>
+                                    <Link href={`mailto:support@zonetrail.com`}>
+                                        support@zonetrail.com
+                                    </Link>
+                                </span>
+                            </p>
 
-                        <p>
-                            {dictionary.contact.questions}<br/>
-                            <span className={`text-orange-500 underline cursor-pointer`}>questions@zonetrail.com</span>
-                        </p>
+                            <p>
+                                {dictionary.contact.questions}&nbsp;
+                                <span className={`text-orange-500 underline cursor-pointer`}>
+                                    <Link href={`mailto:questions@zonetrail.com`}>
+                                        questions@zonetrail.com
+                                    </Link>
+                                </span>
+                            </p>
 
-                        <p>
-                            {dictionary.contact.suggestions}&nbsp;
-                            <span className={`text-orange-500 underline cursor-pointer`}>suggestions@zonetrail.com</span>
-                        </p>
+                            <p>
+                                {dictionary.contact.suggestions}&nbsp;
+                                <span className={`text-orange-500 underline cursor-pointer`}>
+                                    <Link href={`mailto:suggestions@zonetrail.com`}>
+                                        suggestions@zonetrail.com
+                                    </Link>
+                                </span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </>

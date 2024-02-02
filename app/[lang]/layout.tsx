@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import {Toaster} from "react-hot-toast";
 import {AuthProvider} from "@/app/[lang]/authContext";
 import {PopupProvider} from "@/app/[lang]/popupContext";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
     title: 'Trail Forum',
@@ -25,25 +26,7 @@ export default function RootLayout({children, params}: {children: React.ReactNod
                     {children}
                 </main>
 
-                <footer className={`mt-auto bg-black py-8 text-white flex flex-col justify-center items-center`}>
-                    <div className={`py-2 text-center flex flex-col gap-2`}>
-                        <p>
-                            Contact
-                        </p>
-
-                        <p>
-                            Advertise with us
-                        </p>
-                    </div>
-
-                    <h3>
-                        The trail runner community
-                    </h3>
-
-                    <p>
-                        2024 - Zone Trail &copy;
-                    </p>
-                </footer>
+                <Footer />
                 </body>
                 </html>
             </PopupProvider>

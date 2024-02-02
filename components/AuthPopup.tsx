@@ -15,7 +15,7 @@ export default function AuthPopup({ dictionary }: { dictionary: any }) {
 
     return (
         <div className={`w-full h-full bg-white fixed top-0 z-50 flex flex-col items-center`}>
-            <div className={`w-full px-5 py-3 mb-24 flex ${index > 0 ? "justify-between" : "justify-end"} text-xl`}>
+            <div className={`w-full px-5 py-3 mb-12 flex ${index > 0 ? "justify-between" : "justify-end"} text-xl`}>
                 {index > 0 && (
                     <div className={`p-2 rounded-full cursor-pointer`} onClick={() => setIndex(index - 1)}>
                         <BsArrowLeft />

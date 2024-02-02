@@ -143,7 +143,7 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
                 <SharePopup dictionary={dictionary} />
             )}
             
-            <div className={`relative md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-5 flex flex-col items-center-center gap-5`}>
+            <div className={`relative md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-5 flex flex-col gap-5`}>
                 <h1 className={`w-full text-2xl font-bold`}>
                     {dictionary.newTopic.title}
                 </h1>

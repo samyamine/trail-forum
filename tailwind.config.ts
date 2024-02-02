@@ -13,6 +13,10 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      fontFamily: {
+        titillium: ['Titillium Web', "sans-serif"],
+        // Add more custom font families as needed
+      },
     },
   },
   plugins: [],

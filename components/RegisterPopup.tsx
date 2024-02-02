@@ -44,7 +44,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [username, setUsername] = useState("");
-    const [countrySearch, setCountrySearch] = useState<string>(EAsia.Afghanistan);
+    const [countrySearch, setCountrySearch] = useState("");
     const [showSearchCountry, setShowSearchCountry] = useState(false);
 
     const errorCheckers = [
@@ -67,7 +67,8 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
     };
 
     const filterCountries = (): ReactNode => {
-        const filteredCountries = Object.values(allCountries).filter((value) => String(value).includes(countrySearch));
+        const sortedCountries = Object.values(allCountries).sort((a, b) => String(a).localeCompare(String(b)));
+        const filteredCountries = Object.values(sortedCountries).filter((value) => String(value).includes(countrySearch));
 
         return filteredCountries.length === 0 ? (
             <div key={index} className={`px-3 py-2`}>
@@ -139,19 +140,27 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
 
                 <div className={`relative flex flex-col`} ref={countryRef}>
                     <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
-                        rounded-lg border-[1px] border-black`}
-                        onClick={() => setShowSearchCountry(true)}>
+                        rounded-lg border-[1px] border-black`}>
 
                         {/*FIXME: Translate countries*/}
                         <input type={`text`} className={`px-4 py-2 flex-grow text-sm rounded-lg outline-0`}
+                               onClick={() => setShowSearchCountry(true)}
                                onChange={(event) => setCountrySearch(event.target.value)}
                                value={countrySearch}/>
 
-                        {showSearchCountry ? (
+                        <div className={`${!showSearchCountry && "hidden"}`} onClick={() => setShowSearchCountry(!showSearchCountry)}>
                             <LiaAngleUpSolid />
-                        ) : (
+                        </div>
+
+                        <div className={`${showSearchCountry && "hidden"}`} onClick={() => setShowSearchCountry(!showSearchCountry)}>
                             <LiaAngleDownSolid />
-                        )}
+                        </div>
+
+                        {/*{showSearchCountry ? (*/}
+                        {/*    <LiaAngleUpSolid />*/}
+                        {/*) : (*/}
+                        {/*    <LiaAngleDownSolid />*/}
+                        {/*)}*/}
                     </div>
 
                     <div className={`${!showSearchCountry && "hidden"} min-w-full w-max max-h-[300px] overflow-y-auto absolute 

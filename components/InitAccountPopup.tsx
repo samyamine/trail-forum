@@ -20,7 +20,7 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
     const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/;
 
     const [username, setUsername] = useState("");
-    const [countrySearch, setCountrySearch] = useState<string>("");
+    const [countrySearch, setCountrySearch] = useState("");
     const [showSearchCountry, setShowSearchCountry] = useState(false);
     const [charging, setCharging] = useState(false);
     const [index, setIndex] = useState(0);
@@ -31,7 +31,7 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
     };
 
     const filterCountries = (): ReactNode => {
-        const sortedCountries = Object.values(allCountries).sort((a, b) => String(a).localeCompare(String(b)))
+        const sortedCountries = Object.values(allCountries).sort((a, b) => String(a).localeCompare(String(b)));
         const filteredCountries = Object.values(sortedCountries).filter((value) => String(value).includes(countrySearch));
 
         return filteredCountries.length === 0 ? (

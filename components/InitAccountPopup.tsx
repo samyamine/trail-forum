@@ -19,8 +19,8 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
 
     const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/;
 
-    const [username, setUsername] = useState(String(userData?.username));
-    const [countrySearch, setCountrySearch] = useState<string>(EAsia.Afghanistan);
+    const [username, setUsername] = useState("");
+    const [countrySearch, setCountrySearch] = useState<string>("");
     const [showSearchCountry, setShowSearchCountry] = useState(false);
     const [charging, setCharging] = useState(false);
     const [index, setIndex] = useState(0);
@@ -31,7 +31,8 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
     };
 
     const filterCountries = (): ReactNode => {
-        const filteredCountries = Object.values(allCountries).filter((value) => String(value).includes(countrySearch));
+        const sortedCountries = Object.values(allCountries).sort((a, b) => String(a).localeCompare(String(b)))
+        const filteredCountries = Object.values(sortedCountries).filter((value) => String(value).includes(countrySearch));
 
         return filteredCountries.length === 0 ? (
             <div key={index} className={`px-3 py-2`}>

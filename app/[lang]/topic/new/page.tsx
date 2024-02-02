@@ -94,6 +94,7 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
 
                 setCharging(false);
                 router.push(`/topic/${topicRef.id}`);
+                toast.success("Topic created");
             } catch (error: any) {
                 toast.error(error.message);
                 setCharging(false);

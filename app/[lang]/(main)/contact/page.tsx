@@ -40,7 +40,7 @@ export default function ContactPage({ params }: { params: { lang: string }}) {
                 )}
 
                 <div className={"flex justify-center"}>
-                    <div className={`md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-3 text-center`}>
+                    <div className={`md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-3 mb-10 text-center`}>
                         <h1 className={`py-5 text-2xl font-bold`}>
                             {dictionary.contact.contact}
                         </h1>

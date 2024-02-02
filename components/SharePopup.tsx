@@ -29,19 +29,19 @@ export default function SharePopup({ dictionary }: { dictionary: any }) {
                 </h2>
 
                 <div className={`flex justify-center gap-2`}>
-                    <FacebookShareButton url={`http://localhost:3000${pathname}/${sharePopupID}`}>
+                    <FacebookShareButton url={`https://zonetrail.com${pathname}/${sharePopupID}`}>
                         <FacebookIcon round size={32} />
                     </FacebookShareButton>
 
-                    <TwitterShareButton url={`http://localhost:3000${pathname}/${sharePopupID}`}>
+                    <TwitterShareButton url={`https://zonetrail.com${pathname}/${sharePopupID}`}>
                         <TwitterIcon round size={32} />
                     </TwitterShareButton>
 
-                    <RedditShareButton url={`http://localhost:3000${pathname}/${sharePopupID}`}>
+                    <RedditShareButton url={`https://zonetrail.com${pathname}/${sharePopupID}`}>
                         <RedditIcon round size={32} />
                     </RedditShareButton>
 
-                    <EmailShareButton url={`http://localhost:3000${pathname}/${sharePopupID}`}>
+                    <EmailShareButton url={`https://zonetrail.com${pathname}/${sharePopupID}`}>
                         <EmailIcon round size={32} />
                     </EmailShareButton>
                 </div>

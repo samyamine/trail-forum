@@ -116,19 +116,21 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
 
                 <div className={`relative flex flex-col`} ref={countryRef}>
                     <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
-                        rounded-lg border-[1px] border-black`}
-                         onClick={() => setShowSearchCountry(true)}>
+                        rounded-lg border-[1px] border-black`}>
 
                         {/*FIXME: Translate countries*/}
                         <input type={`text`} className={`px-4 py-2 flex-grow text-sm rounded-lg outline-0`}
+                               onClick={() => setShowSearchCountry(true)}
                                onChange={(event) => setCountrySearch(event.target.value)}
                                value={countrySearch}/>
 
-                        {showSearchCountry ? (
+                        <div className={`${!showSearchCountry && "hidden"}`} onClick={() => setShowSearchCountry(!showSearchCountry)}>
                             <LiaAngleUpSolid />
-                        ) : (
+                        </div>
+
+                        <div className={`${showSearchCountry && "hidden"}`} onClick={() => setShowSearchCountry(!showSearchCountry)}>
                             <LiaAngleDownSolid />
-                        )}
+                        </div>
                     </div>
 
                     <div className={`${!showSearchCountry && "hidden"} min-w-full w-max max-h-[300px] overflow-y-auto absolute 

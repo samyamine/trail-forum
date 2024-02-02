@@ -26,7 +26,7 @@ export default function RootLayout({children, params}: {children: React.ReactNod
                     {children}
                 </main>
 
-                <Footer />
+                <Footer lang={params.lang} />
                 </body>
                 </html>
             </PopupProvider>

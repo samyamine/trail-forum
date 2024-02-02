@@ -7,8 +7,6 @@ import React, {useEffect, useRef, useState} from "react";
 import Link from "next/link";
 import AuthPopup from "@/components/AuthPopup";
 import IconTextButton from "@/components/IconTextButton";
-import {getTopic} from "@/lib/topic/utils";
-import toast from "react-hot-toast";
 import {ITopic} from "@/lib/interfaces";
 import InitAccountPopup from "@/components/InitAccountPopup";
 import {ECategoryType, ETrendType} from "@/lib/enums";

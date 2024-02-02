@@ -12,6 +12,7 @@ async function getAuthor(authorReference: DocumentReference): Promise<IUser> {
 
     const data = authorSnapshot.data();
     const comments = await getComments(data.comments);
+    const country = data.country;
     const downVotedComments = data.downVotedComments;
     const downVotedTopics = data.downVotedTopics;
     const saved = await getSaved(data.saved);
@@ -30,6 +31,7 @@ async function getAuthor(authorReference: DocumentReference): Promise<IUser> {
     return {
         uid: authorReference.id,
         comments,
+        country,
         downVotedComments,
         downVotedTopics,
         saved,
@@ -56,6 +58,7 @@ async function getTopic(uid: string): Promise<ITopic> {
         body: topicSnapshot.data().body,
         category: topicSnapshot.data().category,
         comments: topicSnapshot.data().comments,
+        country: topicSnapshot.data().country,
         creationDate: topicSnapshot.data().creationDate,
         title: topicSnapshot.data().title,
         upVoted: topicSnapshot.data().upVoted,

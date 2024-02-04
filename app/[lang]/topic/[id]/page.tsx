@@ -342,22 +342,22 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
                     {/*Comments*/}
                     <Divider />
-                    {/*{topicData.comments.map((comment, index) => (*/}
-                    {/*    <div key={index} className={`flex flex-col`}>*/}
-                    {/*        <CommentTile comment={comment} dictionary={dictionary} />*/}
+                    {topicData.comments.map((comment, index) => (
+                        <div key={index} className={`flex flex-col`}>
+                            <CommentTile comment={comment} dictionary={dictionary} />
 
-                    {/*        {comment.answers.map((nestedAnswer, nestedIndex) => (*/}
-                    {/*            <div key={`n${nestedIndex}`} className={`flex justify-start`}>*/}
-                    {/*                <div className={`w-10 flex justify-center`}>*/}
-                    {/*                    <div className={`w-0.5 h-full bg-gray-300`}></div>*/}
-                    {/*                </div>*/}
-                    {/*                <div className={`flex-grow`}>*/}
-                    {/*                    <CommentTile comment={nestedAnswer} dictionary={dictionary} />*/}
-                    {/*                </div>*/}
-                    {/*            </div>*/}
-                    {/*        ))}*/}
-                    {/*    </div>*/}
-                    {/*))}*/}
+                            {comment.answers.map((nestedAnswer, nestedIndex) => (
+                                <div key={`n${nestedIndex}`} className={`flex justify-start`}>
+                                    <div className={`w-10 flex justify-center`}>
+                                        <div className={`w-0.5 h-full bg-gray-300`}></div>
+                                    </div>
+                                    <div className={`flex-grow`}>
+                                        <CommentTile comment={nestedAnswer} dictionary={dictionary} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <div className={`w-full h-full mt-10 flex flex-grow justify-center items-center`}>

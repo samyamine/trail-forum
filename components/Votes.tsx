@@ -45,10 +45,11 @@ export default function Votes({ initUpVotes, initDownVotes, collection, id }: { 
 
     const onUpVote = async () => {
         if (isUndefined(userData)) {
+
             showAuthPopup();
         }
 
-        if (votes.up) {
+        else if (votes.up) {
             const userUID = String(userData?.uid);
 
             const userRef = doc(db, "users", userUID);
@@ -123,7 +124,7 @@ export default function Votes({ initUpVotes, initDownVotes, collection, id }: { 
             showAuthPopup();
         }
 
-        if (votes.down) {
+        else if (votes.down) {
             const userUID = String(userData?.uid);
 
             const userRef = doc(db, "users", userUID);

@@ -1,5 +1,6 @@
 
 enum ECategoryType {
+    All = "All",
     News = "News",
     Discussion = "Discussion",
     Training = "Training",
@@ -12,7 +13,7 @@ enum ETrendType {
     Hot = "Hot",
     Latest = "Latest",
     Following = "Following",
-    Others = "Others",
+    // Others = "Others",
 }
 
 enum EContinent {
@@ -250,6 +251,7 @@ enum EOceania {
 }
 
 enum ETop {
+    All = "All",
     Belgium = "Belgium",
     Brazil = "Brazil",
     China = "China",

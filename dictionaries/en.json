@@ -240,6 +240,7 @@
     "vanuatu": "Vanuatu"
   },
   "top": {
+    "all": "All",
     "belgium": "Belgium",
     "brazil": "Brazil",
     "china": "China",
@@ -286,6 +287,7 @@
   "main": {
     "newTopic": "New Topic",
     "categories": {
+      "All": "All",
       "News": "News",
       "Discussion": "Discussion",
       "Training": "Training",

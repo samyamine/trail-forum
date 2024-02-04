@@ -76,7 +76,8 @@ export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictio
             <div className={`flex`}>
                 <div className={`px-3 w-fit flex gap-5`}>
                     {/*FIXME*/}
-                    <Votes id={topic.uid} collection={`topics`} initCount={topic.upVoted.length - topic.downVoted.length} />
+                    <Votes id={topic.uid} collection={`topics`} initUpVotes={topic.upVoted.length}
+                        initDownVotes={topic.downVoted.length} />
                     <Link href={`/topic/${topic.uid}`}>
                         <Comments count={commentCount} />
                     </Link>

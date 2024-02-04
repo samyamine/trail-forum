@@ -39,8 +39,13 @@ import {IDict, ITopic} from "@/lib/interfaces";
 import {getTopic} from "@/lib/topic/utils";
 import TopicTile from "@/components/TopicTile";
 import Divider from "@/components/Divider";
+import {useCountry} from "@/app/[lang]/countryContext";
+import {Country} from "@/lib/types";
 
 export default function Header({ lang }: {lang: string}) {
+    // FIXME: Try to do it without context
+    const {setCountry} = useCountry();
+
     // FIXME: Get it in the root layout
     const [dictionary, setDictionary] = useState<any>();
 
@@ -66,6 +71,18 @@ export default function Header({ lang }: {lang: string}) {
         await logOut();
         router.push("/");
         // window.location.reload();
+    };
+
+    const handleSetCountry = (country: string | undefined) => {
+        if (!isUndefined(country)) {
+            const formattedCountry = String(country).charAt(0).toUpperCase() + String(country).slice(1);
+            setCountry(formattedCountry as Country);
+        }
+
+        else {
+            setCountry(undefined);
+            setShowDrawer(false);
+        }
     };
 
     const handleShowSearch = async (value: boolean) => {
@@ -314,7 +331,9 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.top).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => {
+                                               console.log(`KEY: ${key}`)
+                                               handleSetCountry(key as Country)} }>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -341,7 +360,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.europe).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -368,7 +387,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.africa).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -395,7 +414,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.northAmerica).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -422,7 +441,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.southAmerica).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -449,7 +468,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.asia).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -476,7 +495,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.oceania).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => alert("FIXME")}>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}
@@ -521,10 +540,6 @@ export default function Header({ lang }: {lang: string}) {
                                 onClick={() => setShowDrawer(false)}>
                                 Terms of use
                             </Link>
-                            {/*<Link href={`/advertise`} className={`hover:underline active:underline cursor-pointer`}*/}
-                            {/*      onClick={() => setShowDrawer(false)}>*/}
-                            {/*    {dictionary.header.advertise}*/}
-                            {/*</Link>*/}
                         </div>
                     </div>
                 </div>

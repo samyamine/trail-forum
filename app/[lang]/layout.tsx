@@ -6,6 +6,7 @@ import {Toaster} from "react-hot-toast";
 import {AuthProvider} from "@/app/[lang]/authContext";
 import {PopupProvider} from "@/app/[lang]/popupContext";
 import Footer from "@/components/Footer";
+import {CountryProvider} from "@/app/[lang]/countryContext";
 
 export const metadata: Metadata = {
     title: 'Trail Forum',
@@ -16,21 +17,23 @@ export default function RootLayout({children, params}: {children: React.ReactNod
     return (
         <AuthProvider>
             <PopupProvider>
-                <html lang={`en`}>
-                <body className={`flex flex-col min-h-screen`}>
-                {/*className={`bg-[#0B1416]`}*/}
+                <CountryProvider>
+                    <html lang={`en`}>
+                        <body className={`flex flex-col min-h-screen`}>
+                            {/*className={`bg-[#0B1416]`}*/}
 
-                <Toaster toastOptions={{ duration: 3000 }} />
+                            <Toaster toastOptions={{ duration: 3000 }} />
 
-                <Header lang={params.lang} />
+                            <Header lang={params.lang} />
 
-                <main className={`mt-16 flex-grow`}>
-                    {children}
-                </main>
+                            <main className={`relative mt-16 flex-grow`}>
+                                {children}
+                            </main>
 
-                <Footer lang={params.lang} />
-                </body>
-                </html>
+                            <Footer lang={params.lang} />
+                        </body>
+                    </html>
+                </CountryProvider>
             </PopupProvider>
         </AuthProvider>
     );

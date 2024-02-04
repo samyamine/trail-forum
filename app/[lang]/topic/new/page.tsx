@@ -188,7 +188,7 @@ export default function NewTopicPage({ params }: { params: { lang: string }}) {
                         {showCategoryOptions && (
                             <div className={`min-w-max shadow-md bg-white 
                                 absolute top-8 left-1/2 -translate-x-1/2 border-[1px] border-black`}>
-                                {Object.keys(ECategoryType).map((type, index) => (
+                                {Object.keys(ECategoryType).slice(1).map((type, index) => (
                                     <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-200`} onClick={() => setSelectedCategory(type)}>
                                         {dictionary.main.categories[type]}
                                     </p>

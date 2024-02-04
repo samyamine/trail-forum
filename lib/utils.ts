@@ -1,7 +1,9 @@
-import {collection, getDocs, query, where} from "@firebase/firestore";
+import {collection, DocumentReference, getDocs, query, where} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import {ITopic} from "@/lib/interfaces";
 import {getTopic} from "@/lib/topic/utils";
+import {ECategoryType, ETop, ETrendType} from "@/lib/enums";
+import {Country} from "@/lib/types";
 
 function isUndefined(element: any): boolean {
     return typeof element === "undefined";
@@ -44,8 +46,10 @@ function quickSortTopics(arr: ITopic[]): ITopic[] {
     return [...quickSortTopics(left), pivot, ...quickSortTopics(right)];
 }
 
-async function feedBuilder(): Promise<ITopic[]> {
+async function feedBuilder(category: ECategoryType, country: Country | undefined): Promise<ITopic[]> {
     const topics: ITopic[] = [];
+
+    console.log(`COUNTRY: ${country}`)
 
     // Récupérer tous les topics
     const topicSnapshot = await getDocs(collection(db, "topics"));
@@ -53,7 +57,27 @@ async function feedBuilder(): Promise<ITopic[]> {
     for (const snapshot of topicSnapshot.docs) {
         const topic = await getTopic(snapshot.id);
 
-        topics.push(topic);
+        if (!isUndefined(country) && (String(country) === ETop.All || topic.country === country)) {
+            console.log("NOT undefined")
+            if (category === ECategoryType.All) {
+                topics.push(topic);
+            }
+
+            if (topic.category === category) {
+                topics.push(topic);
+            }
+        }
+
+        if (isUndefined(country)) {
+            console.log("Undefined")
+            if (category === ECategoryType.All) {
+                topics.push(topic);
+            }
+
+            if (topic.category === category) {
+                topics.push(topic);
+            }
+        }
     }
 
     // Classer les topics par tendance décroissante (Hot)

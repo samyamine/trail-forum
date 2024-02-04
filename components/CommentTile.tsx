@@ -250,7 +250,7 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
                 </h1>
 
                 <div className={`pl-5 pr-3 flex gap-5`}>
-                    <Votes id={commentData.uid} collection={`comments`} initCount={commentData.upVoted.length - commentData.downVoted.length} />
+                    <Votes id={commentData.uid} collection={`comments`} initUpVotes={commentData.upVoted.length} initDownVotes={commentData.downVoted.length} />
                     <div className={`px-2 rounded-full cursor-pointer flex gap-1 items-center border-[1px] border-black 
                         hover:bg-gray-300 ${showReply && "bg-gray-300"} text-xs`}
                          onClick={() => setShowReply(!showReply)}>

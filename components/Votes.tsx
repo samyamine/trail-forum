@@ -9,12 +9,14 @@ import {db} from "@/lib/firebase/config";
 import {usePopup} from "@/app/[lang]/popupContext";
 import toast from "react-hot-toast";
 
-export default function Votes({ initCount, collection, id }: { initCount: number, collection: string, id: string }) {
+export default function Votes({ initUpVotes, initDownVotes, collection, id }: { initUpVotes: number, initDownVotes: number, collection: string, id: string }) {
     const {userData} = useAuth();
     const {showAuthPopup} = usePopup();
 
     const [votes, setVotes] = useState({ up: false, down: false });
-    const [count, setCount] = useState(initCount);
+    // const [count, setCount] = useState(initCount);
+    const [upVotes, setUpVotes] = useState(initUpVotes);
+    const [downVotes, setDownVotes] = useState(initDownVotes);
 
     useEffect(() => {
         setVotes({up: false, down: false});
@@ -45,7 +47,8 @@ export default function Votes({ initCount, collection, id }: { initCount: number
         if (isUndefined(userData)) {
             showAuthPopup();
         }
-        else if (votes.up) {
+
+        if (votes.up) {
             const userUID = String(userData?.uid);
 
             const userRef = doc(db, "users", userUID);
@@ -70,7 +73,7 @@ export default function Votes({ initCount, collection, id }: { initCount: number
                     throw new Error(`Unknown collection ${collection}`);
             }
 
-            setCount(count - 1);
+            setUpVotes(upVotes - 1);
             setVotes({ up: false, down: false });
         }
         else {
@@ -102,10 +105,13 @@ export default function Votes({ initCount, collection, id }: { initCount: number
             }
 
             if (votes.down) {
-                setCount(count + 2);
+                // setCount(count + 2);
+                setUpVotes(upVotes + 1);
+                setDownVotes(downVotes - 1);
             }
             else {
-                setCount(count + 1);
+                // setCount(count + 1);
+                setUpVotes(upVotes + 1);
             }
 
             setVotes({ up: true, down: false });
@@ -116,7 +122,8 @@ export default function Votes({ initCount, collection, id }: { initCount: number
         if (isUndefined(userData)) {
             showAuthPopup();
         }
-        else if (votes.down) {
+
+        if (votes.down) {
             const userUID = String(userData?.uid);
 
             const userRef = doc(db, "users", userUID);
@@ -141,7 +148,8 @@ export default function Votes({ initCount, collection, id }: { initCount: number
                     throw new Error(`Unknown collection ${collection}`);
             }
 
-            setCount(count + 1);
+            // setCount(count + 1);
+            setDownVotes(downVotes - 1);
             setVotes({ up: false, down: false });
         }
         else {
@@ -173,10 +181,13 @@ export default function Votes({ initCount, collection, id }: { initCount: number
             }
 
             if (votes.up) {
-                setCount(count - 2);
+                // setCount(count - 2);
+                setUpVotes(upVotes - 1);
+                setDownVotes(downVotes + 1);
             }
             else {
-                setCount(count - 1);
+                // setCount(count - 1);
+                setDownVotes(downVotes + 1);
             }
 
             setVotes({ up: false, down: true });
@@ -184,17 +195,18 @@ export default function Votes({ initCount, collection, id }: { initCount: number
     };
 
     return (
-        <div className={`rounded-full flex gap-2 items-center border-[1px] border-black text-xs`}>
+        <div className={`pr-2 rounded-full flex gap-1 items-center border-[1px] border-black text-xs`}>
             <div className={`p-1 rounded-full cursor-pointer hover:bg-gray-300 ${votes.up && "bg-gray-300 text-blue-500"}`}
             onClick={() => onUpVote().catch((error) => toast.error(error.message))}>
                 <TbArrowBigUp />
             </div>
-            <p>{count}</p>
+            <p>{upVotes}</p>
 
             <div className={`p-1 rounded-full cursor-pointer hover:bg-gray-300 ${votes.down && "bg-gray-300 text-red-500"}`}
             onClick={() => onDownVote().catch((error) => toast.error(error.message))}>
                 <TbArrowBigDown />
             </div>
+            <p>{downVotes}</p>
         </div>
     );
 }

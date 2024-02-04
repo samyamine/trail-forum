@@ -201,7 +201,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
     }, []);
 
     return (
-        <div className={`w-full flex flex-col items-center`}>
+        <div className={`w-full flex flex-col items-center bg-blue-300`}>
 
             <Toaster toastOptions={{ duration: 3000 }} />
 
@@ -286,11 +286,13 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
                     {/*Social engagement*/}
                     <div className={`mb-4 flex gap-5`}>
-                        <Votes initCount={topicData.topic.upVoted.length - topicData.topic.downVoted.length}
-                               id={topicData.topic.uid} collection={"topics"} />
+                        <Votes initUpVotes={topicData.topic.upVoted.length} initDownVotes={topicData.topic.downVoted.length}
+                            id={topicData.topic.uid} collection={"topics"} />
                         <div className={`flex items-center gap-2 text-xs font-bold text-gray-400`}>
                             <TbMessageCircle2Filled />
-                            <p>{topicData.commentsNumber} {dictionary.topic.comments}</p>
+                            <p>
+                                {topicData.commentsNumber} {dictionary.topic.comments}
+                            </p>
                         </div>
                         <Share dictionary={dictionary} onClickCallback={() => showSharePopup(params.id)} />
                     </div>
@@ -340,22 +342,22 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
                     {/*Comments*/}
                     <Divider />
-                    {topicData.comments.map((comment, index) => (
-                        <div key={index} className={`flex flex-col`}>
-                            <CommentTile comment={comment} dictionary={dictionary} />
+                    {/*{topicData.comments.map((comment, index) => (*/}
+                    {/*    <div key={index} className={`flex flex-col`}>*/}
+                    {/*        <CommentTile comment={comment} dictionary={dictionary} />*/}
 
-                            {comment.answers.map((nestedAnswer, nestedIndex) => (
-                                <div key={`n${nestedIndex}`} className={`flex justify-start`}>
-                                    <div className={`w-10 flex justify-center`}>
-                                        <div className={`w-0.5 h-full bg-gray-300`}></div>
-                                    </div>
-                                    <div className={`flex-grow`}>
-                                        <CommentTile comment={nestedAnswer} dictionary={dictionary} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
+                    {/*        {comment.answers.map((nestedAnswer, nestedIndex) => (*/}
+                    {/*            <div key={`n${nestedIndex}`} className={`flex justify-start`}>*/}
+                    {/*                <div className={`w-10 flex justify-center`}>*/}
+                    {/*                    <div className={`w-0.5 h-full bg-gray-300`}></div>*/}
+                    {/*                </div>*/}
+                    {/*                <div className={`flex-grow`}>*/}
+                    {/*                    <CommentTile comment={nestedAnswer} dictionary={dictionary} />*/}
+                    {/*                </div>*/}
+                    {/*            </div>*/}
+                    {/*        ))}*/}
+                    {/*    </div>*/}
+                    {/*))}*/}
                 </div>
             ) : (
                 <div className={`w-full h-full mt-10 flex flex-grow justify-center items-center`}>

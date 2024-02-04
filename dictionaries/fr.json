@@ -240,6 +240,7 @@
     "vanuatu": "Vanuatu"
   },
   "top": {
+    "all": "Tout",
     "belgium": "Belgique",
     "brazil": "Brésil",
     "china": "Chine",
@@ -286,9 +287,10 @@
   "main": {
     "newTopic": "Nouveau Topic",
     "categories": {
+      "All": "Tout",
       "News": "Actualités",
       "Discussion": "Discussion",
-      "Training": "Training",
+      "Training": "Entraînement",
       "Races": "Courses",
       "Gear": "Gear",
       "Live": "Direct"

@@ -14,8 +14,12 @@ import {usePopup} from "@/app/[lang]/popupContext";
 import {getDictionary} from "@/lib/dictionary";
 import {feedBuilder, isUndefined} from "@/lib/utils";
 import SharePopup from "@/components/SharePopup";
+import {useAuth} from "@/app/[lang]/authContext";
+import {useCountry} from "@/app/[lang]/countryContext";
 
 export default function HomePage({ params }: {params: { lang: string }}) {
+    const {userData} = useAuth();
+    const {country} = useCountry();
     const { isAuthPopupVisible, hideAuthPopup, isInitAccountPopupVisible, isSharePopupVisible } = usePopup();
 
     const trendsRef = useRef<HTMLDivElement>(null);
@@ -26,8 +30,8 @@ export default function HomePage({ params }: {params: { lang: string }}) {
     const [showCategoryOptions, setShowCategoryOptions] = useState(false);
     const [topic, setTopic] = useState<ITopic | null>(null);
     const [topics, setTopics] = useState<ITopic[] | undefined>();
-    const [selectedTrend, setSelectedTrend] = useState<string>(ETrendType.Hot);
-    const [selectedCategory, setSelectedCategory] = useState<string>(ECategoryType.News);
+    const [selectedTrend, setSelectedTrend] = useState<ETrendType>(ETrendType.Hot);
+    const [selectedCategory, setSelectedCategory] = useState<ECategoryType>(ECategoryType.All);
 
     useEffect(() => {
         const handleClickOutsideTrend = (event: MouseEvent) => {
@@ -54,19 +58,21 @@ export default function HomePage({ params }: {params: { lang: string }}) {
         window.addEventListener('click', handleClickOutsideCategory);
 
         // FIXME: Generic to make a real feed
-        feedBuilder()
+        feedBuilder(selectedCategory, country)
             .then((topics) => setTopics(topics))
             .catch((error) => console.log(error.message));
-
-        // getTopic("JeikBzLEROcPWF5pIA7N")
-        //     .then((topicData) => setTopic(topicData))
-        //     .catch((error) => toast.error(error.message));
 
         return () => {
             window.removeEventListener('click', handleClickOutsideTrend);
             window.removeEventListener('click', handleClickOutsideCategory);
         };
     }, []);
+
+    useEffect(() => {
+        feedBuilder(selectedCategory, country)
+            .then((topics) => setTopics(topics))
+            .catch((error) => console.log(error.message));
+    }, [selectedCategory, country]);
 
     return !isUndefined(topics) && !isUndefined(dictionary) ? (
         <>
@@ -94,33 +100,33 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                         {/*Sort Options*/}
                         <div className={`flex text-xs`}>
                             {/*Trends*/}
-                            <div ref={trendsRef} className={`relative flex items-center gap-1 cursor-pointer`}
-                                onClick={() => setShowTrendOptions(!showTrendOptions)}>
-                                <div className={`max-[340px]:px-2 px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full 
-                                hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
-                                    <p>
-                                        {dictionary.main.trends[selectedTrend]}
-                                    </p>
+                            {/*<div ref={trendsRef} className={`relative flex items-center gap-1 cursor-pointer`}*/}
+                            {/*    onClick={() => setShowTrendOptions(!showTrendOptions)}>*/}
+                            {/*    <div className={`max-[340px]:px-2 px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full */}
+                            {/*    hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>*/}
+                            {/*        <p>*/}
+                            {/*            {dictionary.main.trends[selectedTrend]}*/}
+                            {/*        </p>*/}
 
-                                    <div className={`${!showTrendOptions && "hidden"}`}>
-                                        <LiaAngleUpSolid />
-                                    </div>
+                            {/*        <div className={`${!showTrendOptions && "hidden"}`}>*/}
+                            {/*            <LiaAngleUpSolid />*/}
+                            {/*        </div>*/}
 
-                                    <div className={`${showTrendOptions && "hidden"}`}>
-                                        <LiaAngleDownSolid />
-                                    </div>
-                                </div>
+                            {/*        <div className={`${showTrendOptions && "hidden"}`}>*/}
+                            {/*            <LiaAngleDownSolid />*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
 
-                                <div className={`${!showTrendOptions && " hidden"} min-w-max shadow-md bg-white 
-                                absolute top-7 left-0 border-[1px] border-black`}>
-                                    {Object.keys(ETrendType).map((type, index) => (
-                                        <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}
-                                        onClick={() => setSelectedTrend(type)}>
-                                            {dictionary.main.trends[type]}
-                                        </p>
-                                    ))}
-                                </div>
-                            </div>
+                            {/*    <div className={`${!showTrendOptions && " hidden"} min-w-max shadow-md bg-white */}
+                            {/*    absolute top-7 left-0 border-[1px] border-black`}>*/}
+                            {/*        {Object.keys(ETrendType).map((type, index) => (*/}
+                            {/*            <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}*/}
+                            {/*            onClick={() => setSelectedTrend(type as ETrendType)}>*/}
+                            {/*                {dictionary.main.trends[type]}*/}
+                            {/*            </p>*/}
+                            {/*        ))}*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
 
                             {/*Categories*/}
                             <div ref={categoriesRef} className={`cursor-pointer relative`}
@@ -141,10 +147,10 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                                 </div>
 
                                 <div className={`${!showCategoryOptions && " hidden"} min-w-max shadow-md bg-white 
-                                absolute top-7 left-0 border-[1px] border-black`}>
+                                absolute top-7 right-0 md:right-1/2 md:translate-x-1/2 border-[1px] border-black`}>
                                     {Object.keys(ECategoryType).map((type, index) => (
                                         <p key={index} className={`px-3 py-2 hover:bg-gray-200 active:bg-gray-100`}
-                                        onClick={() => setSelectedCategory(type)}>
+                                        onClick={() => setSelectedCategory(type as ECategoryType)}>
                                             {dictionary.main.categories[type]}
                                         </p>
                                     ))}
@@ -155,17 +161,25 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                 </div>
 
                 <Divider />
-                <div className={`w-full md:flex md:justify-center`}>
+                <div className={`w-full min-h-[300px] md:flex md:justify-center`}>
 
                     {/*Main topics feed*/}
-                    <div className={`w-full md:w-2/3 lg:w-1/2 lg:mx-10 flex flex-col items-center`}>
-                        {topics?.map((topic, index) => (
-                            <div className={`w-full`} key={index}>
-                                <TopicTile topic={topic} dictionary={dictionary} />
-                                <Divider />
-                            </div>
-                        ))}
-                    </div>
+                    {topics?.length === 0 ? (
+                        <div className={`text-center mt-10`}>
+                            <p>
+                                No result.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className={`w-full md:w-2/3 lg:w-1/2 lg:mx-10 flex flex-col items-center`}>
+                            {topics?.map((topic, index) => (
+                                <div className={`w-full`} key={index}>
+                                    <TopicTile topic={topic} dictionary={dictionary} />
+                                    <Divider />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 

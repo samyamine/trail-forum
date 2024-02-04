@@ -139,7 +139,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
                 </h2>
 
                 <div className={`w-full relative flex flex-col`} ref={countryRef}>
-                    <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
+                    <div className={`w-full pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
                         rounded-lg border-[1px] border-black`}>
 
                         {/*FIXME: Translate countries*/}

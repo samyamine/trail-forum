@@ -81,8 +81,9 @@ export default function Header({ lang }: {lang: string}) {
 
         else {
             setCountry(undefined);
-            setShowDrawer(false);
         }
+
+        setShowDrawer(false);
     };
 
     const handleShowSearch = async (value: boolean) => {
@@ -331,9 +332,7 @@ export default function Header({ lang }: {lang: string}) {
                                 <div>
                                     {Object.entries(dictionary.top).map(([key, value], index) => (
                                         <p key={index} className={`hover:underline active:underline cursor-pointer`}
-                                           onClick={() => {
-                                               console.log(`KEY: ${key}`)
-                                               handleSetCountry(key as Country)} }>
+                                           onClick={() => handleSetCountry(key as Country)}>
                                             {String(value)}
                                         </p>
                                     ))}

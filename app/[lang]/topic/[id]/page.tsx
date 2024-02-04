@@ -202,7 +202,8 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
     return (
         <div className={`w-full flex flex-col items-center`}>
-            <Toaster />
+
+            <Toaster toastOptions={{ duration: 3000 }} />
 
             {/*Signin popup*/}
             {isAuthPopupVisible && (

@@ -169,7 +169,8 @@ export default function Header({ lang }: {lang: string}) {
     }, []);
 
     return !isUndefined(dictionary) && (
-        <header className={`fixed top-0 z-10 w-full h-16 px-5 py-3 bg-white border-b-[1px] border-b-gray-200 flex justify-between items-center`}>
+        <header className={`fixed top-0 z-10 w-full h-16 max-[340px]:px-2 px-5 py-3 bg-white border-b-[1px] border-b-gray-200 
+            flex justify-between items-center`}>
             <div className={`w-fit flex items-center gap-2`}>
                 <div className={`text-xl cursor-pointer`} onClick={() => setShowDrawer(!showDrawer)}>
                     {showDrawer ? (<TfiClose />) : (<AiOutlineMenu />)}
@@ -536,9 +537,13 @@ export default function Header({ lang }: {lang: string}) {
                     <div className={`w-full min-h-40 p-3 fixed top-16 left-0 bg-white shadow-md 
                     flex flex-col justify-center items-center`}>
                         {searchResults.length === 0 ? (
-                            <p>
-                                {dictionary.header.noResult}.
-                            </p>
+                            <div>
+                                {searchText.length >= 3 && (
+                                    <p>
+                                        {dictionary.header.noResult}
+                                    </p>
+                                )}
+                            </div>
                         ) : (
                             <>
                                 {searchResults.map((result, index) => (

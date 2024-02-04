@@ -19,7 +19,9 @@ export default function RootLayout({children, params}: {children: React.ReactNod
                 <html lang={`en`}>
                 <body className={`flex flex-col min-h-screen`}>
                 {/*className={`bg-[#0B1416]`}*/}
-                <Toaster />
+
+                <Toaster toastOptions={{ duration: 3000 }} />
+
                 <Header lang={params.lang} />
 
                 <main className={`mt-16 flex-grow`}>

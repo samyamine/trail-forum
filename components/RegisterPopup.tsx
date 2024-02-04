@@ -93,7 +93,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
 
                 <div className={`w-full px-5 py-2 rounded-lg border-[1px] border-black flex 
                     justify-center items-center gap-5 cursor-pointer text-xl`}
-                onClick={handleSignInGoogle}>
+                    onClick={handleSignInGoogle}>
                     <FcGoogle />
 
                     <p className={`text-base`}>
@@ -138,7 +138,7 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
                     {dictionary.selectCountryPage.title}
                 </h2>
 
-                <div className={`relative flex flex-col`} ref={countryRef}>
+                <div className={`w-full relative flex flex-col`} ref={countryRef}>
                     <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
                         rounded-lg border-[1px] border-black`}>
 
@@ -243,8 +243,11 @@ export default function RegisterPopup({ index, setIndexCallback, onSwitchAuthTyp
 
     return (
         <div className={`w-full max-w-[320px] flex flex-col items-center`}>
-            <Toaster />
-            {steps[index]}
+            <Toaster toastOptions={{ duration: 3000 }} />
+
+            <div className={`w-full max-md:px-3 flex flex-col text-center`}>
+                {steps[index]}
+            </div>
 
             <div className={`px-5 py-2 mb-5 rounded-lg bg-orange-500 text-white cursor-pointer ${index !== 3 && "flex items-center gap-3"}`}
             onClick={buttonClickCallback}>

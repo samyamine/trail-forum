@@ -84,7 +84,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
             )}
 
             <div className={`w-full overflow-y-auto`}>
-                <div className={`md:w-2/3 lg:w-1/2 w-full px-5 py-3`}>
+                <div className={`md:w-2/3 lg:w-1/2 w-full max-[365px]:px-2 px-5 py-3`}>
                     {/*New topic bar*/}
                     <div className={`w-full flex justify-between md:justify-start md:gap-5 items-center`}>
                         <Link href={`/topic/new`}>
@@ -92,11 +92,11 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                         </Link>
 
                         {/*Sort Options*/}
-                        <div className={`flex gap-3 text-xs`}>
+                        <div className={`flex text-xs`}>
                             {/*Trends*/}
                             <div ref={trendsRef} className={`relative flex items-center gap-1 cursor-pointer`}
                                 onClick={() => setShowTrendOptions(!showTrendOptions)}>
-                                <div className={`px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full 
+                                <div className={`max-[340px]:px-2 px-3 py-1 ${showTrendOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>
                                         {dictionary.main.trends[selectedTrend]}
@@ -125,7 +125,7 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                             {/*Categories*/}
                             <div ref={categoriesRef} className={`cursor-pointer relative`}
                             onClick={() => setShowCategoryOptions(!showCategoryOptions)}>
-                                <div className={`px-3 py-1 ${showCategoryOptions && "bg-gray-200"} rounded-full 
+                                <div className={`max-[340px]:px-2 px-3 py-1 ${showCategoryOptions && "bg-gray-200"} rounded-full 
                                 hover:bg-gray-100 active:bg-gray-200 flex items-center gap-1`}>
                                     <p>
                                         {dictionary.main.categories[selectedCategory]}

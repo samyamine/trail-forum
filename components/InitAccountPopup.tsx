@@ -87,7 +87,7 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
     const steps = [
         (
             <>
-                <h2 className={`mb-10 text-2xl font-bold`}>
+                <h2 className={`mb-10 text-2xl font-bold text-center`}>
                     {dictionary.register.createUsername}
                 </h2>
 
@@ -95,13 +95,14 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
                     Zone Trail {dictionary.register.usernameText}
                 </p>
 
-                <div className={`w-full md:w-[400px] mb-10 flex flex-col items-center gap-1`}>
-                    <input type={`text`} className={`w-1/2 px-4 py-2 bg-gray-100 rounded-lg
+                <div className={`w-full mb-10 flex flex-col items-center gap-1`}>
+                    <input type={`text`} className={`w-full px-4 py-2 bg-gray-100 rounded-lg
                         border-[1px] border-gray-400 text-sm placeholder-gray-400`} placeholder={dictionary.register.username}
                            onChange={(event) => setUsername(event.target.value)} value={username}/>
                 </div>
 
-                <div className={`px-5 py-2 mb-5 flex items-center gap-3 rounded-lg bg-orange-500 text-white cursor-pointer`}
+                <div className={`px-5 py-2 mb-5 flex justify-center items-center gap-3 rounded-lg bg-orange-500 
+                    text-white cursor-pointer`}
                      onClick={() => handleUsername().catch((error) => console.log(error.message))}>
                     {dictionary.register.continue}
                     <BsArrowRight />
@@ -114,8 +115,8 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
                     {dictionary.selectCountryPage.title}
                 </h2>
 
-                <div className={`relative flex flex-col`} ref={countryRef}>
-                    <div className={`w-full md:w-[400px] pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
+                <div className={`w-full relative flex flex-col bg-white`} ref={countryRef}>
+                    <div className={`w-full pr-4 mb-10 flex justify-evenly items-center gap-1 cursor-pointer 
                         rounded-lg border-[1px] border-black`}>
 
                         {/*FIXME: Translate countries*/}
@@ -161,9 +162,11 @@ export default function InitAccountPopup({ dictionary }: { dictionary: any }) {
 
     return (
         <div className={`w-full h-full bg-white fixed top-0 z-50 flex flex-col justify-center items-center`}>
-            <Toaster />
+            <Toaster toastOptions={{ duration: 3000 }} />
 
-            {steps[index]}
+            <div className={`w-full max-w-[320px] max-md:px-3 flex flex-col text-center`}>
+                {steps[index]}
+            </div>
         </div>
     );
 }

@@ -194,7 +194,8 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
                 <SharePopup dictionary={dictionary} />
             )}
 
-            <Toaster />
+            <Toaster toastOptions={{ duration: 3000 }} />
+
             <div className={`w-full flex flex-col`}>
                 {/*Profile header*/}
                 <div className={`px-5 py-3`}>

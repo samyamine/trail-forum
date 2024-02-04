@@ -197,7 +197,9 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
 
     return commentData !== null && (
         <>
-            <Toaster />
+
+            <Toaster toastOptions={{ duration: 3000 }} />
+
             <div className={`w-full p-3 text-gray-900`}>
                 <div className={`flex justify-between items-center`}>
                     <Link href={`/profile/${commentData.author.id}`} className={`mb-2 flex items-center gap-2`}>

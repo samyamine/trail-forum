@@ -13,18 +13,6 @@ export default function Share({ dictionary, onClickCallback }: { dictionary: any
             <p className={`p-1`}>
                 {dictionary.share}
             </p>
-
-
-            {/*<div className={`${!showOptions && "hidden"}`}>*/}
-            {/*    <FacebookShareButton url={`localhost:3000`}>*/}
-            {/*        <FacebookIcon size={12} round />*/}
-            {/*    </FacebookShareButton>*/}
-            {/*</div>*/}
-
-            {/*<div className={`${showOptions && "hidden"}`} onClick={() => setShowOptions(true)}>*/}
-            {/*    <TbShare3 />*/}
-            {/*</div>*/}
-            {/*<p className={`${showOptions && "hidden"} p-1`} onClick={() => setShowOptions(true)}>{dictionary.share}</p>*/}
         </div>
     );
 }

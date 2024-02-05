@@ -25,20 +25,36 @@ export default function ContactPage({ params }: { params: { lang: string }}) {
         });
     }, [dictionary]);
 
-    return isUndefined(dictionary) ? (
-            <div>
-                Loading...
-            </div>
-        ) : (
-            <>
-                {isAuthPopupVisible && (
-                    <AuthPopup dictionary={dictionary} />
-                )}
+    return (
+        <>
+            {isAuthPopupVisible && (
+                <AuthPopup dictionary={dictionary} />
+            )}
 
-                {isInitAccountPopupVisible && (
-                    <InitAccountPopup dictionary={dictionary} />
-                )}
+            {isInitAccountPopupVisible && (
+                <InitAccountPopup dictionary={dictionary} />
+            )}
 
+            {isUndefined(dictionary) ? (
+                <div className={"flex justify-center animate-pulse"}>
+                    <div className={`md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-3 mb-10 text-center`}>
+                        <div className={`w-full mb-5 flex justify-center`}>
+                            <div className={`w-[200px] h-6 py-5 bg-gray-200`}></div>
+                        </div>
+
+                        <div className={`flex flex-col gap-6`}>
+
+                            <div className={`w-full h-24 bg-gray-200`}></div>
+
+                            <div className={`w-full h-4 bg-gray-200`}></div>
+
+                            <div className={`w-full h-4 bg-gray-200`}></div>
+
+                            <div className={`w-full h-24 bg-gray-200`}></div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
                 <div className={"flex justify-center"}>
                     <div className={`md:w-2/3 lg:w-1/2 w-full max-w-[600px] px-5 py-3 mb-10 text-center`}>
                         <h1 className={`py-5 text-2xl font-bold`}>
@@ -79,6 +95,7 @@ export default function ContactPage({ params }: { params: { lang: string }}) {
                         </div>
                     </div>
                 </div>
-            </>
+            )}
+        </>
     );
 }

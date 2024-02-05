@@ -255,7 +255,7 @@
   "formatTime": {
     "second":  "seconde",
     "minute": "minute",
-    "hour":  "heur",
+    "hour":  "heure",
     "day": "jour",
     "prepend": "Il y a",
     "append": ""

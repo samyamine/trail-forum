@@ -198,7 +198,6 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
 
     return commentData !== null && (
         <>
-
             <Toaster toastOptions={{ duration: 3000 }} />
 
             <div className={`w-full p-3 text-gray-900`}>
@@ -252,7 +251,7 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
                     {commentData.body}
                 </h1>
 
-                <div className={`pl-5 pr-3 flex gap-5`}>
+                <div className={`pl-5 pr-3 flex gap-5 max-sm:gap-2`}>
                     <Votes id={commentData.uid} collection={`comments`} initUpVotes={commentData.upVoted.length} initDownVotes={commentData.downVoted.length} />
                     <div className={`px-2 rounded-full cursor-pointer flex gap-1 items-center border-[1px] border-black 
                         hover:bg-gray-300 ${showReply && "bg-gray-300"} text-xs`}
@@ -260,9 +259,9 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
                         <div>
                             <TbMessageCircle />
                         </div>
-                        <p className={`p-1`}>{dictionary.comment.reply}</p>
+                        <p className={`p-1 max-sm:hidden`}>{dictionary.comment.reply}</p>
                     </div>
-                    <Share dictionary={dictionary} onClickCallback={() => showSharePopup(isComment(comment) ? comment.uid : comment.id)} />
+                    <Share collapse={true} dictionary={dictionary} onClickCallback={() => showSharePopup(isComment(comment) ? comment.uid : comment.id)} />
                 </div>
 
                 {showReply && (

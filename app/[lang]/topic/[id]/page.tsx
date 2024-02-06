@@ -300,10 +300,10 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                         <div className={`flex items-center gap-2 text-xs font-bold text-gray-400`}>
                             <TbMessageCircle2Filled />
                             <p>
-                                {topicData.commentsNumber} {dictionary.topic.comments}
+                                {topicData.commentsNumber} <span className={`max-[320px]:hidden`}>{dictionary.topic.comments}</span>
                             </p>
                         </div>
-                        <Share dictionary={dictionary} onClickCallback={() => showSharePopup(params.id)} />
+                        <Share collapse={true} dictionary={dictionary} onClickCallback={() => showSharePopup(params.id)} />
                     </div>
 
                     {/*Add Comment*/}
@@ -356,14 +356,24 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                             <CommentTile comment={comment} dictionary={dictionary} />
 
                             {comment.answers.map((nestedAnswer, nestedIndex) => (
-                                <div key={`n${nestedIndex}`} className={`flex justify-start`}>
-                                    <div className={`w-10 flex justify-center`}>
+                                <div key={`n${nestedIndex}`} className={`flex justify-between`}>
+                                    <div className={`w-1/12 flex justify-center`}>
                                         <div className={`w-0.5 h-full bg-gray-300`}></div>
                                     </div>
-                                    <div className={`flex-grow`}>
+
+                                    <div className={`w-11/12`}>
                                         <CommentTile comment={nestedAnswer} dictionary={dictionary} />
                                     </div>
                                 </div>
+
+                                // <div key={`n${nestedIndex}`} className={`flex justify-start`}>
+                                //     <div className={`w-10 flex justify-center`}>
+                                //         <div className={`w-0.5 h-full bg-gray-300`}></div>
+                                //     </div>
+                                //     <div className={`flex-grow`}>
+                                //         <CommentTile comment={nestedAnswer} dictionary={dictionary} />
+                                //     </div>
+                                // </div>
                             ))}
                         </div>
                     ))}

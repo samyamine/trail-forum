@@ -13,6 +13,7 @@ import {DocumentSnapshot, getDoc} from "@firebase/firestore";
 import {formatTime, getAuthor} from "@/lib/topic/utils";
 import toast from "react-hot-toast";
 import {usePopup} from "@/app/[lang]/popupContext";
+import TopicTileLoading from "@/components/loading/TopicTileLoading";
 
 export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictionary: any }) {
     const {showSharePopup} = usePopup();
@@ -40,8 +41,8 @@ export default function TopicTile({ topic, dictionary }: { topic: ITopic, dictio
 
     return author === null ?
         (
-            <div>
-                {dictionary.loading}...
+            <div className={`animate-pulse`}>
+                <TopicTileLoading />
             </div>
         ) : (
         <div className={`w-full h-fit pb-3 text-gray-900 md:hover:bg-gray-100 cursor-pointer

@@ -187,21 +187,17 @@ export default function HomePage({ params }: {params: { lang: string }}) {
                     </div>
                 </div>
             ) : (
-                <div className={`w-full overflow-y-auto`}>
+                // LOADING
+                <div className={`w-full overflow-y-auto animate-pulse`}>
                     <div className={`md:w-2/3 lg:w-1/2 w-full max-[365px]:px-2 px-5 py-3`}>
                         {/*New topic bar*/}
                         <div className={`w-full flex justify-between md:justify-start md:gap-5 items-center`}>
-                            {/*FIXME: Translation*/}
                             <IconTextButtonLoading />
 
-                            {/*Sort Options*/}
                             <div className={`flex text-xs`}>
-                                {/*Trends*/}
-
-                                {/*Categories*/}
                                 <div>
                                     <div className={`max-[340px]:px-2 px-3 py-1 bg-gray-200 rounded-full 
-                                        flex items-center gap-1 text-gray-200 animate-pulse`}>
+                                        flex items-center gap-1 text-gray-200`}>
                                         <p>
                                             Random Text
                                         </p>

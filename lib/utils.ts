@@ -1,6 +1,6 @@
 import {collection, DocumentReference, getDocs, query, where} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
-import {ITopic} from "@/lib/interfaces";
+import {IComment, ITopic} from "@/lib/interfaces";
 import {getTopic} from "@/lib/topic/utils";
 import {ECategoryType, ETop, ETrendType} from "@/lib/enums";
 import {Country} from "@/lib/types";
@@ -46,6 +46,38 @@ function quickSortTopics(arr: ITopic[]): ITopic[] {
     return [...quickSortTopics(left), pivot, ...quickSortTopics(right)];
 }
 
+function quickSortComments(array: IComment[]): IComment[] {
+    if (array.length <= 1) {
+        return array;
+    }
+
+    const pivotIndex = Math.floor(array.length / 2);
+    const pivot = array[pivotIndex];
+    const pivotCreationDate = pivot.creationDate.seconds;
+    const left = [];
+    const right = [];
+
+    for (let i = 0; i < array.length; i++) {
+        console.log(array[i].creationDate)
+        console.log(array[i].body)
+
+        if (i === pivotIndex) {
+            continue;
+        }
+
+        const comment = array[i];
+        const topicCreationDate = comment.creationDate.seconds;
+
+        if (topicCreationDate > pivotCreationDate) {
+            left.push(array[i]);
+        } else {
+            right.push(array[i]);
+        }
+    }
+
+    return [...quickSortComments(left), pivot, ...quickSortComments(right)];
+}
+
 async function feedBuilder(category: ECategoryType, country: Country | undefined): Promise<ITopic[]> {
     const topics: ITopic[] = [];
 
@@ -88,4 +120,5 @@ export {
     feedBuilder,
     isUsernameAvailable,
     isUndefined,
+    quickSortComments,
 }

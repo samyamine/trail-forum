@@ -19,6 +19,13 @@ import {getComments, getSaved, getTopic} from "@/lib/topic/utils";
 import {FaMinus, FaPlus} from "react-icons/fa6";
 import {getDictionary} from "@/lib/dictionary";
 import SharePopup from "@/components/SharePopup";
+import ProfilePictureLoading from "@/components/loading/ProfilePictureLoading";
+import ProfilePicture from "@/components/ProfilePicture";
+import IconTextButtonLoading from "@/components/loading/IconTextButtonLoading";
+import TopicTileLoading from "@/components/loading/TopicTileLoading";
+import DividerLoading from "@/components/loading/DividerLoading";
+import {TbBookmark, TbMessageCircle} from "react-icons/tb";
+import {GrArticle} from "react-icons/gr";
 
 enum ETabs {
     Comments = "Comments",
@@ -67,38 +74,65 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
     const tabs = {
         [ETabs.Comments]: (
             <div>
-                {profileData.comments.map((comment, index) => (
-                    <div key={index} className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
-                        <CommentTile comment={comment} dictionary={dictionary} />
-                        <Divider />
+                {profileData.comments.length === 0 ? (
+                    <p className={`mt-5 text-center`}>
+                        {/*FIXME: Translation (use a function that takes a dictionary and returns this UI*/}
+                        Pas de résultats
+                    </p>
+                ) : (
+                    <div>
+                        {profileData.comments.map((comment, index) => (
+                            <div key={index} className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
+                                <CommentTile comment={comment} dictionary={dictionary} />
+                                <Divider />
+                            </div>
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
         ),
         [ETabs.Saved]: (
             <div>
-                {profileData.saved.map((element, index) => (
-                    <div key={index}>
-                        {isTopic(element) ? (
-                            <TopicTile topic={element} dictionary={dictionary} />
-                        ) : (
-                            <div className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
-                                <CommentTile comment={element} dictionary={dictionary} />
+                {profileData.saved.length === 0 ? (
+                    <p className={`mt-5 text-center`}>
+                        {/*FIXME: Translation (use a function that takes a dictionary and returns this UI*/}
+                        Pas de résultats
+                    </p>
+                ) : (
+                    <div>
+                        {profileData.saved.map((element, index) => (
+                            <div key={index}>
+                                {isTopic(element) ? (
+                                    <TopicTile topic={element} dictionary={dictionary} />
+                                ) : (
+                                    <div className={`md:border-l-[1px] md:border-r-[1px] md:border-gray-900`}>
+                                        <CommentTile comment={element} dictionary={dictionary} />
+                                    </div>
+                                )}
+                                <Divider />
                             </div>
-                        )}
-                        <Divider />
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
         ),
         [ETabs.Topics]: (
             <div>
-                {profileData.topics.map((topic, index) => (
-                    <div key={index}>
-                        <TopicTile topic={topic} dictionary={dictionary} />
-                        <Divider />
+                {profileData.topics.length === 0 ? (
+                    <p className={`mt-5 text-center`}>
+                        {/*FIXME: Translation (use a function that takes a dictionary and returns this UI*/}
+                        Pas de résultats
+                    </p>
+                ) : (
+                    <div>
+                        {profileData.topics.map((topic, index) => (
+                            <div key={index}>
+                                <TopicTile topic={topic} dictionary={dictionary} />
+                                <Divider />
+                            </div>
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
         ),
     };
@@ -174,11 +208,7 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
         initData().catch((error) => toast.error(error.message));
     }, [userData]);
 
-    return loading || isUndefined(dictionary) ? (
-        <div className={`w-full h-full flex justify-center items-center`}>
-            Loading...
-        </div>
-        ) : (
+    return (
         <>
             {/*Signin popup*/}
             {isAuthPopupVisible && (
@@ -196,81 +226,145 @@ export default function ProfilePage({ params }: { params: { id: string, lang: st
 
             <Toaster toastOptions={{ duration: 3000 }} />
 
-            <div className={`w-full flex flex-col`}>
-                {/*Profile header*/}
-                <div className={`px-5 py-3`}>
-                    <div className={`flex items-center gap-5`}>
-                        <div className={`w-12 h-12 bg-red-400 rounded-full`}>
-                            {/*FIXME*/}
-                        </div>
 
-                        <div className={`flex flex-col justify-between`}>
-                            <h1 className={`text-lg font-bold`}>
-                                {profileData.username}
-                            </h1>
+            {loading || isUndefined(dictionary) ? (
+                <div className={`w-full flex flex-col animate-pulse`}>
+                    {/*Profile header*/}
+                    <div className={`px-5 py-3`}>
+                        <div className={`flex items-center gap-5`}>
+                            <div className={`w-12 h-12`}>
+                                <ProfilePictureLoading />
+                            </div>
 
-                            <div className={`flex items-center gap-5 text-xs`}>
-                                <p>
-                                    {profileData.followers.length} {dictionary.profile.followers}
-                                </p>
+                            <div className={`flex flex-col justify-between`}>
+                                <div className={`w-[100px] h-4 bg-gray-200`}></div>
 
-                                <p>
-                                    {profileData.following.length} {dictionary.profile.following}
-                                </p>
+                                <div className={`mt-2 flex items-center gap-5 text-xs`}>
+                                    <div className={`w-[70px] h-3 bg-gray-200`}></div>
+                                    <div className={`w-[70px] h-3 bg-gray-200`}></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {!isMyProfile() && (
-                    <div className={`px-5`} onClick={() => handleFollow(!isFollowing()).catch((error) => toast.error(error.message))}>
-                        {isFollowing() ? (
-                            <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-gray-200 rounded-sm 
-                                active:bg-gray-100 text-black text-sm cursor-pointer`}>
-                                <FaMinus />
-                                <p>{dictionary.profile.unfollow}</p>
-                            </div>
-                        ) : (
-                            <IconTextButton text={dictionary.profile.follow} />
-                        )}
-                    </div>
-                )}
-
-                <div className={`mt-2 flex justify-between items-center border-b-[1px] border-gray-200`}>
-                    <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center items-center active:bg-gray-100 hover:bg-gray-100 
-                    cursor-pointer ${selectedTab === ETabs.Topics && "text-orange-500 border-b-[1px] border-orange-500"}`}
-                         onClick={() => setSelectedTab(ETabs.Topics)}>
-                        <p>
-                            {dictionary.profile.topics}
-                        </p>
-                    </div>
-
-                    <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center items-center active:bg-gray-100 hover:bg-gray-100 
-                        cursor-pointer ${selectedTab === ETabs.Comments && "text-orange-500 border-b-[1px] border-orange-500"}`}
-                         onClick={() => setSelectedTab(ETabs.Comments)}>
-                        <p>
-                            {dictionary.profile.comments}
-                        </p>
-                    </div>
-
-                    {/*FIXME*/}
-                    {isMyProfile() && (
-                        <div className={`w-1/3 py-1 flex justify-center items-center active:bg-gray-100 hover:bg-gray-100 
-                        cursor-pointer ${selectedTab === ETabs.Saved && "text-orange-500 border-b-[1px] border-orange-500"}`}
-                             onClick={() => setSelectedTab(ETabs.Saved)}>
-                            <p>
-                                {dictionary.profile.saved}
-                            </p>
+                    {!isMyProfile() && (
+                        <div className={`px-5`}>
+                            <IconTextButtonLoading />
                         </div>
                     )}
-                </div>
 
-                <div className={`w-full flex flex-col items-center`}>
-                    <div className={`w-full md:w-2/3 lg:w-1/2`}>
-                        {tabs[selectedTab]}
+                    <div className={`mt-2 flex justify-between items-center border-b-[1px] border-gray-200`}>
+                        <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center items-center`}>
+                            <div className={`w-[70px] h-5 bg-gray-200`}></div>
+                        </div>
+
+                        <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center items-center`}>
+                            <div className={`w-[70px] h-5 bg-gray-200`}></div>
+                        </div>
+
+                        {/*FIXME*/}
+                        {isMyProfile() && (
+                            <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center items-center`}>
+                                <div className={`w-[70px] h-5 bg-gray-200`}></div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={`w-full flex flex-col items-center`}>
+                        <div className={`w-full md:w-2/3 lg:w-1/2`}>
+                            <TopicTileLoading />
+                            <DividerLoading />
+                            <TopicTileLoading />
+                            <DividerLoading />
+                            <TopicTileLoading />
+                            <DividerLoading />
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className={`w-full flex flex-col`}>
+                    {/*Profile header*/}
+                    <div className={`px-5 py-3`}>
+                        <div className={`flex items-center gap-5`}>
+                            <div className={`w-12 h-12`}>
+                                {/*FIXME: Implement Profile Picture*/}
+                                <ProfilePicture />
+                            </div>
+
+                            <div className={`flex flex-col justify-between`}>
+                                <h1 className={`text-lg font-bold`}>
+                                    {profileData.username}
+                                </h1>
+
+                                <div className={`flex items-center gap-5 text-xs`}>
+                                    <p>
+                                        {profileData.followers.length} {dictionary.profile.followers}
+                                    </p>
+
+                                    <p>
+                                        {profileData.following.length} {dictionary.profile.following}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {!isMyProfile() && (
+                        <div className={`px-5`} onClick={() => handleFollow(!isFollowing()).catch((error) => toast.error(error.message))}>
+                            {isFollowing() ? (
+                                <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-gray-200 rounded-sm 
+                                active:bg-gray-100 text-black text-sm cursor-pointer`}>
+                                    <FaMinus />
+                                    <p>{dictionary.profile.unfollow}</p>
+                                </div>
+                            ) : (
+                                <IconTextButton text={dictionary.profile.follow} />
+                            )}
+                        </div>
+                    )}
+
+                    <div className={`mt-2 flex justify-between items-center border-b-[1px] border-gray-200`}>
+                        <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center gap-2 items-center active:bg-gray-100 hover:bg-gray-100 
+                        cursor-pointer text-lg ${selectedTab === ETabs.Topics && "text-orange-500 border-b-[1px] border-orange-500"}`}
+                             onClick={() => setSelectedTab(ETabs.Topics)}>
+                            <GrArticle />
+
+                            <p className={`text-xs`}>
+                                {dictionary.profile.topics}
+                            </p>
+                        </div>
+
+                        <div className={`${isMyProfile() ? "w-1/3" : "w-1/2" } py-1 flex justify-center gap-2 items-center active:bg-gray-100 hover:bg-gray-100 
+                        cursor-pointer text-lg ${selectedTab === ETabs.Comments && "text-orange-500 border-b-[1px] border-orange-500"}`}
+                             onClick={() => setSelectedTab(ETabs.Comments)}>
+                            <TbMessageCircle />
+
+                            <p className={`text-xs`}>
+                                {dictionary.profile.comments}
+                            </p>
+                        </div>
+
+                        {/*FIXME*/}
+                        {isMyProfile() && (
+                            <div className={`w-1/3 py-1 flex justify-center gap-2 items-center active:bg-gray-100 hover:bg-gray-100 
+                            cursor-pointer text-lg ${selectedTab === ETabs.Saved && "text-orange-500 border-b-[1px] border-orange-500"}`}
+                                 onClick={() => setSelectedTab(ETabs.Saved)}>
+                                <TbBookmark />
+
+                                <p className={`text-xs`}>
+                                    {dictionary.profile.saved}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={`w-full flex flex-col items-center`}>
+                        <div className={`w-full md:w-2/3 lg:w-1/2`}>
+                            {tabs[selectedTab]}
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

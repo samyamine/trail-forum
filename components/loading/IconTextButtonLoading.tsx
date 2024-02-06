@@ -4,7 +4,7 @@ import React from "react";
 export default function IconTextButtonLoading() {
     return (
         <div className={`w-fit px-3 py-1 flex items-center gap-2 bg-gray-200 rounded-sm 
-                active:shadow-sm max-[340px]:text-xs text-sm text-gray-200 animate-pulse`}>
+                max-[340px]:text-xs text-sm text-gray-200`}>
             <FaPlus />
 
             <p>

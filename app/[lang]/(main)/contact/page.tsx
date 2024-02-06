@@ -43,13 +43,9 @@ export default function ContactPage({ params }: { params: { lang: string }}) {
                         </div>
 
                         <div className={`flex flex-col gap-6`}>
-
                             <div className={`w-full h-24 bg-gray-200`}></div>
-
                             <div className={`w-full h-4 bg-gray-200`}></div>
-
                             <div className={`w-full h-4 bg-gray-200`}></div>
-
                             <div className={`w-full h-24 bg-gray-200`}></div>
                         </div>
                     </div>

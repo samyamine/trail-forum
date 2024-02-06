@@ -24,6 +24,7 @@ import Link from "next/link";
 import {FaEllipsis} from "react-icons/fa6";
 import {isComment} from "@/lib/types";
 import {getDictionary} from "@/lib/dictionary";
+import ProfilePicture from "@/components/ProfilePicture";
 
 const REPLY_MAX_LENGTH = 500;
 
@@ -203,7 +204,9 @@ export default function CommentTile({ comment, dictionary }: { comment: IComment
             <div className={`w-full p-3 text-gray-900`}>
                 <div className={`flex justify-between items-center`}>
                     <Link href={`/profile/${commentData.author.id}`} className={`mb-2 flex items-center gap-2`}>
-                        <div className={`w-6 h-6 bg-red-400 rounded-full`}></div>
+                        <div className={`w-6 h-6`}>
+                            <ProfilePicture />
+                        </div>
                         <p className={`font-bold text-sm`}>
                             {authorName} - <span className={`font-normal text-gray-500`}>{formatTime(commentData.creationDate, dictionary)}</span>
                         </p>

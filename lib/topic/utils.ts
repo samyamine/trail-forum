@@ -2,6 +2,7 @@ import {doc, DocumentData, DocumentReference, DocumentSnapshot, getDoc, Timestam
 import {IComment, IDict, ITopic, IUser} from "@/lib/interfaces";
 import {db} from "@/lib/firebase/config";
 import {getDictionary} from "@/lib/dictionary";
+import {quickSortComments} from "@/lib/utils";
 
 async function getAuthor(authorReference: DocumentReference): Promise<IUser> {
     const authorSnapshot = await getDoc(authorReference);
@@ -114,7 +115,8 @@ async function getComments(commentReferences: DocumentReference[]): Promise<ICom
         comments.push(comment);
     }
 
-    return comments;
+    // FIXME: Sort from latest to oldest
+    return quickSortComments(comments);
 }
 
 async function getCommentAnswers(answerReferences: DocumentReference[]): Promise<IComment[]> {

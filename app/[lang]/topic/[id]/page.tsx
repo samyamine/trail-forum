@@ -26,6 +26,13 @@ import InitAccountPopup from "@/components/InitAccountPopup";
 import Link from "next/link";
 import {getDictionary} from "@/lib/dictionary";
 import SharePopup from "@/components/SharePopup";
+import ProfilePicture from "@/components/ProfilePicture";
+import ProfilePictureLoading from "@/components/loading/ProfilePictureLoading";
+import TopicCategoryLoading from "@/components/loading/TopicCategoryLoading";
+import EngagementButtonLoading from "@/components/loading/EngagementButtonLoading";
+import IconTextButtonLoading from "@/components/loading/IconTextButtonLoading";
+import DividerLoading from "@/components/loading/DividerLoading";
+import CommentTileLoading from "@/components/loading/CommentTileLoading";
 
 const COMMENT_MAX_LENGTH = 500;
 
@@ -219,14 +226,16 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                 <SharePopup dictionary={dictionary} />
             )}
 
+
             {topicData !== null ? (
                 <div className={`w-full md:w-2/3 lg:w-1/2 p-5`}>
                     {/*topic*/}
                     <div className={`mb-4 flex flex-col gap-2`}>
                         <div className={`flex justify-between items-center`}>
                             <div className={`flex gap-2 items-center`}>
-                                <div className={`w-6 h-6 bg-red-400 rounded-full`}>
+                                <div className={`w-6 h-6`}>
                                     {/*FIXME: IMAGE*/}
+                                    <ProfilePicture />
                                 </div>
                                 {/*FIXME*/}
                                 <Link href={`/profile/${topicData.author.uid}`}
@@ -360,9 +369,47 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                     ))}
                 </div>
             ) : (
-                <div className={`w-full h-full mt-10 flex flex-grow justify-center items-center`}>
-                    {/*FIXME*/}
-                    Loading...
+                // LOADING
+                <div className={`w-full md:w-2/3 lg:w-1/2 p-5 animate-pulse`}>
+                    {/*topic*/}
+                    <div className={`mb-4 flex flex-col gap-2`}>
+                        <div className={`flex justify-between items-center`}>
+                            <div className={`flex gap-2 items-center`}>
+                                <div className={`w-6 h-6`}>
+                                    <ProfilePictureLoading />
+                                </div>
+
+                                <div className={`w-[120px] h-4 bg-gray-200`}></div>
+                            </div>
+                        </div>
+
+                        <div className={`w-2/3 max-sm:w-3/4 h-6 bg-gray-200`}></div>
+
+                        <TopicCategoryLoading />
+
+                        <div className={`w-full h-20 bg-gray-200`}></div>
+                    </div>
+
+                    {/*Social engagement*/}
+                    <div className={`mb-4 flex gap-5`}>
+                        <EngagementButtonLoading />
+                        <EngagementButtonLoading />
+                        <EngagementButtonLoading />
+                    </div>
+
+                    {/*Add Comment*/}
+                    <div className={`my-4 flex flex-col items-end gap-2`}>
+                        <div className={`w-full h-28 bg-gray-200 rounded-lg`}></div>
+
+                        <div className={`w-full flex justify-end items-center`}>
+                            <IconTextButtonLoading />
+                        </div>
+                    </div>
+
+                    <DividerLoading />
+                    <CommentTileLoading />
+                    <CommentTileLoading />
+                    <CommentTileLoading />
                 </div>
             )}
         </div>

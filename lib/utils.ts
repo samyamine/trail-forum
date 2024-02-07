@@ -1,9 +1,11 @@
 import {collection, DocumentReference, getDocs, query, where} from "@firebase/firestore";
 import {db} from "@/lib/firebase/config";
 import {IComment, ITopic} from "@/lib/interfaces";
-import {getTopic} from "@/lib/topic/utils";
+import {getCommentAnswers, getComments, getTopic} from "@/lib/topic/utils";
 import {ECategoryType, ETop, ETrendType} from "@/lib/enums";
 import {Country} from "@/lib/types";
+import {Simulate} from "react-dom/test-utils";
+import copy = Simulate.copy;
 
 function isUndefined(element: any): boolean {
     return typeof element === "undefined";
@@ -17,29 +19,33 @@ async function isUsernameAvailable(username: string): Promise<boolean> {
     return querySnapshot.empty;
 }
 
-function quickSortTopics(arr: ITopic[]): ITopic[] {
-    if (arr.length <= 1) {
-        return arr;
+function calculateTopicPopularity(topic: ITopic): number {
+    return 5 * topic.comments.length + 2 * topic.upVoted.length - topic.downVoted.length;
+}
+
+function quickSortTopics(array: ITopic[]): ITopic[] {
+    if (array.length <= 1) {
+        return array;
     }
 
-    const pivotIndex = Math.floor(arr.length / 2);
-    const pivot = arr[pivotIndex];
-    const pivotVotes = pivot.upVoted.length - pivot.downVoted.length;
+    const pivotIndex = Math.floor(array.length / 2);
+    const pivot = array[pivotIndex];
+    const pivotPopularity = calculateTopicPopularity(pivot);
     const left = [];
     const right = [];
 
-    for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < array.length; i++) {
         if (i === pivotIndex) {
             continue;
         }
 
-        const topic = arr[i];
-        const topicVotes = topic.upVoted.length - topic.downVoted.length;
+        const topic = array[i];
+        const topicPopularity = calculateTopicPopularity(topic);
 
-        if (topicVotes > pivotVotes) {
-            left.push(arr[i]);
+        if (topicPopularity > pivotPopularity) {
+            left.push(array[i]);
         } else {
-            right.push(arr[i]);
+            right.push(array[i]);
         }
     }
 
@@ -66,9 +72,9 @@ function quickSortComments(array: IComment[]): IComment[] {
         }
 
         const comment = array[i];
-        const topicCreationDate = comment.creationDate.seconds;
+        const commentCreationDate = comment.creationDate.seconds;
 
-        if (topicCreationDate > pivotCreationDate) {
+        if (commentCreationDate > pivotCreationDate) {
             left.push(array[i]);
         } else {
             right.push(array[i]);
@@ -81,8 +87,6 @@ function quickSortComments(array: IComment[]): IComment[] {
 async function feedBuilder(category: ECategoryType, country: Country | undefined): Promise<ITopic[]> {
     const topics: ITopic[] = [];
 
-    console.log(`COUNTRY: ${country}`)
-
     // Récupérer tous les topics
     const topicSnapshot = await getDocs(collection(db, "topics"));
 
@@ -90,7 +94,6 @@ async function feedBuilder(category: ECategoryType, country: Country | undefined
         const topic = await getTopic(snapshot.id);
 
         if (!isUndefined(country) && (String(country) === ETop.All || topic.country === country)) {
-            console.log("NOT undefined")
             if (category === ECategoryType.All) {
                 topics.push(topic);
             }
@@ -101,7 +104,6 @@ async function feedBuilder(category: ECategoryType, country: Country | undefined
         }
 
         if (isUndefined(country)) {
-            console.log("Undefined")
             if (category === ECategoryType.All) {
                 topics.push(topic);
             }

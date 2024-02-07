@@ -357,9 +357,7 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
 
                             {comment.answers.map((nestedAnswer, nestedIndex) => (
                                 <div key={`n${nestedIndex}`} className={`flex justify-between`}>
-                                    <div className={`w-1/12 flex justify-center`}>
-                                        <div className={`w-0.5 h-full bg-gray-300`}></div>
-                                    </div>
+                                    <div className={`w-1/12 flex justify-center`}></div>
 
                                     <div className={`w-11/12`}>
                                         <CommentTile comment={nestedAnswer} dictionary={dictionary} />

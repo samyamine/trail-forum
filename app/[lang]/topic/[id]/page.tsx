@@ -8,7 +8,7 @@ import Divider from "@/components/Divider";
 import CommentTile from "@/components/CommentTile";
 import {TbBookmark, TbBookmarkFilled, TbFlag, TbMessageCircle2Filled} from "react-icons/tb";
 import TopicCategory from "@/components/TopicCategory";
-import {usePopup} from "@/app/[lang]/popupContext";
+import {usePopup} from "@/app/context/popupContext";
 import AuthPopup from "@/components/AuthPopup";
 import {db} from "@/lib/firebase/config";
 import {
@@ -18,7 +18,7 @@ import {
     updateDoc,
 } from "@firebase/firestore";
 import toast, {Toaster} from "react-hot-toast";
-import {useAuth} from "@/app/[lang]/authContext";
+import {useAuth} from "@/app/context/authContext";
 import {IComment, ITopic, IUser} from "@/lib/interfaces";
 import {getAuthor, getTopic, getComments, formatTime} from "@/lib/topic/utils";
 import {isUndefined} from "@/lib/utils";
@@ -41,6 +41,28 @@ interface IData {
     author: IUser,
     comments: IComment[],
     commentsNumber: number,
+}
+
+async function getData(id: string): Promise<void> {
+    // FIXME
+    const res = await fetch("/api/topic", {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+        },
+        body: JSON.stringify({id}),
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch job data");
+    }
+
+    const data = await res.json();
+
+    console.log("TOPIC DATA");
+    console.log(data);
+
+    // FIXME: Format results
 }
 
 export default function TopicPage({ params }: { params: { id: string, lang: string }}) {
@@ -162,49 +184,53 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
         }
     };
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const topicData = await getTopic(params.id);
+    //         const authorData = await getAuthor(topicData.author);
+    //         const commentsData = await getComments(topicData.comments);
+    //         let commentsNumber = 0;
+    //
+    //         for (const comment of commentsData) {
+    //             commentsNumber += comment.answers.length + 1;
+    //         }
+    //
+    //         setTopicData({ topic: topicData, author: authorData, comments: commentsData, commentsNumber});
+    //     };
+    //
+    //     const handleClickOutsideSort = (event: MouseEvent) => {
+    //         if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+    //             setShowSortOptions(false);
+    //         }
+    //     };
+    //
+    //     const handleClickOutsideTopic = (event: MouseEvent) => {
+    //         if (topicOptionsRef.current && !topicOptionsRef.current.contains(event.target as Node)) {
+    //             setShowTopicOption(false);
+    //         }
+    //     };
+    //
+    //     if (params.lang !== "fr" && params.lang !== "en") {
+    //         throw new Error(`Language ${params.lang} is not supported`);
+    //     }
+    //
+    //     getDictionary(params.lang).then((dict) => {
+    //         setDictionary(dict);
+    //     });
+    //
+    //     window.addEventListener('click', handleClickOutsideSort);
+    //     window.addEventListener('click', handleClickOutsideTopic);
+    //
+    //     fetchData().catch((error) => toast.error(error.message));
+    //
+    //     return () => {
+    //         window.removeEventListener('click', handleClickOutsideSort);
+    //         window.removeEventListener('click', handleClickOutsideTopic);
+    //     };
+    // }, []);
+
     useEffect(() => {
-        const fetchData = async () => {
-            const topicData = await getTopic(params.id);
-            const authorData = await getAuthor(topicData.author);
-            const commentsData = await getComments(topicData.comments);
-            let commentsNumber = 0;
-
-            for (const comment of commentsData) {
-                commentsNumber += comment.answers.length + 1;
-            }
-
-            setTopicData({ topic: topicData, author: authorData, comments: commentsData, commentsNumber});
-        };
-
-        const handleClickOutsideSort = (event: MouseEvent) => {
-            if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
-                setShowSortOptions(false);
-            }
-        };
-
-        const handleClickOutsideTopic = (event: MouseEvent) => {
-            if (topicOptionsRef.current && !topicOptionsRef.current.contains(event.target as Node)) {
-                setShowTopicOption(false);
-            }
-        };
-
-        if (params.lang !== "fr" && params.lang !== "en") {
-            throw new Error(`Language ${params.lang} is not supported`);
-        }
-
-        getDictionary(params.lang).then((dict) => {
-            setDictionary(dict);
-        });
-
-        window.addEventListener('click', handleClickOutsideSort);
-        window.addEventListener('click', handleClickOutsideTopic);
-
-        fetchData().catch((error) => toast.error(error.message));
-
-        return () => {
-            window.removeEventListener('click', handleClickOutsideSort);
-            window.removeEventListener('click', handleClickOutsideTopic);
-        };
+        getData(params.id).catch((error) => console.log(error))
     }, []);
 
     return (
@@ -363,15 +389,6 @@ export default function TopicPage({ params }: { params: { id: string, lang: stri
                                         <CommentTile comment={nestedAnswer} dictionary={dictionary} />
                                     </div>
                                 </div>
-
-                                // <div key={`n${nestedIndex}`} className={`flex justify-start`}>
-                                //     <div className={`w-10 flex justify-center`}>
-                                //         <div className={`w-0.5 h-full bg-gray-300`}></div>
-                                //     </div>
-                                //     <div className={`flex-grow`}>
-                                //         <CommentTile comment={nestedAnswer} dictionary={dictionary} />
-                                //     </div>
-                                // </div>
                             ))}
                         </div>
                     ))}
